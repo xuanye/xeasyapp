@@ -1,0 +1,69 @@
+﻿html
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+}
+body
+{
+	margin: 0;	
+	font-size: 12px;
+	/**/font-family: "微软雅黑" , "宋体" ,Consolas,Verdana;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+div, span
+{
+    padding:0;
+	margin:0;
+}
+div, span, td
+{
+	/**/font-family: "微软雅黑" , "宋体" ,Consolas,Verdana;	
+}
+em
+{
+    font-style:normal;
+}
+a:link, a:visited
+{
+	text-decoration: none;
+	color: #333;
+}
+
+
+a.imgbtn
+{
+	color: #000000;
+}
+a.imgbtn span
+{
+	padding: 4px 4px 3px 21px;
+	cursor: pointer;
+}
+
+
+a.imgbtn span.Save
+{
+	background: url(../../images/icons/Item.Save.gif) no-repeat 3px 4px;
+}
+
+span.Add
+{
+	padding-left: 20px;
+	background: url(../../images/icons/add.png) no-repeat 1px;
+}
+
+span.edit
+{
+	cursor: pointer;
+	padding-left: 20px;
+	background: url(../../images/icons/edit.png) no-repeat 1px;
+}
+span.Delete
+{
+	padding-left: 20px;
+	background: url(../../images/icons/delete.png) no-repeat 1px;
+}

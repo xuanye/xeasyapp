@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<JsList>
+  <js key="jquery" value="~/Javascripts/jquery-1.4.2.js"></js>
+  <js key="tree" value="~/Javascripts/plugins_source/jquery.tree.js"></js>
+  <js key="tabpanel" value="~/Javascripts/plugins_source/jquery.tabpanel.js"></js>
+  <js key="flexigrid" value="~/Javascripts/plugins_source/jquery.flexigrid.js"></js>
+  <js key="contextmenu" value="~/Javascripts/plugins_source/jquery.contextmenu.js"></js>
+  <js key="autocomplete" value="~/Javascripts/plugins_source/jquery.autocomplete.js"></js>
+  <js key="validate" value="~/Javascripts/plugins_source/jquery.validate.js"></js>
+  <js key="easydrag" value="~/Javascripts/common.js"></js>
+  <js key="common" value="~/Javascripts/common.js"></js>
+  <js key="dailog" value="~/Javascripts/plugins_source/jquery.ifrmdailog.js"></js>
+  <js key="alert" value="~/Javascripts/lib/jquery.easydrag.js"></js>
+</JsList>

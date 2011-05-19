@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2D365304-2DE4-4023-BDAB-FF74EB5804A1}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xEasyApp.Web</RootNamespace>
+    <AssemblyName>xEasyApp.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="StructureMap">
+      <HintPath>..\refdll\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="SubSonic.Core">
+      <HintPath>..\refdll\SubSonic.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages" />
+    <Reference Include="System.Web.Helpers" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SysManageController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Images\icons\accept.png" />
+    <Content Include="Images\icons\add.png" />
+    <Content Include="Images\icons\checkbox_0.gif" />
+    <Content Include="Images\icons\checkbox_1.gif" />
+    <Content Include="Images\icons\checkbox_2.gif" />
+    <Content Include="Images\icons\delete.png" />
+    <Content Include="Images\icons\edit.png" />
+    <Content Include="Images\icons\grid.png" />
+    <Content Include="Images\icons\home.png" />
+    <Content Include="Images\icons\indicator.gif" />
+    <Content Include="Images\icons\s.gif" />
+    <Content Include="Javascripts\common.js" />
+    <Content Include="Javascripts\intellisense\jquery-1.4.1-vsdoc.js" />
+    <Content Include="Javascripts\jquery-1.4.2.js" />
+    <Content Include="Javascripts\jquery-1.4.2.min.js" />
+    <Content Include="Javascripts\lib\blackbird.js" />
+    <Content Include="Javascripts\lib\jquery.easydrag.js" />
+    <Content Include="Javascripts\plugins_source\jquery.alert.js" />
+    <Content Include="Javascripts\plugins_source\jquery.autocomplete.js" />
+    <Content Include="Javascripts\plugins_source\jquery.contextmenu.js" />
+    <Content Include="Javascripts\plugins_source\jquery.datepicker.js" />
+    <Content Include="Javascripts\plugins_source\jquery.flexigrid.js" />
+    <Content Include="Javascripts\plugins_source\jquery.hotkeys.js" />
+    <Content Include="Javascripts\plugins_source\jquery.ifrmdailog.js" />
+    <Content Include="Javascripts\plugins_source\jquery.tabpanel.js" />
+    <Content Include="Javascripts\plugins_source\jquery.tree.js" />
+    <Content Include="Javascripts\plugins_source\jquery.validate.js" />
+    <Content Include="Js.xml" />
+    <Content Include="MenuData.xml" />
+    <Content Include="Themes\Default\alert.css" />
+    <Content Include="Themes\Default\contextmenu.css" />
+    <Content Include="Themes\Default\dailog.css" />
+    <Content Include="Themes\Default\dp.css" />
+    <Content Include="Themes\Default\flexigrid.css" />
+    <Content Include="Themes\Default\images\alert\bot.gif" />
+    <Content Include="Themes\Default\images\alert\close.gif" />
+    <Content Include="Themes\Default\images\alert\corners.gif" />
+    <Content Include="Themes\Default\images\alert\cornersBlue.gif" />
+    <Content Include="Themes\Default\images\alert\help.gif" />
+    <Content Include="Themes\Default\images\alert\important.gif" />
+    <Content Include="Themes\Default\images\alert\info.gif" />
+    <Content Include="Themes\Default\images\alert\title.gif" />
+    <Content Include="Themes\Default\images\alert\title1.gif" />
+    <Content Include="Themes\Default\images\contextmenu\delete.png" />
+    <Content Include="Themes\Default\images\contextmenu\edit.png" />
+    <Content Include="Themes\Default\images\contextmenu\menu_bg.gif" />
+    <Content Include="Themes\Default\images\contextmenu\m_arrow.gif" />
+    <Content Include="Themes\Default\images\contextmenu\m_item.gif" />
+    <Content Include="Themes\Default\images\contextmenu\m_splitLine.gif" />
+    <Content Include="Themes\Default\images\contextmenu\reload.png" />
+    <Content Include="Themes\Default\images\contextmenu\view.png" />
+    <Content Include="Themes\Default\images\dailog\app-form.png" />
+    <Content Include="Themes\Default\images\dailog\headbg.gif" />
+    <Content Include="Themes\Default\images\dailog\left-corners.png" />
+    <Content Include="Themes\Default\images\dailog\left-right.png" />
+    <Content Include="Themes\Default\images\dailog\right-corners.png" />
+    <Content Include="Themes\Default\images\dailog\tool-sprites.gif" />
+    <Content Include="Themes\Default\images\dailog\top-bottom.png" />
+    <Content Include="Themes\Default\images\dp\btn-arrow-light.gif" />
+    <Content Include="Themes\Default\images\dp\btn-arrow.gif" />
+    <Content Include="Themes\Default\images\dp\cal.gif" />
+    <Content Include="Themes\Default\images\flexigrid\bg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\btn-sprite.gif" />
+    <Content Include="Themes\Default\images\flexigrid\ch.gif" />
+    <Content Include="Themes\Default\images\flexigrid\chtd-bg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\ddn.png" />
+    <Content Include="Themes\Default\images\flexigrid\dn.png" />
+    <Content Include="Themes\Default\images\flexigrid\fhbg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\fhbg.png" />
+    <Content Include="Themes\Default\images\flexigrid\first.gif" />
+    <Content Include="Themes\Default\images\flexigrid\grid.png" />
+    <Content Include="Themes\Default\images\flexigrid\grid3-special-col-bg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\grid3-special-col-sel-bg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\gridth.gif" />
+    <Content Include="Themes\Default\images\flexigrid\headbg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\hl.png" />
+    <Content Include="Themes\Default\images\flexigrid\indicator_waitanim.gif" />
+    <Content Include="Themes\Default\images\flexigrid\indicator_web20_working.gif" />
+    <Content Include="Themes\Default\images\flexigrid\last.gif" />
+    <Content Include="Themes\Default\images\flexigrid\line.gif" />
+    <Content Include="Themes\Default\images\flexigrid\load-bg.png" />
+    <Content Include="Themes\Default\images\flexigrid\load.gif" />
+    <Content Include="Themes\Default\images\flexigrid\load.png" />
+    <Content Include="Themes\Default\images\flexigrid\magnifier.png" />
+    <Content Include="Themes\Default\images\flexigrid\next.gif" />
+    <Content Include="Themes\Default\images\flexigrid\page-bg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\page-first.png" />
+    <Content Include="Themes\Default\images\flexigrid\page-last.png" />
+    <Content Include="Themes\Default\images\flexigrid\page-next.png" />
+    <Content Include="Themes\Default\images\flexigrid\page-prev.png" />
+    <Content Include="Themes\Default\images\flexigrid\prev.gif" />
+    <Content Include="Themes\Default\images\flexigrid\sort_asc.gif" />
+    <Content Include="Themes\Default\images\flexigrid\sort_desc.gif" />
+    <Content Include="Themes\Default\images\flexigrid\tbg.gif" />
+    <Content Include="Themes\Default\images\flexigrid\up.png" />
+    <Content Include="Themes\Default\images\flexigrid\uup.png" />
+    <Content Include="Themes\Default\images\flexigrid\wbg.gif" />
+    <Content Include="Themes\Default\images\main\panel_bg.gif" />
+    <Content Include="Themes\Default\images\main\rightTitle_bg.png" />
+    <Content Include="Themes\Default\images\main\tool-sprites.gif" />
+    <Content Include="Themes\Default\images\main\topmenu_bg.png" />
+    <Content Include="Themes\Default\images\main\top_bg.png" />
+    <Content Include="Themes\Default\images\share\card.gif" />
+    <Content Include="Themes\Default\images\share\glass-bg.gif" />
+    <Content Include="Themes\Default\images\share\hd-sprite.gif" />
+    <Content Include="Themes\Default\images\share\headbg.gif" />
+    <Content Include="Themes\Default\images\share\information.png" />
+    <Content Include="Themes\Default\images\share\left-btn.gif" />
+    <Content Include="Themes\Default\images\share\right-btn.gif" />
+    <Content Include="Themes\Default\images\share\table.gif" />
+    <Content Include="Themes\Default\images\share\table_c.gif" />
+    <Content Include="Themes\Default\images\share\tool-sprites.gif" />
+    <Content Include="Themes\Default\images\share\vcard.gif" />
+    <Content Include="Themes\Default\images\tabpanel\loading.gif" />
+    <Content Include="Themes\Default\images\tabpanel\scroll-left.gif" />
+    <Content Include="Themes\Default\images\tabpanel\scroll-right.gif" />
+    <Content Include="Themes\Default\images\tabpanel\scroller-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-btm-inactive-left-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-btm-inactive-right-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-btm-left-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-btm-right-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-close.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-strip-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tab-strip-bg.png" />
+    <Content Include="Themes\Default\images\tabpanel\tab-strip-btm-bg.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tabs-sprite.gif" />
+    <Content Include="Themes\Default\images\tabpanel\tb-blue.gif" />
+    <Content Include="Themes\Default\images\tree\arrows.gif" />
+    <Content Include="Themes\Default\images\tree\cbs.gif" />
+    <Content Include="Themes\Default\images\tree\drop-yes.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-end-minus-nl.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-end-minus.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-end-plus-nl.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-end-plus.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-end.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-line.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-minus-nl.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-minus.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-plus-nl.gif" />
+    <Content Include="Themes\Default\images\tree\elbow-plus.gif" />
+    <Content Include="Themes\Default\images\tree\elbow.gif" />
+    <Content Include="Themes\Default\images\tree\folder-open.gif" />
+    <Content Include="Themes\Default\images\tree\folder.gif" />
+    <Content Include="Themes\Default\images\tree\group.gif" />
+    <Content Include="Themes\Default\images\tree\leaf.gif" />
+    <Content Include="Themes\Default\images\tree\loading.gif" />
+    <Content Include="Themes\Default\layout.css" />
+    <Content Include="Themes\Default\main.css" />
+    <Content Include="Themes\Default\tabpanel.css" />
+    <Content Include="Themes\Default\tree.css" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Javascripts\plugins\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xEasyApp.Core\xEasyApp.Core.csproj">
+      <Project>{4726C12F-6CA0-4D81-932E-F096C8750EB0}</Project>
+      <Name>xEasyApp.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SysManage\RoleInfoList.cshtml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1413</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
