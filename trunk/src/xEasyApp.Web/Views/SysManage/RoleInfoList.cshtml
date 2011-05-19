@@ -1,0 +1,192 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+    <title>角色列表</title>
+      @Html.Css("main", "flexigrid", "dailog", "alert", "contextmenu")
+</head>
+<body>
+
+    <div class="MainContainer" style="margin: 0px 2px;">       
+       <table id="RoleInfoList" style="display:none;</table>
+         <div class="ajaxmsgpanel">
+               <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">
+            正在保存数据...</div>
+        <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">
+            非常抱歉，无法执行您的操作，请稍后再试</div>
+        </div>
+    </div>
+   
+    @Html.Js("jquery", "common", "easydrag", "flexigrid", "contextmenu", "dailog", "alert")
+    
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth - 4; // 减去边框和左边的宽度
+            var otherpm = 55;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("RoleInfoList")',
+                colModel: [
+                    { display: '角色标识', name: 'RoleCode', width: 100, sortable: false, align: 'left',iskey:true },
+			        { display: '角色名称', name: 'RoleName', width: 100, sortable: false, hide: false, align: 'left' },
+			        { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, align: 'left' },
+			        { display: '最后修改时间', name: 'LastUpdateTime', width: 150, sortable: false, align: 'left' },
+			        { display: '系统角色', name: 'IsSystem', width: 60, sortable: false, align: 'left', process: fromIsSystem }
+             
+				],
+                buttons: [
+                            { name: 'Add', displayname: "新建", title: "新建角色", bclass: 'Add', onpress: toolbarItem_onclick },
+                            { separator: true },
+                            { name: 'Delete', displayname: "删除", title: "点选复选框可同时删除多个", bclass: 'Delete', onpress: toolbarItem_onclick }
+                         ],
+                sortname: "RoleCode",
+                sortorder: "asc",
+                title:false,
+                usepager: false,
+                showcheckbox: true,
+                rowbinddata: true,
+                rowhandler: contextmenu
+            };
+
+            var grid = $("#RoleInfoList").flexigrid(option);
+
+            function fromIsSystem(value) {
+                if (value == 'True') {
+                    return '是';
+                } else {
+                    return '否';
+                }
+            }
+            function toolbarItem_onclick(cmd, grid) {
+                if (cmd == "Add") {
+                    $.ShowIfrmDailog('@Url.Action("EditRoleInfo")', { width: 400, height: 350, caption: "新增角色", onclose: function () { $("#RoleInfoList").flexReload(); } });
+                }
+                else if (cmd == "Delete") {
+                    var ids = $("#RoleInfoList").getCheckedRows(); //获取选中的checkbox，返回选中的id数组
+                    if (ids.length < 1) {
+                        hiAlert('请选择您想要删除的角色', '提示');
+                        return false;
+                    }
+                    var strIds = ids.join(',');
+                    hiConfirm("你确认要删除所选角色并删除与人员的关系吗？", "提示", function (btn) {
+                        if (btn == true) {
+                            $("#loadingpannel").html("正在删除......").show();
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("DeleteRoleInfoList")',
+                                data: { id: strIds },
+                                dataType: "json",
+                                success: function (data) {
+                                    $("#loadingpannel").hide();
+                                    if (data.IsSuccess) {
+                                        hiAlert(data.Msg, '提示');
+                                        flushGrid();
+                                    }
+                                    else {
+                                        hiAlert("操作失败，可能的原因:\r\n" + data.Msg, '提示');
+                                    }
+                                }
+                            }); //end if $.ajax
+                        }
+                    }); // end of hiConfirm
+                }
+            } // end of toolbarItem_onclick
+            function contextmenu(row) {
+                var ch = $.browser.msie ? row.ch : row.getAttribute("ch");
+                var cell = ch.split("_FG$SP_");
+                var roleName = cell[4];
+                var menu = { width: 150, items: [
+                     { text: "刷新", icon: '@Url.Content("~/images/icons/table_refresh.png")', alias: "contextmenu-reflash", action: contextMenuItem_click },
+                     { type: "splitLine" },
+                     { text: "设置用户", icon: '@Url.Content("~/images/icons/user.gif")', alias: "contextmenu-setUser", action: contextMenuItem_click },
+                     { text: "设置权限", icon: '@Url.Content("~/images/icons/right_key.gif")', alias: "contextmenu-setPrivilege", action: contextMenuItem_click }
+                ]
+                };
+                if (roleName == '否') {
+                    menu.items.unshift(
+                         { text: "编辑", icon: '@Url.Content("~/images/icons/edit.png")', alias: "contextmenu-edit", action: contextMenuItem_click },
+                         { text: "删除", icon: '@Url.Content("~/images/icons/rowdelete.png")', alias: "contextmenu-delete", action: contextMenuItem_click }
+                     );
+                }
+                menu.items.unshift({ text: "查看", icon: '@Url.Content("~/images/icons/view.png")', alias: "contextmenu-view", action: contextMenuItem_click });
+                $(row).contextmenu(menu);
+            } //
+            function contextMenuItem_click(target) {
+                var roleCode = $(target).attr("id").substr(3);
+                var ch = $.browser.msie ? target.ch : target.getAttribute("ch");
+                var cell = ch.split("_FG$SP_");
+                var roleName = cell[1];
+
+
+                var cmd = this.data.alias;
+                if (cmd == "contextmenu-view") {
+                    var url = '@Url.Action("ViewRoleInfo")/' + escape(roleCode);
+                    OpenModelWindow(url, { width: 470, height: 270, caption: "查看角色", onclose: function () { } });
+                }
+                else if (cmd == "contextmenu-edit") {
+                    var url = 'Url.Action("EditRoleInfo")/' + escape(roleCode);
+                    OpenModelWindow(url, { width: 470, height: 350, caption: "编辑角色", onclose: function () { flushGrid(); } });
+                } else if (cmd == "contextmenu-delete") {
+                    hiConfirm("你确定要删除" + roleName + "并删除与人员的关系吗？", '确认', function (r) {
+                        if (r == true) //
+                        {
+                            $("#loadingpannel").html("正在删除......").show();
+                            $.post('@Url.Action("DeleteRoleInfo","SysManage")', { id: roleCode },
+                                                        function (data) {
+                                                            $("#loadingpannel").hide();
+                                                            if (data.IsSuccess) {
+                                                                hiAlert("删除成功", '提示', function () { flushGrid(); });
+                                                            }
+                                                            else {
+                                                                hiAlert("操作失败，可能的原因:\r\n" + data.Msg, '提示');
+                                                            }
+                                                        },
+                                                    "json"
+                                                    );
+                        }
+                        //else =undefined;或者不删除了
+                    });
+                } else if (cmd == "contextmenu-reflash") {
+                    flushGrid();
+                } else if (cmd == "contextmenu-setUser") {
+                    var url = '@Url.Action("RoleUserRelationList")/' + escape(roleCode);
+                    OpenModelWindow(url, { width: 500, height: 299, caption: "角色用户列表", onclose: function () { } });
+                } else if (cmd == "contextmenu-setPrivilege") {
+                    //右键菜单div的ID为cmroot
+                    $('#cmroot').hide();
+                    var url = '@Url.Action("SetRolePrivilegeTree","SysManage")/' + escape(roleCode);
+                    var privilegeCodes = OpenModalDialog(url, '@Url.Action("Select","Home")', "权限选择", null, 'dialogHeight=400px;dialogWidth=247px;dialogLeft=360px;dialogTop=240px;status=no');
+                    if (privilegeCodes != undefined) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SetRolePrivilegeRelationList")',
+                            data: { PrivilegeCodes: privilegeCodes, RoleCode: roleCode },
+                            dataType: "json",
+                            success: function (data) {
+                                $("#loadingpannel").hide();
+                                if (data.IsSuccess) {
+                                    hiAlert("授权成功", "提示");
+                                }
+                                else {
+                                    hiAlert("操作失败，可能的原因:\r\n" + data.Msg, '提示');
+                                }
+                            }
+                        }); //end if $.ajax
+                    } // end of if
+                } // end of "contextmenu-setPrivilege"
+            } // contextMenuItem_click
+        });         // end of ready
+
+
+        function flushGrid() {
+            $("#RoleInfoList").flexReload(); //
+        } 
+    </script>
+</body>
+</html>
