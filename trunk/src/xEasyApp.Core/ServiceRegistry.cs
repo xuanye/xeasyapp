@@ -14,6 +14,7 @@ namespace xEasyApp.Core
         public ServiceRegistry()
         {
             For<ISysManageService>().Use<SysManageService>();
+         
         }
        
     }

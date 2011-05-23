@@ -23,6 +23,11 @@ namespace xEasyApp.Core.JsonEntities
         public int page { get; set; }
         public int total { get; set; }
         public IList<FlexiGridRow> rows { get; set; }
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
+        /// <value>The error.</value>
+        public FlexiGridError error { get; set; }
 
         public static JsonFlexiGridData ConvertFromList<T>(List<T> list,string key,string[] cols) where T:class
         {
@@ -89,5 +94,18 @@ namespace xEasyApp.Core.JsonEntities
     {
         public string id { get; set; }
         public List<string> cell { get; set; }
+    }
+    public class FlexiGridError
+    {
+        /// <summary>
+        /// Gets or sets the error code.
+        /// </summary>
+        /// <value>The error code.</value>
+        public string ErrorCode { get; set; }
+        /// <summary>
+        /// Gets or sets the error message.
+        /// </summary>
+        /// <value>The error message.</value>
+        public string ErrorMessage { get; set; }
     }
 }
