@@ -38,12 +38,17 @@ a.imgbtn
 {
 	color: #000000;
 }
-a.imgbtn span
+a.imgbtn2 span,a.imgbtn span
 {
 	padding: 4px 4px 3px 21px;
 	cursor: pointer;
 }
 
+a.imgbtn2
+{
+       color: blue; 
+       text-decoration:underline;
+}
 
 a.imgbtn span.Save
 {
@@ -66,4 +71,14 @@ span.Delete
 {
 	padding-left: 20px;
 	background: url(../../images/icons/delete.png) no-repeat 1px;
+}
+span.setuser
+{
+    padding-left: 20px;
+	background: url(../../images/icons/user.gif) no-repeat 1px;
+}
+span.setright
+{
+    padding-left: 20px;
+	background: url(../../images/icons/right_key.gif) no-repeat 1px;
 }

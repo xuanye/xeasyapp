@@ -42,5 +42,21 @@ namespace xEasyApp.Web.Controllers
             return Json(data);
         }
 
+        public ActionResult EditRole(string id)
+        {
+            return View();
+        }
+        public ActionResult RoleUserRelationList(string id)
+        {
+            return View();
+        }
+        public ActionResult SetRoleUser(string id)
+        {
+            return View();
+        }
+        public ActionResult SetRoleRight(string id)
+        {
+            return View();
+        }
     }
 }

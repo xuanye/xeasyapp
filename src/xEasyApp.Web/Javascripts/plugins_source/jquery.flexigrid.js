@@ -405,18 +405,18 @@
                                     div.push("white-space:normal");
                                 }
                                 div.push("'>");
-                                if (idx == "-1") { //checkbox
-                                    div.push("<input type='checkbox' id='chk_", row.id, "' class='itemchk' value='", row.id, "'/>");
+                                if (idx == "-1" || idx == "-2") { //checkbox
+                                    idx == "-1" && div.push("<input type='checkbox' id='chk_", row.id, "' class='itemchk' value='", row.id, "'/>");
                                     if (tdclass != "") {
                                         tdclass += " chboxtd";
                                     } else {
                                         tdclass += "chboxtd";
                                     }
-                                }
+                                } 
                                 else {
                                     var divInner = row.cell[idx] || "&nbsp;";
                                     if (this.process) {
-                                        divInner = this.process(divInner, trid);
+                                        divInner = this.process(divInner, trid, row.cell);
                                     }
                                     div.push(divInner);
                                 }
@@ -578,15 +578,15 @@
 					, { name: 'query', value: p.query }
 					, { name: 'qtype', value: p.qtype }
 					, { name: 'qop', value: p.qop }
-				];               
+				];
                 if (p.postColInfo)//如果需要向服务提交列信息
                 {
                     if (!p.colkey) {
                         var cols = [];
-                        for (var cindex = 0, clength = p.colModel.length; cindex < clength; cindex++) {                           
+                        for (var cindex = 0, clength = p.colModel.length; cindex < clength; cindex++) {
                             if (p.colModel[cindex].iskey) {
-                                p.colkey = p.colModel[cindex].name;              
-                                
+                                p.colkey = p.colModel[cindex].name;
+
                             }
                             cols.push(p.colModel[cindex].name);
 
@@ -829,16 +829,22 @@
             thead = document.createElement('thead');
             tr = document.createElement('tr');
             //p.showcheckbox ==true;
+            var cth = jQuery('<th/>');
+            cth.addClass("cth").attr({ width: "15", "isch": true })
             if (p.showcheckbox) {
-                var cth = jQuery('<th/>');
+
                 var cthch = jQuery('<input type="checkbox"/>');
                 cthch.addClass("noborder");
                 if (p.singleselected) {
                     cthch.attr("disabled", true).css("visibility", "hidden");
                 }
-                cth.addClass("cth").attr({ 'axis': "col-1", width: "15", "isch": true }).append(cthch);
-                $(tr).append(cth);
+                cth.attr('axis', "col-1");
+                cth.append(cthch);              
             }
+            else {
+                cth.attr('axis', "col-2");
+            }
+            $(tr).append(cth);
             for (i = 0; i < p.colModel.length; i++) {
                 var cm = p.colModel[i];
                 var th = document.createElement('th');
