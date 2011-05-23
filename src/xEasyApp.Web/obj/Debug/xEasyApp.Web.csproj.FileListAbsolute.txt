@@ -8,3 +8,13 @@ G:\Temp\MyOpenSourceProject\xEasyApp\src\xEasyApp.Web\bin\xEasyApp.Core.pdb
 G:\Temp\MyOpenSourceProject\xEasyApp\src\xEasyApp.Web\bin\SubSonic.Core.dll
 G:\Temp\MyOpenSourceProject\xEasyApp\src\xEasyApp.Web\bin\StructureMap.dll
 G:\Temp\MyOpenSourceProject\xEasyApp\src\xEasyApp.Web\bin\StructureMap.xml
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\xEasyApp.Web.dll
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\xEasyApp.Web.pdb
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\StructureMap.dll
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\SubSonic.Core.dll
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\xEasyApp.Core.dll
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\xEasyApp.Core.pdb
+F:\Temp\xeasyapp\src\xEasyApp.Web\bin\StructureMap.xml
+F:\Temp\xeasyapp\src\xEasyApp.Web\obj\Debug\ResolveAssemblyReference.cache
+F:\Temp\xeasyapp\src\xEasyApp.Web\obj\Debug\xEasyApp.Web.dll
+F:\Temp\xeasyapp\src\xEasyApp.Web\obj\Debug\xEasyApp.Web.pdb
