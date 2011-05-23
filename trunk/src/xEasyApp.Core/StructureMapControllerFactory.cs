@@ -5,7 +5,6 @@ using System.Text;
 using System.Web.Mvc;
 using StructureMap;
 using System.Web;
-using System.Globalization;
 
 namespace xEasyApp.Core
 {
@@ -16,21 +15,21 @@ namespace xEasyApp.Core
             if (controllerType == null)
             {
                 throw new HttpException(404,
-                    String.Format(                       
-                        "路径{0}，不存在",
+                    String.Format(
+                        "请求的地址{0}不存在",
                         requestContext.HttpContext.Request.Path));
             }
             if (!typeof(IController).IsAssignableFrom(controllerType))
             {
                 throw new ArgumentException(
-                    String.Format(                        
-                        "类型{0},不是有效的Controller",
+                    String.Format(                     
+                       "没有合适的控制器{0}",
                         controllerType),
                     "controllerType");
             }
             try
             {
-
+               
                 return ObjectFactory.GetInstance(controllerType) as Controller;
             }
             catch (StructureMapException)
