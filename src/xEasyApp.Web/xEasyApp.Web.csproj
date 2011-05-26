@@ -72,17 +72,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="default.htm" />
     <Content Include="Global.asax" />
+    <Content Include="Images\bgs\btncancel.gif" />
+    <Content Include="Images\bgs\btnok.gif" />
+    <Content Include="Images\bgs\button1.gif" />
     <Content Include="Images\icons\accept.png" />
     <Content Include="Images\icons\add.png" />
+    <Content Include="Images\icons\close.gif" />
     <Content Include="Images\icons\checkbox_0.gif" />
     <Content Include="Images\icons\checkbox_1.gif" />
     <Content Include="Images\icons\checkbox_2.gif" />
     <Content Include="Images\icons\delete.png" />
     <Content Include="Images\icons\edit.png" />
+    <Content Include="Images\icons\warning.png" />
     <Content Include="Images\icons\grid.png" />
     <Content Include="Images\icons\home.png" />
     <Content Include="Images\icons\indicator.gif" />
+    <Content Include="Images\icons\save.gif" />
     <Content Include="Images\icons\right_key.gif" />
     <Content Include="Images\icons\rowdelete.png" />
     <Content Include="Images\icons\s.gif" />
@@ -103,6 +110,7 @@
     <Content Include="Javascripts\plugins_source\jquery.contextmenu.js" />
     <Content Include="Javascripts\plugins_source\jquery.datepicker.js" />
     <Content Include="Javascripts\plugins_source\jquery.flexigrid.js" />
+    <Content Include="Javascripts\plugins_source\jquery.form.js" />
     <Content Include="Javascripts\plugins_source\jquery.hotkeys.js" />
     <Content Include="Javascripts\plugins_source\jquery.ifrmdailog.js" />
     <Content Include="Javascripts\plugins_source\jquery.tabpanel.js" />
@@ -115,6 +123,7 @@
     <Content Include="Themes\Default\dailog.css" />
     <Content Include="Themes\Default\dp.css" />
     <Content Include="Themes\Default\flexigrid.css" />
+    <Content Include="Themes\Default\form.css" />
     <Content Include="Themes\Default\images\alert\bot.gif" />
     <Content Include="Themes\Default\images\alert\close.gif" />
     <Content Include="Themes\Default\images\alert\corners.gif" />
@@ -227,6 +236,12 @@
     <Content Include="Themes\Default\images\tree\group.gif" />
     <Content Include="Themes\Default\images\tree\leaf.gif" />
     <Content Include="Themes\Default\images\tree\loading.gif" />
+    <Content Include="Themes\Default\images\validation\accept.png" />
+    <Content Include="Themes\Default\images\validation\exclamation.png" />
+    <Content Include="Themes\Default\images\validation\tooltop.gif" />
+    <Content Include="Themes\Default\images\validation\tooltop2.gif" />
+    <Content Include="Themes\Default\images\validation\up_arrow.gif" />
+    <Content Include="Themes\Default\images\validation\warning.gif" />
     <Content Include="Themes\Default\layout.css" />
     <Content Include="Themes\Default\main.css" />
     <Content Include="Themes\Default\tabpanel.css" />

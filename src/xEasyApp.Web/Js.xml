@@ -11,4 +11,5 @@
   <js key="common" value="~/Javascripts/common.js"></js>
   <js key="dailog" value="~/Javascripts/plugins_source/jquery.ifrmdailog.js"></js>
   <js key="alert" value="~/Javascripts/lib/jquery.easydrag.js"></js>
+  <js key="form" value="~/Javascripts/plugins_source/jquery.form.js"></js>
 </JsList>

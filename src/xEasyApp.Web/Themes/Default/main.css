@@ -43,16 +43,21 @@ a.imgbtn2 span,a.imgbtn span
 	padding: 4px 4px 3px 21px;
 	cursor: pointer;
 }
-
+a.imgbtn:hover span
+{
+	border: #466094 1px solid;
+	padding: 3px 3px 2px 20px;
+	background-color: #fff;
+}
 a.imgbtn2
 {
        color: blue; 
        text-decoration:underline;
 }
 
-a.imgbtn span.Save
+a.imgbtn span.save
 {
-	background: url(../../images/icons/Item.Save.gif) no-repeat 3px 4px;
+	background: url(../../images/icons/save.gif) no-repeat 3px 4px;
 }
 
 span.Add
@@ -67,7 +72,7 @@ span.edit
 	padding-left: 20px;
 	background: url(../../images/icons/edit.png) no-repeat 1px;
 }
-span.Delete
+span.delete
 {
 	padding-left: 20px;
 	background: url(../../images/icons/delete.png) no-repeat 1px;
@@ -81,4 +86,37 @@ span.setright
 {
     padding-left: 20px;
 	background: url(../../images/icons/right_key.gif) no-repeat 1px;
+}
+span.close
+{
+    padding-left: 20px;
+	background: url(../../images/icons/close.gif) no-repeat 1px;
+}
+
+
+div.errorpanel
+{
+    position:absolute;
+	padding: 3px 4px 3px 4px;
+	background: #c44;
+	display:none;
+	border:1px solid #CCc;
+	color: #fff;
+}
+div.errorpanel dt
+{
+    padding:0px;
+    margin:0px;
+}
+div.errorpanel dt dl
+{
+      padding:0px 3px;
+    margin:1px;
+}
+div.loadingpanel
+{
+    position:absolute;
+	background: #c44 !important;
+	color: #fff;
+	display:none;
 }

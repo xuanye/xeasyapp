@@ -69,7 +69,7 @@
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
-                    $.ShowIfrmDailog('@Url.Action("EditRole")', { width: 400, height: 350, caption: "新增角色", onclose: function () { $("#RoleInfoList").flexReload(); } });
+                    $.ShowIfrmDailog('@Url.Action("EditRole")', { width: 300, height: 200, caption: "新增角色", onclose: function () { $("#RoleInfoList").flexReload(); } });
                 }
 
             } // end of toolbarItem_onclick

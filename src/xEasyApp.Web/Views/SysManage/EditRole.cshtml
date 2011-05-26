@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+
+}
+@model  xEasyApp.Core.Repositories.RoleInfo
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>EditRoleInfo</title>
+    @Html.Css("main","form")
+
+<html>
+<head>
+    <title>角色管理</title>
+</head>
+<body>
+    <div style="padding:5px;">
+       
+            @using (Html.BeginForm("SaveRoleInfo", "SysManage", FormMethod.Post, new { id = "fmEdit" }))
+            {
+        
+        <div class="mainpanel">
+            <table id="xeasy-form-table" width="100%" cellspacing="0"  cellpadding="1">
+                <tr>
+                    <td>
+                        <label>角色标识：</label>
+                    </td>
+                    <td>
+                        @Html.Hidden("RoleCode", Model.RoleCode)
+                        @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;", Class = "required safe" })
+                        <span class="xeasy-formItemMust">*</span>
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                        <label>角色名称：</label>
+                  </td>
+                  <td>
+                        @Html.TextBox("RoleName", Model.RoleName, new { style = "width:90%;", Class = "required safe" })
+                        <span class="xeasy-formItemMust">*</span>
+                    </td>
+                </tr>
+            </table>
+            </div>
+            }
+           
+    </div>
+     <div class="buttonpanel">
+             <div style="float:right;margin-right:10px;">
+                 <a id="btnSave" class="button" href="javascript:void(0);"><span>保存</span></a>
+                 <a id="btnCancel" class="button" href="javascript:void(0);"><span>取消</span></a>
+              </div>
+            </div>
+    @Html.Js("jquery", "common", "form","validate")
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            $("#btnSave").click(function (e) {
+                $("#fmEdit").submit();
+            });
+            $("#btnCancel").click(function (e) {
+                CloseModelWindow(null, false);
+            });
+            var options = {
+                beforeSubmit: function () {
+                    return true;
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.IsSuccess) {
+
+                    }
+                    else {
+
+                    }
+                }
+            };
+            $("#fmEdit").validate(
+             {
+                 submitHandler: function (form) {
+                     $("#fmEdit").ajaxSubmit(options);
+                 },
+                 messages: {
+                     RoleCode: { required: "角色代码不能为空" },
+                     RoleName: { required: "角色名称不能为空" }
+                 },
+                 errorElement: "div",
+                 errorClass: "cusErrorPanel",
+                 errorPlacement: function (error, element) {
+                     showerror(error, element);
+                 }
+             });
+            $.validator.addMethod("safe", function (value, element) {
+                return this.optional(element) || /^[^$\<\>]+$/.test(value);
+            }, "不能包含以下符号: $<>");
+
+            function showerror(error, target) {
+                var t = error.text();
+                showErrorTip(t, {left:50,top:60}, true, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
