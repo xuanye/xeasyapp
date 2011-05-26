@@ -80,15 +80,48 @@ function CloseModelWindow(callback, dooptioncallback) {
         window.close();
     }
 }
-/*
-(function($){
-    $.documentCenter = function (el) {
-    el = $(el);
-    el.css({
-        position: 'absolute',
-        left: Math.max((document.documentElement.clientWidth - el.width()) / 2 + document.documentElement.scrollLeft, 0) + 'px',
-        top: Math.max((document.documentElement.clientHeight - el.height()) / 2 + document.documentElement.scrollTop, 0) + 'px'
-    });
-};
-})(jQuery);
-*/
+
+function StrFormat(temp, dataarry) {
+    return temp.replace(/\{([\d]+)\}/g, function (s1, s2) { var s = dataarry[s2]; if (typeof (s) != "undefined") { if (s instanceof (Date)) { return s.getTimezoneOffset() } else { return encodeURIComponent(s) } } else { return "" } });
+}
+function StrFormatNoEncode(temp, dataarry) {
+    return temp.replace(/\{([\d]+)\}/g, function (s1, s2) { var s = dataarry[s2]; if (typeof (s) != "undefined") { if (s instanceof (Date)) { return s.getTimezoneOffset() } else { return (s); } } else { return ""; } });
+}
+
+function showLoadingMsg(msg, position, isautohide, timeout) {
+
+}
+function hideLoadingMsg() {
+
+}
+var showErrorTipTimerId;
+var msg
+function showErrorTip(msg, position, isautohide, timeout) {
+    var errorpanel = $("#errorpanel");
+    if (errorpanel.length == 0) {
+        errorpanel = $("<div id=\"errorpanel\" class=\"errorpanel\"/>").appendTo("body");
+    }
+    if (errorpanel.css("display") != "none") {
+        errorpanel.find(">dt").append("<dl>" + msg + "</dl>");
+        if (showErrorTipTimerId) {
+            window.clearTimeout(showErrorTipTimerId);
+        }
+    }
+    else {
+        errorpanel.html("<dt><dl>" + msg + "</dl></dt>");
+        if (!position) {
+            position = { right: 20, top: 3 };
+        }
+        errorpanel.css(position).fadeIn();
+    }   
+    if (isautohide) {
+       showErrorTipTimerId= setTimeout(hideErrortip, timeout);
+   }
+
+}
+function hideErrortip() {
+    var errorpanel = $("#errorpanel");
+    if (errorpanel.length > 0) {
+        errorpanel.fadeOut();
+    }
+}

@@ -44,7 +44,12 @@ namespace xEasyApp.Web.Controllers
 
         public ActionResult EditRole(string id)
         {
-            return View();
+            RoleInfo ri = new RoleInfo();
+            if (string.IsNullOrEmpty(id))
+            { 
+                
+            }
+            return View(ri);
         }
         public ActionResult RoleUserRelationList(string id)
         {
