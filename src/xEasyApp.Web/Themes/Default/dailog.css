@@ -6,7 +6,10 @@
     left:0px;
     top:0px;
 }
-
+.bbit-window-dailog
+{
+  border:solid 1px #ccc;
+}
 .bbit-window .bbit-resizable-handle {
     opacity:0;
     -moz-opacity:0;

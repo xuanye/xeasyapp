@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+    <title>角色列表</title>
+      @Html.Css("main", "flexigrid")
+</head>
+<body>
+
+    <div class="MainContainer" style="margin: 0px 2px;">       
+       <table id="RoleInfoList" style="display:none;"></table>      
+    </div>
+   
+    @Html.Js("jquery", "common",  "flexigrid")   
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth - 4; // 减去边框和左边的宽度
+            var otherpm = 55;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("DeptInfoList")',
+                colModel: [
+                    { display: '部门代码', name: 'DeptCode', width: 60, sortable: false, align: 'left', iskey: true },
+			        { display: '部门名称', name: 'DeptName', width: 100, sortable: false, hide: false, align: 'left' },                  
+			        { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, align: 'left' },
+			        { display: '最后修改时间', name: 'LastUpdateTime', width: 150, sortable: false, align: 'left' },
+                    { display: '操作', name: 'DeptCode', width: 200, sortable: false, align: 'left', process: formatOp }
+				],
+                buttons: [
+                            { name: 'Add', displayname: "新建", title: "新建部门", bclass: 'Add', onpress: toolbarItem_onclick },
+                            { separator: true }
+                         ],
+                sortname: "RoleCode",
+                sortorder: "asc",
+                title: false,
+                usepager: false,
+                showcheckbox: true,
+                rowbinddata: true
+            };
+
+            var grid = $("#RoleInfoList").flexigrid(option);
+
+            function fromIsSystem(value) {
+                if (value == 'True') {
+                    return '是';
+                } else {
+                    return '否';
+                }
+            }
+            function formatOp(value, id, cell) {
+                var a = [];
+                if (cell[2] != "True") {
+                    a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='edit' title='编辑'>编辑</span></a>&nbsp;");
+                    a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:del('", value, "','", cell[1], "')\"><span class='delete' title='删除'>删除</span></a>&nbsp;");
+                }
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='setuser' title='查看角色用户'>查看用户</span></a>&nbsp;");  
+                return a.join("");
+            }
+            function toolbarItem_onclick(cmd, grid) {
+                if (cmd == "Add") {
+                    OpenModelWindow('@Url.Action("EditDept")', { width: 300, height: 170, caption: "新增部门", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#RoleInfoList").flexReload(); } });
+                }
+            } // end of toolbarItem_onclick
+
+
+        });               // end of ready
+        function del(deptCode, deptName) {
+            if (confirm("你确定要删除[" + deptName + "]?")) {
+                showLoadingMsg("正在删除...", { left: 300, top: 2 })
+                $.post('@Url.Action("DeleteDeptInfo","SysManage")', { id: deptCode },
+                     function (data) {
+                         if (data.IsSuccess) {
+                             showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
+                             flushGrid();
+                         }
+                         else {
+                             hideLoadingMsg();
+                             showErrorTip(data.Msg, { left: 300, top: 2 }, true, 5000);
+                         }
+                     },
+                "json"
+                );
+            }
+        }
+        function edit(deptCode) {
+            OpenModelWindow('@Url.Action("EditDept")/' + encodeURIComponent(deptCode), { width: 300, height: 170, caption: "修改部门信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#RoleInfoList").flexReload(); } });
+        }
+        function flushGrid() {
+            $("#RoleInfoList").flexReload(); //
+        }
+    </script>
+</body>
+</html>

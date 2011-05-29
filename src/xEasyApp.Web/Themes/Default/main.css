@@ -51,8 +51,13 @@ a.imgbtn:hover span
 }
 a.imgbtn2
 {
-       color: blue; 
+       color: #36c; 
        text-decoration:underline;
+}
+a.imgbtn2:hover
+{
+       color: #f60; 
+       
 }
 
 a.imgbtn span.save
@@ -96,9 +101,10 @@ span.close
 
 div.errorpanel
 {
+   
     position:absolute;
-	padding: 3px 4px 3px 4px;
-	background: #c44;
+	padding: 3px 4px 3px 24px;
+	background: #c44 url("../../images/icons/unhappy.png") no-repeat 4px center;
 	display:none;
 	border:1px solid #CCc;
 	color: #fff;
@@ -116,7 +122,8 @@ div.errorpanel dt dl
 div.loadingpanel
 {
     position:absolute;
-	background: #c44 !important;
+	background: #c44 url("../../images/icons/smile.png") no-repeat 4px center;
 	color: #fff;
 	display:none;
+	padding: 3px 4px 3px 24px;
 }

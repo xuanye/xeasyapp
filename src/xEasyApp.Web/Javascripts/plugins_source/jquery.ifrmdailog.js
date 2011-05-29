@@ -45,21 +45,31 @@
             height: 400,
             caption: '',
             enabledrag: true,
+            type: 1,
             onclose: null
         }, options);
         var newid = (new Date()).valueOf();
         options.newid = newid;
         options.caption = $.escapeHTML(options.caption);
-        var box = $("<div id='dailog_" + newid + "' class='bbit-window bbit-window-plain'></div>");
-        var headtemplete = "<div id='dailog_head_${newid}' class='bbit-window-tl'><div class='bbit-window-tr'><div class='bbit-window-tc'><div style='mozuserselect: none; khtmluserselect: none' class='bbit-window-header' unselectable='on'><div class='bbit-tool bbit-tool-close'>&nbsp;</div><span class='bbit-window-header-text'>${caption}</span></div></div></div></div>";
-        var bodytemplete = "<div class='bbit-window-bwrap'><div class='bbit-window-ml'><div class='bbit-window-mr'><div class='bbit-window-mc'><div id='dailog_body_${newid}' style='width: ${width}px; height: ${height}px' class='bbit-window-body'>${iframehtml}</div></div></div></div><div class='bbit-window-bl'><div class='bbit-window-br'><div class='bbit-window-bc'><div class='bbit-window-footer'></div></div></div></div></div>";
+        var wp = 14;
+        if (options.type == 1) {
+            var box = $("<div id='dailog_" + newid + "' class='bbit-window bbit-window-plain'></div>");
+            var headtemplete = "<div id='dailog_head_${newid}' class='bbit-window-tl'><div class='bbit-window-tr'><div class='bbit-window-tc'><div style='mozuserselect: none; khtmluserselect: none' class='bbit-window-header' unselectable='on'><div class='bbit-tool bbit-tool-close'>&nbsp;</div><span class='bbit-window-header-text'>${caption}</span></div></div></div></div>";
+            var bodytemplete = "<div class='bbit-window-bwrap'><div class='bbit-window-ml'><div class='bbit-window-mr'><div class='bbit-window-mc'><div id='dailog_body_${newid}' style='width: ${width}px; height: ${height}px' class='bbit-window-body'>${iframehtml}</div></div></div></div><div class='bbit-window-bl'><div class='bbit-window-br'><div class='bbit-window-bc'><div class='bbit-window-footer'></div></div></div></div></div>";
+        }
+        else {
+            var wp = 0;
+            var box = $("<div id='dailog_" + newid + "' class='bbit-window bbit-window-dailog'></div>");
+            var headtemplete = "<div id='dailog_head_${newid}' class='bbit-dailog-tl'></div>";
+            var bodytemplete = "<div class='bbit-window-bwrap'><div id='dailog_body_${newid}' style='width: ${width}px; height: ${height}px' class='bbit-window-body'>${iframehtml}</div></div>";
+        }
         var iframetemplete = '<iframe id="dailog_iframe_${newid}" border="0" frameBorder="0" src="${url}" style="border:none;width:${width}px;height:${height}px"></iframe>';
         options.url = url + (url.indexOf('?') > -1 ? '&' : '?') + '_=' + (new Date()).valueOf();
         var html = [];
         options.iframehtml = Tp(iframetemplete, options);
         html.push(Tp(headtemplete, options));
         html.push(Tp(bodytemplete, options));
-        box.css({ width: options.width + 14 }).html(html.join(""));
+        box.css({ width: options.width + wp }).html(html.join(""));
         var closebtn = box.find("div.bbit-tool-close")
         .hover(function(e) { $(this).addClass("hover") }, function(e) { $(this).removeClass("hover") })
         .click(closedialog);
@@ -103,7 +113,7 @@
             $.closeIfrm();
         }
         function returnfalse() { return false; }
-        $.closeIfrm = function(callback, d) {
+        $.closeIfrm = function(callback, d,userstate) {
             $.closeIfrm = returnfalse;
             if ($.browser.msie6) {
                 $(document.body).removeClass("hiddenselect");
@@ -115,7 +125,7 @@
             closebtn = overlayer = box = null;
             callback && callback();
             if (d && options.onclose) {
-                options.onclose();
+                options.onclose(userstate);
                 options.onclose = null;
             }
         };

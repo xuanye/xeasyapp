@@ -17,20 +17,27 @@
 <body>
     <div style="padding:5px;">
        
-            @using (Html.BeginForm("SaveRoleInfo", "SysManage", FormMethod.Post, new { id = "fmEdit" }))
+            @using (Html.BeginForm("SaveRoleInfo", "SysManage", new { id = Model.RoleCode }, FormMethod.Post, new { id = "fmEdit" }))
             {
         
         <div class="mainpanel">
-            <table id="xeasy-form-table" width="100%" cellspacing="0"  cellpadding="1">
+            <table id="xeasy-form-table" width="100%" cellspacing="4"  cellpadding="1">
                 <tr>
                     <td>
                         <label>角色标识：</label>
                     </td>
-                    <td>
-                        @Html.Hidden("RoleCode", Model.RoleCode)
-                        @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;", Class = "required safe" })
+                    <td>                      
+                       
+                        @if (string.IsNullOrEmpty(Model.RoleCode))
+                        {                        
+                            @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;" })
+                        }
+                        else
+                        { 
+                           @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;",ReadOnly="ReadOnly" })
+                        }                      
                         <span class="xeasy-formItemMust">*</span>
-                    </td>
+                    </td> 
                 </tr>
                 <tr>
                   <td>
@@ -39,9 +46,11 @@
                   <td>
                         @Html.TextBox("RoleName", Model.RoleName, new { style = "width:90%;", Class = "required safe" })
                         <span class="xeasy-formItemMust">*</span>
-                    </td>
+                  </td>
+                
                 </tr>
             </table>
+           
             </div>
             }
            
@@ -51,6 +60,7 @@
                  <a id="btnSave" class="button" href="javascript:void(0);"><span>保存</span></a>
                  <a id="btnCancel" class="button" href="javascript:void(0);"><span>取消</span></a>
               </div>
+              
             </div>
     @Html.Js("jquery", "common", "form","validate")
     <script type="text/javascript">
@@ -68,36 +78,47 @@
                 dataType: "json",
                 success: function (data) {
                     if (data.IsSuccess) {
-
+                        CloseModalDialog(null, true);
                     }
                     else {
-
+                        showErrorTip(data.Msg, {left:10,top:100}, true, 3000);
                     }
                 }
             };
             $("#fmEdit").validate(
              {
-                 submitHandler: function (form) {
+                 submitHandler: function (form) {                    
                      $("#fmEdit").ajaxSubmit(options);
                  },
+                 rules:
+                 {
+                     RoleCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.RoleCode))
+                      {                        
+                        @:,remote:"@Url.Action("ValidRoleCode")"
+                      } 
+                      },RoleName: { required: true, safe: true }
+                 },
                  messages: {
-                     RoleCode: { required: "角色代码不能为空" },
+                     RoleCode: { required: "角色代码不能为空",remote:"角色代码必须唯一" },
                      RoleName: { required: "角色名称不能为空" }
                  },
                  errorElement: "div",
-                 errorClass: "cusErrorPanel",
-                 errorPlacement: function (error, element) {
-                     showerror(error, element);
-                 }
+			     errorClass: "cusErrorPanel",
+			     errorPlacement: function (error, element) {
+			         var pos = element.position();
+			         var height = element.height();
+			         if (pos.left + 155 >= document.documentElement.clientWidth) {
+			             pos.left = document.documentElement.clientWidth - 156;
+			         }
+			         var newpos = { left: pos.left, top: pos.top + height + 2 }			        		       
+			         error.appendTo("body").css(newpos);
+			     }
              });
             $.validator.addMethod("safe", function (value, element) {
                 return this.optional(element) || /^[^$\<\>]+$/.test(value);
             }, "不能包含以下符号: $<>");
 
-            function showerror(error, target) {
-                var t = error.text();
-                showErrorTip(t, {left:50,top:60}, true, 5000);
-            }
+          
         });
     </script>
 </body>
