@@ -1,0 +1,200 @@
+﻿<#@ template language="C#v3.5" debug="False" hostspecific="True"  #>
+<#@ output extension=".cs" #>
+<#@ include file="SQLServer.ttinclude" #>
+<#
+    var tables = LoadTables();
+#>
+using System;
+using System.Data;
+using System.Text;
+using System.Data.SqlClient;
+using System.Collections.Generic;
+
+
+namespace <#=Namespace#> {
+	
+<#  foreach(var tbl in tables){
+        if(!ExcludeTables.Contains(tbl.Name))
+        {
+	      var pkColumn = tbl.Columns.SingleOrDefault(x => x.Name.ToLower().Trim() == tbl.PrimaryKey.ToLower().Trim());
+	     
+#>
+        /// <summary>
+        /// Table: <#=tbl.Name#>
+        /// Primary Key: <#=tbl.PrimaryKey#>
+        /// </summary>
+        public partial class <#=Cleans(tbl.CleanName)#>Repository:BaseRepository 
+		{			
+			public void Save(<#=Cleans(tbl.CleanName)#> item)
+			{
+				if(item.IsNew)
+				{
+					Insert(item);
+				}
+				else
+				{
+					Update(item);
+				}
+			}	
+		    public <#=Cleans(tbl.CleanName)#> Get(<#=pkColumn.SysType#> key)
+			{
+				string sql = "SELECT <#
+int i=0;
+foreach(var col in tbl.Columns){
+	if(i>0)
+	{
+		#>,<#
+	}
+	#>[<#= col.Name #>]<#
+	i++;
+}
+#> FROM [<#=tbl.Name#>] WHERE [<#=tbl.PrimaryKey#>]=@<#=tbl.PrimaryKey#>";
+				SqlParameter p =new SqlParameter("@<#=tbl.PrimaryKey#>",key);
+				<#=Cleans(tbl.CleanName)#> item =null;
+				using(IDataReader reader = base.ExcuteDataReader(sql,p))
+				{
+					if(reader.Read())
+					{
+						item =new <#=Cleans(tbl.CleanName)#>();
+						<#
+					i=0;
+					foreach(var col in tbl.Columns){
+							if(col.IsNullable)
+							{
+					   #>if(!reader.IsDBNull(<#=i#>))
+						 {
+							item.<#= col.CleanName #> = <#=GetReadFormatString("reader.",col.DataType,i)  #>;
+						 }
+						 <# }
+							else
+							{
+								#>
+item.<#= col.CleanName #> = <#=GetReadFormatString("reader.",col.DataType,i)  #>;
+							<#
+							}						
+						i++;
+					}#>
+
+					}
+				}
+				return item;
+			}
+			public int Delete(<#=pkColumn.SysType#> key)
+			{
+				string sql ="DELETE FROM [<#=tbl.Name#>] WHERE [<#=tbl.PrimaryKey#>]=@<#=tbl.PrimaryKey#>";
+				SqlParameter p =new SqlParameter("@<#=tbl.PrimaryKey#>",key);
+				return base.ExecuteNonQuery(sql,p);	
+			}
+			public void Insert(<#=Cleans(tbl.CleanName)#> item)
+			{
+				<#
+	        bool pkAutoIncrement = false;
+#>
+string sql="INSERT INTO [<#=tbl.Name#>] (<# i = 0; foreach (var col in tbl.Columns)
+ {
+	if (col.AutoIncrement) { if (!pkAutoIncrement) { pkAutoIncrement = col.IsPK; }; continue; } if (i > 0)
+	{#>,<#}#>[<#= col.Name #>]<# i++;}#>) VALUES (<# i=0;foreach(var col in tbl.Columns){ if(col.AutoIncrement){continue;} if(i>0){#>,<#}#>@<#= col.CleanName #><# i++;}#>)";
+				List<SqlParameter> SPParams = new List<SqlParameter>();
+				<#foreach(var col in tbl.Columns){ if(col.AutoIncrement){continue;}#>
+SPParams.Add(new SqlParameter("@<#=col.CleanName#>",item.<#=col.CleanName#>));	
+				<#}#>
+<#
+ if(pkAutoIncrement)
+ {
+#>
+sql +=";SELECT Scope_Identity()";
+				object o = base.ExecuteScalar(sql, SPParams.ToArray());
+				if(o!=null){
+					item.<#=tbl.PrimaryKey#> =Convert.ToInt32(o);
+				}
+<#
+ }
+else
+{
+#>
+base.ExecuteNonQuery(sql, SPParams.ToArray());
+<#
+	}
+#>
+			}
+            public void Update(<#=Cleans(tbl.CleanName)#> item)
+			{
+				if(item.ChangedPropertyCount>0)
+				{
+					StringBuilder sqlbuilder = new StringBuilder();
+					sqlbuilder.Append("UPDATE [<#=tbl.Name#>] SET ");
+					Dictionary<string,string> cols =new Dictionary<string,string>();
+					<#foreach(var col in tbl.Columns){ if(col.IsPK){continue;}#>
+cols.Add("<#= col.CleanName #>","[<#= col.Name #>]");
+					<#}#>
+int i = 0;
+					//UPDATE COLUMNS
+					foreach (string p in item.ChangedPropertyList)
+					{ 
+						if(!cols.ContainsKey(p))
+						{
+							continue;
+						}
+						if (i > 0)
+						{
+							sqlbuilder.Append(",");
+						}
+						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
+						i++;
+					}
+					//WHERE;
+					sqlbuilder.Append(" WHERE [<#=tbl.PrimaryKey#>]=@<#=tbl.PrimaryKey#>");
+
+					List<SqlParameter> SPParams = new List<SqlParameter>();
+					<#foreach(var col in tbl.Columns){#> <#if(!col.IsPK){#>	
+					if(item.IsChanged("<#=col.CleanName  #>"))
+					{
+						SPParams.Add(new SqlParameter("@<#=col.CleanName#>",item.<#=col.CleanName#>));	
+					}<#}else{#>
+SPParams.Add(new SqlParameter("@<#=col.CleanName#>",item.<#=col.CleanName#>));	
+<#}}#>
+
+					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
+				}
+			}
+			public List<<#=Cleans(tbl.CleanName)#>> QueryAll()
+			{
+				string sql ="SELECT <# i=0;foreach(var col in tbl.Columns){ if(i>0){#>,<#}#>[<#= col.Name #>]<# i++;}#> FROM [<#=tbl.Name#>]";
+				List<<#=Cleans(tbl.CleanName)#>>  list =new List<<#=Cleans(tbl.CleanName)#>>();
+				using(IDataReader reader = base.ExcuteDataReader(sql))
+				{
+					while(reader.Read())
+					{
+						<#=Cleans(tbl.CleanName)#> item =new <#=Cleans(tbl.CleanName)#>();
+						<#
+					i=0;
+					foreach(var col in tbl.Columns){
+							if(col.IsNullable)
+							{
+					   #>if(!reader.IsDBNull(<#=i#>))
+						 {
+							item.<#= col.CleanName #> = <#=GetReadFormatString("reader.",col.DataType,i)  #>;
+						 }
+						 <# }
+							else
+							{
+								#>
+item.<#= col.CleanName #> = <#=GetReadFormatString("reader.",col.DataType,i)  #>;
+							<#
+							}						
+						i++;
+					}#>
+						list.Add(item);
+					}
+				}
+				return list;
+			}
+
+        }
+        
+<#    
+        }
+        
+    }
+#>
+}

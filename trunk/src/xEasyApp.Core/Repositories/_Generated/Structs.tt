@@ -1,0 +1,41 @@
+<#@ template language="C#" debug="False" hostspecific="True"  #>
+<#@ output extension=".cs" #>
+<#@ include file="SQLServer.ttinclude" #>
+<#
+var tables = LoadTables();
+#>
+using System;
+using System.Collections.Generic;
+using System.Data;
+
+namespace <#=Namespace#> {	
+<#  foreach(var tbl in tables){
+        if(!ExcludeTables.Contains(tbl.Name))
+        {
+#>
+        /// <summary>
+        /// Table: <#=tbl.Name#>
+        /// Primary Key: <#=tbl.PrimaryKey#>
+        /// </summary>
+        public partial class <#=Cleans(tbl.CleanName)#>:BaseEntity {  
+            
+<#          foreach(var col in tbl.Columns){#>
+			private <#=col.SysType#> _<#=col.CleanName#>;
+			/// <summary>
+			///  <#=col.Name.Replace("\r\n", "\r\n            ///")#>
+			/// </summary>
+            public <#=col.SysType#> <#=col.CleanName#>{
+                get{
+					return _<#=col.CleanName#>;
+				}
+				set
+				{
+					_<#=col.CleanName#>= value;
+					OnPropertyChanged("<#=col.CleanName#>");
+				}
+            }
+<#   }#>  		      
+        }
+        
+<#}}#>
+}

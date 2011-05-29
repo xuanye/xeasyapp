@@ -9,5 +9,17 @@ namespace xEasyApp.Core.Interfaces
     public interface ISysManageService
     {
         List<RoleInfo> QueryRoleList();
+
+        void SaveRoleInfo(RoleInfo ri);
+
+        RoleInfo GetRoleInfo(string roleCode);
+
+        int DeleteRoleInfo(string roleCode);
+
+        bool ValidRoleCode(string RoleCode);
+
+        List<Department> QueryDepartmentList();
+
+        Department GetDeptInfo(string deptCode);
     }
 }
