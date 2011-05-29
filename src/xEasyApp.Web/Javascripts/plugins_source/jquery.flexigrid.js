@@ -412,7 +412,7 @@
                                     } else {
                                         tdclass += "chboxtd";
                                     }
-                                } 
+                                }
                                 else {
                                     var divInner = row.cell[idx] || "&nbsp;";
                                     if (this.process) {
@@ -839,7 +839,7 @@
                     cthch.attr("disabled", true).css("visibility", "hidden");
                 }
                 cth.attr('axis', "col-1");
-                cth.append(cthch);              
+                cth.append(cthch);
             }
             else {
                 cth.attr('axis', "col-2");
@@ -1327,19 +1327,22 @@
             $('th div', g.hDiv).each
 			(
 			 	function () {
-			 	    var kcol = $("th[axis='col" + cn + "']", g.hDiv)[0];
-			 	    if (kcol == null) return;
+			 	    var kcol = $(this).parent("th");
 			 	    var chkall = $("input[type='checkbox']", this);
 			 	    if (chkall.length > 0) {
 			 	        chkall[0].onclick = g.checkAllOrNot;
 			 	        return;
 			 	    }
-			 	    if (kcol.toggle == false || this.innerHTML == "") {
+			 	    if (kcol.attr("isch")) {
+			 	        return;
+			 	    }
+			 	    if (kcol[0].toggle == false || this.innerHTML == "") {
 			 	        cn++;
 			 	        return;
 			 	    }
 			 	    var chk = 'checked="checked"';
-			 	    if (kcol.style.display == 'none') chk = '';
+			 	    if (kcol.css("display") == 'none')
+			 	    { chk = ''; }
 
 			 	    $('tbody', g.nDiv).append('<tr><td class="ndcol1"><input type="checkbox" ' + chk + ' class="togCol noborder" value="' + cn + '" /></td><td class="ndcol2">' + this.innerHTML + '</td></tr>');
 			 	    cn++;

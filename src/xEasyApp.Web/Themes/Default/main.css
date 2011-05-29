@@ -5,6 +5,12 @@
 	height: 100%;
 	width: 100%;
 }
+.MainContainer
+{
+    position:absolute;
+    left:0px;
+    top:0px;
+}
 body
 {
 	margin: 0;	
@@ -126,4 +132,22 @@ div.loadingpanel
 	color: #fff;
 	display:none;
 	padding: 3px 4px 3px 24px;
+}
+div.toolbar
+{
+    background: url(images/flexigrid/headbg.gif) repeat-x left -1px;
+  	height:21px;
+  	border: #99bbe8 1px solid;    
+  	border-top:none;
+  	border-left:none;
+  	vertical-align:middle;
+  	padding:2px 3px;
+}
+table.tree_grid_panel_table
+{
+    
+}
+table.tree_grid_panel_table td
+{
+   vertical-align:top;    
 }

@@ -85,12 +85,17 @@
     <Content Include="Images\icons\checkbox_0.gif" />
     <Content Include="Images\icons\checkbox_1.gif" />
     <Content Include="Images\icons\checkbox_2.gif" />
+    <Content Include="Images\icons\collapseh.gif" />
+    <Content Include="Images\icons\del.gif" />
     <Content Include="Images\icons\delete.png" />
     <Content Include="Images\icons\edit.png" />
     <Content Include="Images\icons\exclamation.png" />
+    <Content Include="Images\icons\expandh.gif" />
     <Content Include="Images\icons\laught.png" />
+    <Content Include="Images\icons\library.png" />
     <Content Include="Images\icons\smile.png" />
     <Content Include="Images\icons\unhappy.png" />
+    <Content Include="Images\icons\user.png" />
     <Content Include="Images\icons\warning.png" />
     <Content Include="Images\icons\grid.png" />
     <Content Include="Images\icons\home.png" />
@@ -227,6 +232,7 @@
     <Content Include="Themes\Default\images\tabpanel\tb-blue.gif" />
     <Content Include="Themes\Default\images\tree\arrows.gif" />
     <Content Include="Themes\Default\images\tree\cbs.gif" />
+    <Content Include="Themes\Default\images\tree\leaf.png" />
     <Content Include="Themes\Default\images\tree\drop-yes.gif" />
     <Content Include="Themes\Default\images\tree\elbow-end-minus-nl.gif" />
     <Content Include="Themes\Default\images\tree\elbow-end-minus.gif" />
@@ -242,8 +248,9 @@
     <Content Include="Themes\Default\images\tree\folder-open.gif" />
     <Content Include="Themes\Default\images\tree\folder.gif" />
     <Content Include="Themes\Default\images\tree\group.gif" />
-    <Content Include="Themes\Default\images\tree\leaf.gif" />
     <Content Include="Themes\Default\images\tree\loading.gif" />
+    <Content Include="Themes\Default\images\tree\mfolder-open.gif" />
+    <Content Include="Themes\Default\images\tree\mfolder.gif" />
     <Content Include="Themes\Default\images\validation\accept.png" />
     <Content Include="Themes\Default\images\validation\exclamation.png" />
     <Content Include="Themes\Default\images\validation\tooltop.gif" />

@@ -151,6 +151,7 @@ namespace xEasyApp.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult DeptInfoList(FormCollection form)
         {
+            string parentCode = form["parentCode"];
             string colkey = form["colkey"];
             string colsinfo = form["colsinfo"];
             if (string.IsNullOrEmpty(colkey))
@@ -161,12 +162,17 @@ namespace xEasyApp.Web.Controllers
             {
                 throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
             }
-            List<Department> list = sysManageService.QueryDepartmentList();
+            if (string.IsNullOrEmpty(parentCode) || parentCode == "-1")
+            {
+              Department root =  sysManageService.GetRootDepartment();
+              parentCode = root.DeptCode;
+            }
+            List<Department> list = sysManageService.GetChildDeptsByParentCode(parentCode);
             var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
             return Json(data);
         }
 
-        public ActionResult EditDept(string id)
+        public ActionResult EditDept(string id,string parentCode,string parentName)
         {
             Department dept;
             if (!string.IsNullOrEmpty(id))
@@ -180,11 +186,103 @@ namespace xEasyApp.Web.Controllers
             else
             {
                 dept = new Department();
+                if (parentCode == "-1")
+                {
+                    Department root = sysManageService.GetRootDepartment();
+                    dept.ParentCode = root.DeptName;
+                    dept.ParentName = root.DeptName;
+                }
+                else
+                {
+                    dept.ParentCode = parentCode;
+                    dept.ParentName = parentName;
+                }
             }
             return View(dept);
             
         }
+        [AcceptVerbs( HttpVerbs.Post)]
+        public JsonResult DeptInfoTreeList(FormCollection form)
+        {
+            var nodes = new List<JsonTreeNode>();
+            string parentId = form["id"];// ?? "0";
+            if (string.IsNullOrEmpty(parentId))
+            {              
+                Department root = sysManageService.GetRootDepartment();
+                JsonTreeNode node = new JsonTreeNode();
+                node.id = root.DeptCode;
+                node.text = root.DeptName;
+                node.value = root.DeptCode;  
+                node.isexpand = true;
+                node.complete = true;
+                var clist = sysManageService.GetChildDeptsByParentCode(root.DeptCode);
+                if (clist != null)
+                {
+                    node.hasChildren = true;
+                    foreach (var item in clist)
+                    {
+                        JsonTreeNode cnode = new JsonTreeNode();
+                        cnode.id = item.DeptCode;
+                        cnode.text = item.DeptName;
+                        cnode.value = item.DeptCode; 
+                        node.ChildNodes.Add(cnode);
+                    }
+                }
+                nodes.Add(node);
+            }
+            else
+            {
+                var list = sysManageService.GetChildDeptsByParentCode(parentId);
+                foreach (var item in list)
+                {
+                    JsonTreeNode cnode = new JsonTreeNode();
+                    cnode.id = item.DeptCode;
+                    cnode.text = item.DeptName;
+                    cnode.value = item.DeptCode;
+                    nodes.Add(cnode);
+                }
+            }
+            return Json(nodes);
+        }
+        
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SaveDeptInfo(string id,Department department)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    department.IsNew = true;
+                }
+                else
+                {
+                    department.IsNew = false;
+                }
+                
+                department.LastUpdateUserUID = base.UserId;
+                department.LastUpdateUserName = base.CurrentUser.FullName;
+                department.LastUpdateTime = DateTime.Now;
 
+                sysManageService.SaveDeptInfo(department);
+
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败：" + ex.Message;
+            }
+            return Json(msg);
+        }
+
+
+        public ContentResult ValidDeptCode(string DeptCode)
+        {
+            bool isValid = sysManageService.ValidDeptCode(DeptCode);
+            return Content(isValid ? "true" : "false", "application/json");
+        }
        #endregion
     }
 }

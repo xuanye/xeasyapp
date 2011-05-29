@@ -73,6 +73,7 @@
     <Compile Include="JsonEntities\JsonTreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseEntity.cs" />
+    <Compile Include="Repositories\Entities\P_Entities.cs" />
     <Compile Include="Repositories\Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\Repositories\RoleInfoRepository.cs" />

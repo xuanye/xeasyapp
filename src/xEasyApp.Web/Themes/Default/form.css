@@ -7,6 +7,7 @@
 }
 body
 {
+    background:#fff;
  
 }
 .buttonpanel
@@ -137,8 +138,10 @@ input[type='radio']
 textarea
 {
 	/*  border: solid 1px #907714;	  */
-	border: solid 1px #3C7FB1;
+	border: solid 1px #999;
+	background:#fff url("../../images/bgs/text-bg.gif") repeat-x left top;
 	overflow: auto;
+	height:80px;
 }
 fieldset
 {
@@ -175,6 +178,7 @@ table.xeasy-form td
 {
 	word-break: break-all;
 	padding:2px 0px;
+	vertical-align:top;
 }
 
 .xeasy-formItemMust
@@ -230,4 +234,22 @@ div.cusError
 	font-size: 12px;
 	font-family: Arial;
 	background: url(images/validation/tooltop.gif) no-repeat left top;
+}
+a.valiclose
+{
+    position:absolute;
+    right:14px;
+    top:10px;
+    line-height:10px;
+    display:block;
+    height:8px;
+    width:8px;
+    background: url(../../images/icons/del.gif) no-repeat center center;   
+}
+
+a.valiclose:hover
+{
+    opacity:.5;
+    -moz-opacity:.5;
+    filter:alpha(opacity=50);
 }
