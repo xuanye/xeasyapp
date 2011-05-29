@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>xjPlugin demo </title>
-    @Html.Css("main", "layout", "tree", "tabpanel")
+     @Html.Css("main", "layout", "tree", "tabpanel", "dailog")
      <style type="text/css">
         .icon_home
         {            
@@ -37,7 +37,7 @@
         </div>
         <div id="panel-bottom"></div>
     </div>
-    @Html.Js("jquery","common","tree","tabpanel")
+    @Html.Js("jquery","common","tree","tabpanel","dailog","easydrag")
     <script src="@Url.Action("Menu")" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {

@@ -19,6 +19,8 @@ namespace xEasyApp.Web.Controllers
         }
 
         private ISysManageService sysManageService;
+
+       #region 角色管理
         public ActionResult RoleInfoList()
         {
             return View();
@@ -44,12 +46,87 @@ namespace xEasyApp.Web.Controllers
 
         public ActionResult EditRole(string id)
         {
-            RoleInfo ri = new RoleInfo();
-            if (string.IsNullOrEmpty(id))
-            { 
-                
+            RoleInfo ri;
+            if (!string.IsNullOrEmpty(id))
+            {
+                ri = sysManageService.GetRoleInfo(id);
+                if (ri == null)
+                {
+                    throw new Exception("参数错误，不存在对应的角色");
+                }
+            }
+            else
+            {
+                ri = new RoleInfo();
             }
             return View(ri);
+        }
+        public ContentResult ValidRoleCode(string RoleCode)
+        {
+            bool isValid = sysManageService.ValidRoleCode(RoleCode);
+            return Content(isValid ? "true" : "false","application/json");
+        }
+        [AcceptVerbs( HttpVerbs.Post)]
+        public JsonResult SaveRoleInfo(string id,RoleInfo ri)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    ri.IsNew = true;
+                }
+                else
+                {
+                    ri.IsNew = false;
+                }
+                ri.LastUpdateUserUID = base.UserId;
+                ri.LastUpdateUserName = base.CurrentUser.FullName;
+                ri.LastUpdateTime = DateTime.Now;
+                ri.IsSystem = false;
+                sysManageService.SaveRoleInfo(ri);
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败："+ex.Message;
+            }            
+            return Json(msg);
+        }
+        [AcceptVerbs( HttpVerbs.Post)]
+        public JsonResult DeleteRoleInfo(string id)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            if (!string.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    int ret = sysManageService.DeleteRoleInfo(id);
+                    if (ret > 0)
+                    {
+                        msg.IsSuccess = true;
+                        msg.Msg = "操作成功";
+                    }
+                    else
+                    {
+                        msg.IsSuccess = false;
+                        msg.Msg = "操作失败:操作完成了,但是莫有效果";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = "操作失败:" + ex.Message;
+                }
+            }
+            else
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "参数错误";
+            }
+            return Json(msg);
         }
         public ActionResult RoleUserRelationList(string id)
         {
@@ -63,5 +140,51 @@ namespace xEasyApp.Web.Controllers
         {
             return View();
         }
+        #endregion
+
+       #region 部门管理
+        public ActionResult DeptInfoList()
+        {
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeptInfoList(FormCollection form)
+        {
+            string colkey = form["colkey"];
+            string colsinfo = form["colsinfo"];
+            if (string.IsNullOrEmpty(colkey))
+            {
+                throw new ArgumentNullException("colkey", "主键表示没有传递，请在前台js中配置");
+            }
+            if (string.IsNullOrEmpty(colsinfo))
+            {
+                throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
+            }
+            List<Department> list = sysManageService.QueryDepartmentList();
+            var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
+            return Json(data);
+        }
+
+        public ActionResult EditDept(string id)
+        {
+            Department dept;
+            if (!string.IsNullOrEmpty(id))
+            {
+                dept = sysManageService.GetDeptInfo(id);
+                if (dept == null)
+                {
+                    throw new Exception("参数错误，不存在对应的角色");
+                }
+            }
+            else
+            {
+                dept = new Department();
+            }
+            return View(dept);
+            
+        }
+
+       #endregion
     }
 }

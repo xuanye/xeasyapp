@@ -77,6 +77,8 @@
     <Content Include="Images\bgs\btncancel.gif" />
     <Content Include="Images\bgs\btnok.gif" />
     <Content Include="Images\bgs\button1.gif" />
+    <Content Include="Images\bgs\invalid_line.gif" />
+    <Content Include="Images\bgs\text-bg.gif" />
     <Content Include="Images\icons\accept.png" />
     <Content Include="Images\icons\add.png" />
     <Content Include="Images\icons\close.gif" />
@@ -85,6 +87,10 @@
     <Content Include="Images\icons\checkbox_2.gif" />
     <Content Include="Images\icons\delete.png" />
     <Content Include="Images\icons\edit.png" />
+    <Content Include="Images\icons\exclamation.png" />
+    <Content Include="Images\icons\laught.png" />
+    <Content Include="Images\icons\smile.png" />
+    <Content Include="Images\icons\unhappy.png" />
     <Content Include="Images\icons\warning.png" />
     <Content Include="Images\icons\grid.png" />
     <Content Include="Images\icons\home.png" />
@@ -117,7 +123,9 @@
     <Content Include="Javascripts\plugins_source\jquery.tree.js" />
     <Content Include="Javascripts\plugins_source\jquery.validate.js" />
     <Content Include="Js.xml" />
-    <Content Include="MenuData.xml" />
+    <Content Include="MenuData.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Themes\Default\alert.css" />
     <Content Include="Themes\Default\contextmenu.css" />
     <Content Include="Themes\Default\dailog.css" />
@@ -286,6 +294,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SysManage\RoleUserRelationList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SysManage\DeptInfoList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SysManage\EditDept.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

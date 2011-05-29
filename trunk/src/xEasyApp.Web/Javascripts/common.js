@@ -22,6 +22,55 @@ $(document).ready(function () {
         $(document.body).addClass("ie ie" + v);
     }
 });
+
+//获取网站更目录
+function Application_GetRoot() {
+
+    var pathArr = window.location.pathname.split("/");
+
+    if (pathArr.length == 1) {
+        return "/";
+    } else if (pathArr.length == 2) {
+        return pathArr[0];
+    } else {
+
+        if (pathArr[0] == "") {  //模式对话框
+
+            if (pathArr[2].indexOf("(") > -1 && pathArr[2].indexOf(")") > -1)
+                return "/" + pathArr[1] + "/" + pathArr[2];
+            else
+                return "/" + pathArr[1];
+
+        } else {
+
+            if (pathArr[2].indexOf("(") > -1 && pathArr[2].indexOf(")") > -1)
+                return "/" + pathArr[0] + "/" + pathArr[1];
+            else
+                return "/" + pathArr[0];
+
+        }
+    }
+}
+/*********************动态载入JS Satrt************************/
+function ansyloadJS(url, onload) {
+    var domscript = document.createElement('script');
+    domscript.src = url;
+    if (!!onload) {
+        domscript.afterLoad = onload;
+        domscript.onreadystatechange = function () {
+            if (domscript.readyState == "loaded" || domscript.readyState == "complete" || domscript.readyState == "interactive") {
+                domscript.afterLoad();
+            }
+        }
+        domscript.onload = function () {
+            if (!!domscript.afterLoad)
+                domscript.afterLoad();
+        }
+    }
+    document.getElementsByTagName('head')[0].appendChild(domscript);
+}
+
+/*********************动态载入JS End************************/
 var popUpWin;
 function PopUpCenterWindow(URLStr, width, height, newWin, scrollbars) {
     var popUpWin = 0;
@@ -56,7 +105,17 @@ function PopUpCenterWindow(URLStr, width, height, newWin, scrollbars) {
     popUpWin = open(URLStr, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=' + scrollbars + ',resizable=yes,copyhistory=yes,width=' + width + ',height=' + height + ',left=' + left + ', top=' + top + ',screenX=' + left + ',screenY=' + top + '');
     popUpWin.focus();
 }
-
+function OpenModalDialog(url, option) {
+    option.type = 2;
+    if ($.ShowIfrmDailog) {
+        $.ShowIfrmDailog(url, option);
+    }
+}
+function CloseModalDialog(callback, dooptioncallback, userstate) {
+    if (parent && parent.$.closeIfrm) {
+        parent.$.closeIfrm(callback, dooptioncallback, userstate);
+    }
+}
 function OpenModelWindow(url, option) {
     var fun;
     try {
@@ -72,14 +131,15 @@ function OpenModelWindow(url, option) {
     }
     fun(url, option);
 }
-function CloseModelWindow(callback, dooptioncallback) {
+function CloseModelWindow(callback, dooptioncallback, userstate) {
     if (parent) {
-        parent.$.closeIfrm(callback, dooptioncallback);
+        parent.$.closeIfrm(callback, dooptioncallback, userstate);
     }
     else {
         window.close();
     }
 }
+
 
 function StrFormat(temp, dataarry) {
     return temp.replace(/\{([\d]+)\}/g, function (s1, s2) { var s = dataarry[s2]; if (typeof (s) != "undefined") { if (s instanceof (Date)) { return s.getTimezoneOffset() } else { return encodeURIComponent(s) } } else { return "" } });
@@ -89,13 +149,28 @@ function StrFormatNoEncode(temp, dataarry) {
 }
 
 function showLoadingMsg(msg, position, isautohide, timeout) {
-
+    var loadpanel = $("#loadpanel");
+    if (loadpanel.length == 0) {
+        loadpanel = $("<div id=\"loadpanel\" class=\"loadingpanel\"/>").appendTo("body");
+    }
+    loadpanel.html("<span>" + msg + "</span>");
+    if (!position) {
+        position = { right: 20, top: 3 };
+    }
+    loadpanel.css(position).show();
+    if (isautohide) {
+        showLoadTipTimerId = setTimeout(hideLoadingMsg, timeout);
+    }
 }
 function hideLoadingMsg() {
-
+    var loadpanel = $("#loadpanel");
+    if (loadpanel.length > 0) {
+        loadpanel.hide();
+    }
 }
 var showErrorTipTimerId;
-var msg
+var showLoadTipTimerId;
+var msg;
 function showErrorTip(msg, position, isautohide, timeout) {
     var errorpanel = $("#errorpanel");
     if (errorpanel.length == 0) {
@@ -113,10 +188,10 @@ function showErrorTip(msg, position, isautohide, timeout) {
             position = { right: 20, top: 3 };
         }
         errorpanel.css(position).fadeIn();
-    }   
+    }
     if (isautohide) {
-       showErrorTipTimerId= setTimeout(hideErrortip, timeout);
-   }
+        showErrorTipTimerId = setTimeout(hideErrortip, timeout);
+    }
 
 }
 function hideErrortip() {

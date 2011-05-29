@@ -19,8 +19,6 @@
   </Menu>
   <Menu id="4" text="系统管理" url="" desc="系统管理" isexpand="false">
     <Menu id="4.1" text="角色管理" url="/SysManage/RoleInfoList" desc="角色管理" isexpand="false"></Menu>
-    <Menu id="4.2" text="参数管理" url="/SysManage/PrintTemplateList" desc="参数配置" isexpand="false"></Menu>
-    <Menu id="4.3" text="关于我们" url="/Home/About" desc="关于我们" isexpand="false"></Menu>
-    
+    <Menu id="4.2" text="部门管理" url="/SysManage/DeptInfoList" desc="部门管理" isexpand="false"></Menu>    
   </Menu>
 </MenuData>
