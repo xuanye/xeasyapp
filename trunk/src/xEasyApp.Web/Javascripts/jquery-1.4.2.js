@@ -820,7 +820,7 @@ function access( elems, key, value, exec, fn, pass ) {
 }
 
 function now() {
-	return (new Date).getTime();
+	return (new Date()).getTime();
 }
 (function() {
 

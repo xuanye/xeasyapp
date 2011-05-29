@@ -23,7 +23,7 @@
         <div class="mainpanel">
             <table id="xeasy-form-table" width="100%" cellspacing="4"  cellpadding="1">
                 <tr>
-                    <td>
+                    <td style="width:70px;">
                         <label>角色标识：</label>
                     </td>
                     <td>                      
@@ -40,7 +40,7 @@
                     </td> 
                 </tr>
                 <tr>
-                  <td>
+                  <td style="width:70px;">
                         <label>角色名称：</label>
                   </td>
                   <td>
@@ -61,7 +61,7 @@
                  <a id="btnCancel" class="button" href="javascript:void(0);"><span>取消</span></a>
               </div>
               
-            </div>
+    </div>
     @Html.Js("jquery", "common", "form","validate")
     <script type="text/javascript">
         $(document).ready(function (e) {
@@ -104,16 +104,8 @@
                  },
                  errorElement: "div",
 			     errorClass: "cusErrorPanel",
-			     errorPlacement: function (error, element) {
-			         var pos = element.position();
-			         var height = element.height();
-			         if (pos.left + 155 >= document.documentElement.clientWidth) {
-			             pos.left = document.documentElement.clientWidth - 156;
-			         }
-			         var newpos = { left: pos.left, top: pos.top + height + 2 }			        		       
-			         error.appendTo("body").css(newpos);
-			     }
-             });
+			     errorPlacement:showValidateError
+            });
             $.validator.addMethod("safe", function (value, element) {
                 return this.optional(element) || /^[^$\<\>]+$/.test(value);
             }, "不能包含以下符号: $<>");

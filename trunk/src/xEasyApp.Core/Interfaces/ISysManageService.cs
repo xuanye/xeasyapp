@@ -21,5 +21,13 @@ namespace xEasyApp.Core.Interfaces
         List<Department> QueryDepartmentList();
 
         Department GetDeptInfo(string deptCode);
+
+        Department GetRootDepartment();
+
+        List<Department> GetChildDeptsByParentCode(string parentCode);
+
+        void SaveDeptInfo(Department department);
+
+        bool ValidDeptCode(string deptCode);
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using xEasyApp.Core.Interfaces;
 using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Exceptions;
+using xEasyApp.Core.Configurations;
 
 namespace xEasyApp.Core.Biz
 {
@@ -67,8 +68,34 @@ namespace xEasyApp.Core.Biz
 
         public Department GetDeptInfo(string deptCode)
         {
-            return _deptRepository.Get(deptCode);
+            Department d= _deptRepository.GetDepartment(deptCode);
+            if (d.ParentCode == AppConfig.RootDeptCode)
+            {
+                d.ParentName = AppConfig.RootDeptName;
+            }
+            return d;
+        }
+        public Department GetRootDepartment()
+        {
+            Department dept = new Department();
+            dept.DeptCode = AppConfig.RootDeptCode;
+            dept.DeptName = AppConfig.RootDeptName;
+            return dept;
         }
 
+        public List<Department> GetChildDeptsByParentCode(string parentCode)
+        {
+            return _deptRepository.GetChildDeptsByParentCode(parentCode);
+        }
+
+        public void SaveDeptInfo(Department department)
+        {
+            _deptRepository.SaveDeptInfo(department);
+        }
+
+        public bool ValidDeptCode(string deptCode)
+        {
+            return _deptRepository.ValidDeptCode(deptCode);
+        }
     }
 }

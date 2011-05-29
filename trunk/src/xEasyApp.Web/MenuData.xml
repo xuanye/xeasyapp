@@ -1,23 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <MenuData>
-  <Menu id="1" text="绩效管理" url="" desc="绩效管理" isexpand="true">
-    <Menu id="1.1" text="新任务登记" url="/PersonalCal/MyCalendar" desc="我的日程" isexpand="false"></Menu>
-    <Menu id="1.2" text="待完成的任务" url="/DeptCalendarCall/DeptCalendar" desc="部门日程" isexpand="false"></Menu>
-    <Menu id="1.3" text="已分配的任务" url="/DeptCalendarCall/UnitCalendar" desc="单位日程" isexpand="false"></Menu>
-    <Menu id="1.4" text="待评分的任务" url="/DeptCalendarCall/DeptCalendarWeekView" desc="处室日程（New）" isexpand="false"></Menu>
-    <Menu id="1.5" text="已评分的任务" url="/DeptCalendarCall/UnitCalendarWeekView" desc="单位日程（New）" isexpand="false"></Menu>
-    <Menu id="1.6" text="已完成的任务" url="/DeptCalendarCall/DeptUserCalendarView" desc="部门人员日程" isexpand="false"></Menu>  
-  </Menu>
-  <Menu id="2" text="质量控制" url="" desc="项目管理" isexpand="false">
-    <Menu id="2.1" text="我的BUG" url="/MeetRoomManage/ManageMeetRoom" desc="我的项目" isexpand="false"></Menu>
-  </Menu>
-  <Menu id="3" text="项目管理" url="" desc="项目管理" isexpand="false">
-    <Menu id="3.1" text="我的项目" url="http://xgcalendar.cloudapp.net/" desc="我的项目" isexpand="false"></Menu>
-    <Menu id="3.2" text="项目管理" url="/Home/Index2" desc="项目管理" isexpand="false"></Menu>
-    <Menu id="3.3" text="项目周报" url="/MeetRoomUseage/MeetRoomUseageList" desc="项目管理" isexpand="false"></Menu>
-    <Menu id="3.4" text="人员周报" url="/MeetRoomUseage/MeetRoomUseageList" desc="项目管理" isexpand="false"></Menu>
-  </Menu>
-  <Menu id="4" text="系统管理" url="" desc="系统管理" isexpand="false">
+
+  <Menu id="4" text="系统管理" url="" desc="系统管理" isexpand="true">
     <Menu id="4.1" text="角色管理" url="/SysManage/RoleInfoList" desc="角色管理" isexpand="false"></Menu>
     <Menu id="4.2" text="部门管理" url="/SysManage/DeptInfoList" desc="部门管理" isexpand="false"></Menu>    
   </Menu>

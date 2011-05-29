@@ -167,7 +167,7 @@
 }
 
 .bbit-tree-node-leaf .bbit-tree-node-icon{
-	background-image:url(images/tree/leaf.gif);
+	background-image:url(images/tree/leaf.png);
 }
 
 .bbit-tree-node-collapsed .bbit-tree-node-icon{
@@ -178,7 +178,13 @@
 	background-image:url(images/tree/group.gif);
 }
 
+.menutree .bbit-tree-node-expanded .bbit-tree-node-icon{
+	background-image:url(images/tree/mfolder-open.gif);
+}
 
+.menutree .bbit-tree-node-collapsed .bbit-tree-node-icon{
+	background-image:url(images/tree/mfolder.gif);
+}
 
 
 .bbit-tree-node-loading .bbit-tree-node-icon{

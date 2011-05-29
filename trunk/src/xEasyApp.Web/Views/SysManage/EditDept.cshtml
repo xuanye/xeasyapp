@@ -2,15 +2,145 @@
     Layout = null;
 }
 
-<!DOCTYPE html>
+@model  xEasyApp.Core.Repositories.Department
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>EditRoleInfo</title>
+    @Html.Css("main","form")
 
 <html>
 <head>
-    <title>EditDept</title>
+    <title>角色管理</title>
 </head>
 <body>
-    <div>
+    <div style="padding:5px;">
+       
+            @using (Html.BeginForm("SaveDeptInfo", "SysManage", new { id = Model.DeptCode }, FormMethod.Post, new { id = "fmEdit" }))
+            {
         
+        <div class="mainpanel">
+            <table id="xeasy-form-table" width="100%" class="xeasy-form" cellspacing="4"  cellpadding="1">
+                 <tr>
+                  <td style="width:70px;">
+                        <label>上层部门：</label>
+                  </td>
+                  <td>
+                        @Html.Hidden("ParentCode", Model.ParentCode)
+                        @Html.DisplayTextFor(x => x.ParentName) 
+                  </td>
+                
+                </tr>
+                <tr>
+                    <td style="width:70px;">
+                        <label>部门代码：</label>
+                    </td>
+                    <td>
+                        @if (string.IsNullOrEmpty(Model.DeptCode))
+                        {                        
+                            @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;" })
+                        }
+                        else
+                        { 
+                           @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
+                        } 
+                        <span class="xeasy-formItemMust">*</span>
+                    </td> 
+                </tr>
+                <tr>
+                  <td style="width:70px;">
+                        <label>部门名称：</label>
+                  </td>
+                  <td>
+                        @Html.TextBox("DeptName", Model.DeptName, new { style = "width:90%;" })
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
+                        <label>排序：</label>
+                  </td>
+                  <td>
+                        @Html.TextBox("Sequence", Model.Sequence, new { style = "width:80px;"})
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                  <tr>
+                  <td style="width:70px;">
+                        <label>说明：</label>
+                  </td>
+                  <td>
+                        @Html.TextArea("Remark", Model.Remark, new { style = "width:90%;" })                       
+                  </td>
+                
+                </tr>
+            </table>
+           
+            </div>
+            }
+           
     </div>
+     <div class="buttonpanel">
+             <div style="float:right;margin-right:10px;">
+                 <a id="btnSave" class="button" href="javascript:void(0);"><span>保存</span></a>
+                 <a id="btnCancel" class="button" href="javascript:void(0);"><span>取消</span></a>
+              </div>
+              
+    </div>
+    @Html.Js("jquery", "common", "form","validate")
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            $("#btnSave").click(function (e) {
+                $("#fmEdit").submit();
+            });
+            $("#btnCancel").click(function (e) {
+                CloseModelWindow(null, false);
+            });
+            var options = {
+                beforeSubmit: function () {
+                    return true;
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        CloseModalDialog(null, true);
+                    }
+                    else {
+                        showErrorTip(data.Msg, {left:10,top:100}, true, 3000);
+                    }
+                }
+            };
+            $("#fmEdit").validate(
+             {
+                 submitHandler: function (form) {                    
+                     $("#fmEdit").ajaxSubmit(options);
+                 },
+                 rules:
+                 {
+                     DeptCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.DeptCode))
+                      {                        
+                        @:,remote:"@Url.Action("ValidDeptCode")"
+                      } 
+                      },DeptName: { required: true, safe: true },
+                      Sequence:{required:true,digits:true}
+                 },
+                 messages: {
+                     DeptCode: { required: "部门代码不能为空",remote:"部门代码必须唯一" },
+                     DeptName: { required: "部门名称不能为空" }
+                 },
+                 errorElement: "div",
+			     errorClass: "cusErrorPanel",
+			     errorPlacement:showValidateError
+             });
+            $.validator.addMethod("safe", function (value, element) {
+                return this.optional(element) || /^[^$\<\>]+$/.test(value);
+            }, "不能包含以下符号: $<>");
+
+          
+        });
+    </script>
 </body>
 </html>

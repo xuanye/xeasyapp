@@ -200,3 +200,17 @@ function hideErrortip() {
         errorpanel.fadeOut();
     }
 }
+function removeParent() {  
+    $(this).parent().hide();   
+    return false;
+}
+function showValidateError(error, element) {
+    //var close = $("<a href=\"javascript:void(0)\" class=\"valiclose\">&nbsp;</a>").click(removeParent);  
+    var pos = element.position();
+    var height = element.height();
+    if (pos.left + 155 >= document.documentElement.clientWidth) {
+        pos.left = document.documentElement.clientWidth - 156;
+    }
+    var newpos = { left: pos.left, top: pos.top + height + 2 }
+    error.appendTo("#fmEdit").css(newpos);
+}
