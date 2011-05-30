@@ -32,7 +32,7 @@ namespace xEasyApp.Core.JsonEntities
         public static JsonFlexiGridData ConvertFromList<T>(List<T> list,string key,string[] cols) where T:class
         {
             JsonFlexiGridData data = new JsonFlexiGridData();
-            data.page = 0;
+            data.page = 1;
             if (list != null)
             {
                 data.total = list.Count;
@@ -70,7 +70,7 @@ namespace xEasyApp.Core.JsonEntities
         public static JsonFlexiGridData ConvertFromPagedList<T>(PagedList<T> pagelist, string key, string[] cols) where T : class
         {
             JsonFlexiGridData data = new JsonFlexiGridData();
-            data.page = pagelist.PageIndex;
+            data.page = pagelist.PageIndex+1;
             if (pagelist.PageIndex == 0)
             {
                 data.total = pagelist.Total;

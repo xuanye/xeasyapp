@@ -6,6 +6,7 @@ using xEasyApp.Core.Interfaces;
 using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Exceptions;
 using xEasyApp.Core.Configurations;
+using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Core.Biz
 {
@@ -97,5 +98,10 @@ namespace xEasyApp.Core.Biz
         {
             return _deptRepository.ValidDeptCode(deptCode);
         }
+        public PagedList<UserInfo> QueryDeptUserList(PageView view, string deptCode)
+        { 
+            return _deptRepository.QueryDeptUserList(view,deptCode);
+        }
+
     }
 }

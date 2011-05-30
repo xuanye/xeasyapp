@@ -7,6 +7,7 @@ using xEasyApp.Core.BaseClass;
 using xEasyApp.Core.JsonEntities;
 using xEasyApp.Core.Interfaces;
 using xEasyApp.Core.Repositories;
+using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Web.Controllers
 {
@@ -282,6 +283,37 @@ namespace xEasyApp.Web.Controllers
         {
             bool isValid = sysManageService.ValidDeptCode(DeptCode);
             return Content(isValid ? "true" : "false", "application/json");
+        }
+
+
+        public ActionResult DeptUserList(string DeptCode,string DeptName)
+        {
+            ViewData["DeptCode"] = DeptCode;
+            ViewData["DeptName"] = DeptName;
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeptUserList(string DeptCode, FormCollection form)
+        {
+            string colkey = form["colkey"];
+            string colsinfo = form["colsinfo"];
+            if (string.IsNullOrEmpty(colkey))
+            {
+                throw new ArgumentNullException("colkey", "主键表示没有传递，请在前台js中配置");
+            }
+            if (string.IsNullOrEmpty(colsinfo))
+            {
+                throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
+            }
+            int pageIndex = Convert.ToInt32(form["page"]);
+            int pageSize = Convert.ToInt32(form["rp"]);
+            PageView view = new PageView();
+            view.PageIndex = pageIndex - 1;
+            view.PageSize = pageSize;
+
+            PagedList<UserInfo> pageList = sysManageService.QueryDeptUserList(view, DeptCode);
+            var data = JsonFlexiGridData.ConvertFromPagedList(pageList, colkey, colsinfo.Split(','));
+            return Json(data);
         }
        #endregion
     }

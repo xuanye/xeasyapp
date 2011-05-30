@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Core.Repositories
 {
@@ -87,6 +88,43 @@ namespace xEasyApp.Core.Repositories
             SqlParameter p = new SqlParameter("@DeptCode", deptCode);
             object o = base.ExecuteScalar(sql, p);
             return o == null;
+        }
+
+        public PagedList<UserInfo> QueryDeptUserList(PageView view, string deptCode)
+        {
+            string where = " AND DeptCode='" + deptCode + "'";
+            StoredProcedure sp = StoredProcedures.SP_PAGESELECT(where, view.PageSize, view.PageIndex
+             , "UserInfos", "[UserUID],[FullName],[Password],[DeptCode],[DeptName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]"
+             , "[UserUID]", "");
+            var pl = new PagedList<UserInfo>();
+            pl.DataList = new List<UserInfo>();
+            using (IDataReader dr = base.SPExecuteDataReader(sp))
+            {
+                while (dr.Read())
+                {
+                    UserInfo u = new UserInfo();
+                    u.UserUID = dr.IsDBNull(0) ? null : dr.GetString(0);
+                    u.FullName = dr.IsDBNull(1) ? null : dr.GetString(1);
+                    u.Password = dr.IsDBNull(2) ? null : dr.GetString(2);
+                    u.DeptCode =  dr.IsDBNull(3) ? null : dr.GetString(3);
+                    u.DeptName = dr.IsDBNull(4) ? null : dr.GetString(4);
+                    u.Sequence = dr.GetInt32(5);
+                    u.AccountState = dr.GetByte(6);
+                    u.LastUpdateUserUID = dr.IsDBNull(7) ? null : dr.GetString(7);
+                    u.LastUpdateUserName = dr.IsDBNull(8) ? null : dr.GetString(8);
+                    u.LastUpdateTime = dr.IsDBNull(9) ? DateTime.MinValue : dr.GetDateTime(9);                 
+                    u.IsNew = false;
+                    pl.DataList.Add(u);
+                }
+            }
+
+            if (view.PageIndex == 0)
+            {
+                pl.Total = Convert.ToInt32(sp.GetParameterValue(sp.ParamsCount - 1));
+            }
+            pl.PageIndex = view.PageIndex;
+
+            return pl;
         }
     }
 }

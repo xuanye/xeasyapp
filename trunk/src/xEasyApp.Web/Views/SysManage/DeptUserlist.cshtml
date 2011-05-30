@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+    <title>角色列表</title>
+      @Html.Css("main", "flexigrid")
+</head>
+<body>
+
+    <div class="MainContainer" style="margin: 0px 1px">       
+       <table id="UserInfoList" style="display:none;"></table>      
+    </div>
+   
+    @Html.Js("jquery", "common",  "flexigrid")   
+   
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth -2; // 减去边框和左边的宽度
+            var otherpm = 85;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("DeptUserList",new { DeptCode=ViewData["DeptCode"] })',
+                colModel: [
+                    { display: '用户标识', name: 'UserUID', width: 100, sortable: false, align: 'left', iskey: true },
+			        { display: '用户名称', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },
+                    { display: '账号状态', name: 'AccountState', width: 60, sortable: false, align: 'left', process: fomartAccountState },
+                    { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, align: 'left' },
+			        { display: '最后修改时间', name: 'LastUpdateTime', width: 150, sortable: false, align: 'left' },
+                    { display: '排序号', name: 'Sequence', width: 50, sortable: false, align: 'left', hide: true }
+				],
+                buttons: [                           
+                           
+                         ],
+                sortname: "Sequence",
+                sortorder: "asc",
+                title:false,
+                usepager: true,
+                showcheckbox: false,
+                rowbinddata: true
+            };
+
+            var grid = $("#UserInfoList").flexigrid(option);
+
+            function fomartAccountState(value) {
+                return value;
+            }
+          
+
+        });                // end of ready
+      
+    </script>
+</body>
+</html>

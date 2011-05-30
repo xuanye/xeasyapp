@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using xEasyApp.Core.Repositories;
+using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Core.Interfaces
 {
@@ -29,5 +30,7 @@ namespace xEasyApp.Core.Interfaces
         void SaveDeptInfo(Department department);
 
         bool ValidDeptCode(string deptCode);
+
+        PagedList<UserInfo> QueryDeptUserList(Entities.PageView view, string DeptCode);
     }
 }
