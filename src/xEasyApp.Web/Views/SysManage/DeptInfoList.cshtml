@@ -103,14 +103,14 @@
                     a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='edit' title='编辑'>编辑</span></a>&nbsp;");
                     a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:del('", value, "','", cell[1], "')\"><span class='delete' title='删除'>删除</span></a>&nbsp;");
                 }
-                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='setuser' title='查看角色用户'>查看用户</span></a>&nbsp;");
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:viewusers('", value, "','",cell[1],"')\"><span class='setuser' title='查看角色用户'>查看用户</span></a>&nbsp;");
                 return a.join("");
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
                     var parentCode = $("#hdDeptid").val();
                     var parentName = encodeURIComponent($("#hdDeptName").val());
-                    OpenModelWindow('@Url.Action("EditDept")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 370, caption: "新增部门", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+                    OpenModelWindow('@Url.Action("EditDept")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 340, caption: "新增部门", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
                 }
             } // end of toolbarItem_onclick
 
@@ -135,7 +135,11 @@
             }
         }
         function edit(deptCode) {
-            OpenModelWindow('@Url.Action("EditDept")/' + encodeURIComponent(deptCode), { width: 450, height: 370, caption: "修改部门信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+            OpenModelWindow('@Url.Action("EditDept")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改部门信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+        }
+        function viewusers(deptCode,deptName)
+        {
+            OpenModelWindow('@Url.Action("DeptUserList")/?DeptCode=' + encodeURIComponent(deptCode) + '&DeptName=' + encodeURIComponent(deptName), { width: 650, height: 500, caption: deptName });
         }
         function flushGrid() {
             $("#DepartmentList").flexReload(); //

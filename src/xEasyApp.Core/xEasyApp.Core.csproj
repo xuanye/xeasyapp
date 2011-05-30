@@ -61,6 +61,7 @@
     <Compile Include="Configurations\JsConfig.cs" />
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\PageList.cs" />
+    <Compile Include="Entities\PageView.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions\BizException.cs" />
     <Compile Include="Extensions\ControllerExtension.cs" />
