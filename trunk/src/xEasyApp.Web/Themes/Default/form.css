@@ -114,7 +114,7 @@ form
 {
 	margin: 0px;
 }
-input[type='text']
+input[type='text'],input[type='password']
 {
 	border: solid 1px #999;
 	height: 18px;
