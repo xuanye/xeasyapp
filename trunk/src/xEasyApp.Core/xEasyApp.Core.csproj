@@ -81,6 +81,7 @@
     <Compile Include="Repositories\SqlHelperConfig.cs" />
     <Compile Include="Repositories\StoredProcedure.cs" />
     <Compile Include="Repositories\StoredProcedures.cs" />
+    <Compile Include="Repositories\TransScope.cs" />
     <Compile Include="Repositories\UserInfo.cs" />
     <Compile Include="Repositories\_Generated\Repositories.cs">
       <AutoGen>True</AutoGen>
