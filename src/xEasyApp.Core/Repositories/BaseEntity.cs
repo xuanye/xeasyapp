@@ -7,7 +7,10 @@ namespace xEasyApp.Core.Repositories
 {
     public abstract class BaseEntity
     {
-
+        public BaseEntity()
+        {
+            this.IsNew = true;
+        }
 
         public void ClearChangedList()
         {
