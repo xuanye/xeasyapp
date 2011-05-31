@@ -425,6 +425,13 @@
 {
     background:url(images/flexigrid/grid3-special-col-bg.gif) repeat-y;    
 }
+.bbit-grid div.bDiv td.chboxtd em
+{
+	font-family:tahoma,arial,helvetica;
+	font-size:10px;
+	color:#555;
+	margin-left:3px;
+}
 /*
 .bbit-grid div.bDiv td.chboxtd div
 {
