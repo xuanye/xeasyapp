@@ -45,11 +45,13 @@
             rowhandler: false, //是否启用行的扩展事情功能
             rowbinddata: false,
             selectedonclick: false, //点击行是否选中
+            showrownum: true,
             extParam: {},
             //Style
             gridClass: "bbit-grid",
             onrowchecked: false,
             postColInfo: true //是否向服务端发送列信息 注册该值需要配置colKey
+
         }, p);
 
         $(t)
@@ -373,6 +375,7 @@
                 var thsdivs = $('thead tr:first th div', g.hDiv);
                 var tbhtml = [];
                 tbhtml.push("<tbody>");
+                var pindex = p.rp * (p.page - 1);
                 if (p.dataType == 'json') {
                     if (data.rows != null) {
                         $.each(data.rows, function (i, row) {
@@ -407,6 +410,7 @@
                                 div.push("'>");
                                 if (idx == "-1" || idx == "-2") { //checkbox
                                     idx == "-1" && div.push("<input type='checkbox' id='chk_", row.id, "' class='itemchk' value='", row.id, "'/>");
+                                    idx == "-2" && p.showrownum && div.push("<em>", pindex + i + 1, "</em>");
                                     if (tdclass != "") {
                                         tdclass += " chboxtd";
                                     } else {
@@ -473,8 +477,9 @@
 				 	        }
 				 	        div.push("'>");
 
-				 	        if (idx == "-1") { //checkbox
-				 	            div.push("<input type='checkbox' id='chk_", nid, "' class='itemchk' value='", nid, "'/>");
+				 	        if (idx == "-1" || idx == "-2") { //checkbox
+				 	            idx == "-1" && div.push("<input type='checkbox' id='chk_", nid, "' class='itemchk' value='", nid, "'/>");
+				 	            idx == "-2" && p.showrownum && div.push("<em>", pindex + i + 1, "</em>");
 				 	            if (tdclass != "") {
 				 	                tdclass += " chboxtd";
 				 	            } else {
@@ -600,7 +605,7 @@
                     param.push({ name: "colkey", value: p.colkey });
                     param.push({ name: "colsinfo", value: p.cols });
                 }
-                //param = jQuery.extend(param, p.extParam);
+                //param = jQuery.extend(param, p.extParam);             
                 if (p.extParam) {
                     for (var pi = 0; pi < p.extParam.length; pi++) param[param.length] = p.extParam[pi];
                 }
@@ -1327,22 +1332,19 @@
             $('th div', g.hDiv).each
 			(
 			 	function () {
-			 	    var kcol = $(this).parent("th");
+			 	    var kcol = $("th[axis='col" + cn + "']", g.hDiv)[0];
+			 	    if (kcol == null) return;
 			 	    var chkall = $("input[type='checkbox']", this);
 			 	    if (chkall.length > 0) {
 			 	        chkall[0].onclick = g.checkAllOrNot;
 			 	        return;
 			 	    }
-			 	    if (kcol.attr("isch")) {
-			 	        return;
-			 	    }
-			 	    if (kcol[0].toggle == false || this.innerHTML == "") {
+			 	    if (kcol.toggle == false || this.innerHTML == "") {
 			 	        cn++;
 			 	        return;
 			 	    }
 			 	    var chk = 'checked="checked"';
-			 	    if (kcol.css("display") == 'none')
-			 	    { chk = ''; }
+			 	    if (kcol.style.display == 'none') chk = '';
 
 			 	    $('tbody', g.nDiv).append('<tr><td class="ndcol1"><input type="checkbox" ' + chk + ' class="togCol noborder" value="' + cn + '" /></td><td class="ndcol2">' + this.innerHTML + '</td></tr>');
 			 	    cn++;
