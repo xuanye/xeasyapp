@@ -1,7 +1,7 @@
 ﻿/// <reference path="../intellisense/jquery-1.2.6-vsdoc-cn.js" />
 /// <reference path="../lib/blackbird.js" /> 
-(function ($) {
-    $.addFlex = function (t, p) {
+(function($) {
+    $.addFlex = function(t, p) {
         if (t.grid) return false; //如果Grid已经存在则返回
         // 引用默认属性
         p = $.extend({
@@ -45,11 +45,11 @@
             rowhandler: false, //是否启用行的扩展事情功能
             rowbinddata: false,
             selectedonclick: false, //点击行是否选中
-            showrownum: true,
+            showrownum: true, //是否显示行号，只有在checkbox不显示的情况下有用即showcheckbox:false
             extParam: {},
             //Style
             gridClass: "bbit-grid",
-            onrowchecked: false,
+            onrowchecked: false, //当行被选中时触发的事件，这里指checkbox选中
             postColInfo: true //是否向服务端发送列信息 注册该值需要配置colKey
 
         }, p);
@@ -63,7 +63,7 @@
         //create grid class
         var g = {
             hset: {},
-            rePosDrag: function () {
+            rePosDrag: function() {
 
                 var cdleft = 0 - this.hDiv.scrollLeft;
                 if (this.hDiv.scrollLeft > 0) cdleft -= Math.floor(p.cgwidth / 2);
@@ -74,7 +74,7 @@
                 $('div', g.cDrag).hide();
                 //update by xuanye ,避免jQuery :visible 无效的bug
                 var i = 0;
-                $('thead tr:first th:visible', this.hDiv).each(function () {
+                $('thead tr:first th:visible', this.hDiv).each(function() {
                     if ($(this).css("display") == "none") {
                         return;
                     }
@@ -95,12 +95,12 @@
 				);
 
             },
-            fixHeight: function (newH) {
+            fixHeight: function(newH) {
                 newH = false;
                 if (!newH) newH = $(g.bDiv).height();
                 var hdHeight = $(this.hDiv).height();
                 $('div', this.cDrag).each(
-						function () {
+						function() {
 						    $(this).height(newH + hdHeight);
 						}
 					);
@@ -119,7 +119,7 @@
                 $(g.rDiv).css({ height: hrH });
 
             },
-            dragStart: function (dragtype, e, obj) { //default drag function start
+            dragStart: function(dragtype, e, obj) { //default drag function start
 
                 if (dragtype == 'colresize') //column resize
                 {
@@ -171,11 +171,11 @@
                 $('body').noSelect();
 
             },
-            reSize: function () {
+            reSize: function() {
                 this.gDiv.style.width = p.width;
                 this.bDiv.style.height = p.height;
             },
-            dragMove: function (e) {
+            dragMove: function(e) {
 
                 if (this.colresize) //column resize
                 {
@@ -224,7 +224,7 @@
                 }
 
             },
-            dragEnd: function () {
+            dragEnd: function() {
                 if (this.colresize) {
                     var n = this.colresize.n;
                     var nw = this.colresize.nw;
@@ -232,7 +232,7 @@
                     $('th:visible:eq(' + n + ') div', this.hDiv).css('width', nw);
 
                     $('tr', this.bDiv).each(
-									function () {
+									function() {
 									    //$('td:visible div:eq(' + n + ')', this).css('width', nw);
 									    $('td:visible:eq(' + n + ') div', this).css('width', nw);
 									}
@@ -270,7 +270,7 @@
                 $('body').css('cursor', 'default');
                 $('body').noSelect(false);
             },
-            toggleCol: function (cid, visible) {
+            toggleCol: function(cid, visible) {
                 var ncol = $("th[axis='col" + cid + "']", this.hDiv)[0];
                 var n = $('thead th', g.hDiv).index(ncol);
                 var cb = $('input[value=' + cid + ']', g.nDiv)[0];
@@ -290,7 +290,7 @@
                 }
                 $('tbody tr', t).each
 							(
-								function () {
+								function() {
 								    if (visible)
 								        $('td:eq(' + n + ')', this).show();
 								    else
@@ -301,10 +301,10 @@
                 if (p.onToggleCol) p.onToggleCol(cid, visible);
                 return visible;
             },
-            switchCol: function (cdrag, cdrop) { //switch columns
+            switchCol: function(cdrag, cdrop) { //switch columns
                 $('tbody tr', t).each
 					(
-						function () {
+						function() {
 						    if (cdrag > cdrop)
 						        $('td:eq(' + cdrop + ')', this).before($('td:eq(' + cdrag + ')', this));
 						    else
@@ -319,18 +319,18 @@
                 if ($.browser.msie && $.browser.version < 7.0) $('tr:eq(' + cdrop + ') input', this.nDiv)[0].checked = true;
                 this.hDiv.scrollLeft = this.bDiv.scrollLeft;
             },
-            scroll: function () {
+            scroll: function() {
                 this.hDiv.scrollLeft = this.bDiv.scrollLeft;
                 this.rePosDrag();
             },
-            hideLoading: function () {
+            hideLoading: function() {
                 $('.pReload', this.pDiv).removeClass('loading');
                 if (p.hideOnSubmit) $(g.block).remove();
                 $('.pPageStat', this.pDiv).html(p.errormsg);
                 this.loading = false;
             }
             ,
-            addData: function (data) { //parse data                
+            addData: function(data) { //parse data                
                 if (p.preProcess)
                 { data = p.preProcess(data); }
                 $('.pReload', this.pDiv).removeClass('loading');
@@ -378,7 +378,7 @@
                 var pindex = p.rp * (p.page - 1);
                 if (p.dataType == 'json') {
                     if (data.rows != null) {
-                        $.each(data.rows, function (i, row) {
+                        $.each(data.rows, function(i, row) {
                             tbhtml.push("<tr id='", "row", row.id, "'");
 
                             if (i % 2 && p.striped) {
@@ -389,7 +389,7 @@
                             }
                             tbhtml.push(">");
                             var trid = row.id;
-                            $(ths).each(function (j) {
+                            $(ths).each(function(j) {
                                 var tddata = "";
                                 var tdclass = "";
                                 tbhtml.push("<td align='", this.align, "'");
@@ -439,11 +439,11 @@
                     i = 1;
                     $("rows row", data).each
 				(
-				 	function () {
+				 	function() {
 				 	    i++;
 				 	    var robj = this;
 				 	    var arrdata = new Array();
-				 	    $("cell", robj).each(function () {
+				 	    $("cell", robj).each(function() {
 				 	        arrdata.push($(this).text());
 				 	    });
 				 	    var nid = $(this).attr('id');
@@ -456,7 +456,7 @@
 				 	    }
 				 	    tbhtml.push(">");
 				 	    var trid = nid;
-				 	    $(ths).each(function (j) {
+				 	    $(ths).each(function(j) {
 				 	        tbhtml.push("<td align='", this.align, "'");
 				 	        if (this.hide) {
 				 	            tbhtml.push(" style='display:none;'");
@@ -518,7 +518,7 @@
                 if ($.browser.opera) $(t).css('visibility', 'visible');
 
             },
-            changeSort: function (th) { //change sortorder
+            changeSort: function(th) { //change sortorder
 
                 if (this.loading) return true;
 
@@ -541,7 +541,7 @@
                     this.populate();
 
             },
-            buildpager: function () { //rebuild pager based on new properties
+            buildpager: function() { //rebuild pager based on new properties
 
                 $('.pcontrol input', this.pDiv).val(p.page);
                 $('.pcontrol span', this.pDiv).html(p.pages);
@@ -558,7 +558,7 @@
                 stat = stat.replace(/{total}/, p.total);
                 $('.pPageStat', this.pDiv).html(stat);
             },
-            populate: function () { //get latest data 
+            populate: function() { //get latest data 
                 //log.trace("开始访问数据源");
                 if (this.loading) return true;
                 if (p.onSubmit) {
@@ -615,11 +615,11 @@
                     url: purl,
                     data: param,
                     dataType: p.dataType,
-                    success: function (data) { if (data != null && data.error != null) { if (p.onError) { p.onError(data); g.hideLoading(); } } else { g.addData(data); } },
-                    error: function (data) { try { if (p.onError) { p.onError(data); } else { alert("获取数据发生异常;") } g.hideLoading(); } catch (e) { } }
+                    success: function(data) { if (data != null && data.error != null) { if (p.onError) { p.onError(data); g.hideLoading(); } } else { g.addData(data); } },
+                    error: function(data) { try { if (p.onError) { p.onError(data); } else { alert("获取数据发生异常;") } g.hideLoading(); } catch (e) { } }
                 });
             },
-            doSearch: function () {
+            doSearch: function() {
                 var queryType = $('select[name=qtype]', g.sDiv).val();
                 var qArrType = queryType.split("$");
                 var index = -1;
@@ -645,7 +645,7 @@
                 p.newp = 1;
                 this.populate();
             },
-            changePage: function (ctype) { //change page
+            changePage: function(ctype) { //change page
 
                 if (this.loading) return true;
 
@@ -672,7 +672,7 @@
                     this.populate();
 
             },
-            cellProp: function (n, ptr, pth) {
+            cellProp: function(n, ptr, pth) {
                 var tdDiv = document.createElement('div');
                 if (pth != null) {
                     if (p.sortname == $(pth).attr('abbr') && p.sortname) {
@@ -695,8 +695,8 @@
                     if (pth.process)
                     { pth.process(tdDiv, pid); }
                 }
-                $("input.itemchk", tdDiv).each(function () {
-                    $(this).click(function () {
+                $("input.itemchk", tdDiv).each(function() {
+                    $(this).click(function() {
                         if (this.checked) {
                             $(ptr).addClass("trSelected");
                         }
@@ -711,12 +711,12 @@
                 $(this).empty().append(tdDiv).removeAttr('width'); //wrap content
                 //add editable event here 'dblclick',如果需要可编辑在这里添加可编辑代码 
             },
-            addCellProp: function () {
+            addCellProp: function() {
                 var $gF = this.cellProp;
 
                 $('tbody tr td', g.bDiv).each
 					(
-						function () {
+						function() {
 						    var n = $('td', $(this).parent()).index(this);
 						    var pth = $('th:eq(' + n + ')', g.hDiv).get(0);
 						    var ptr = $(this).parent();
@@ -725,24 +725,24 @@
 					);
                 $gF = null;
             },
-            getCheckedRows: function () {
+            getCheckedRows: function() {
                 var ids = [];
-                $("input.itemchk:checked", g.bDiv).each(function () {
+                $("input.itemchk:checked", g.bDiv).each(function() {
                     ids.push($(this).val());
                 });
                 return ids;
             },
-            getSelectedRows: function () {
+            getSelectedRows: function() {
                 var items = [];
                 if (!p.rowbinddata) {
                     alert("请将属性rowbinddata设置为true");
                 }
-                $("tr.trSelected", g.bDiv).each(function () {
+                $("tr.trSelected", g.bDiv).each(function() {
                     items.push($(this).attr("CH").split('_FG$SP_'));
                 });
                 return items;
             },
-            getCellDim: function (obj) // get cell prop for editable event
+            getCellDim: function(obj) // get cell prop for editable event
             {
                 var ht = parseInt($(obj).height());
                 var pht = parseInt($(obj).parent().height());
@@ -754,23 +754,23 @@
                 var pdt = parseInt($(obj).css('paddingTop'));
                 return { ht: ht, wt: wt, top: top, left: left, pdl: pdl, pdt: pdt, pht: pht, pwt: pwt };
             },
-            rowProp: function () {
+            rowProp: function() {
                 if (p.rowhandler) {
                     p.rowhandler(this);
                 }
                 if ($.browser.msie && $.browser.version < 7.0) {
-                    $(this).hover(function () { $(this).addClass('trOver'); }, function () { $(this).removeClass('trOver'); });
+                    $(this).hover(function() { $(this).addClass('trOver'); }, function() { $(this).removeClass('trOver'); });
                 }
             },
-            checkhandler: function () {
+            checkhandler: function() {
                 var $t = $(this);
                 var $ck = $("input.itemchk", this);
                 if (p.singleselected) {
-                    $t.parent().find("tr.trSelected").each(function (e) {
+                    $t.parent().find("tr.trSelected").each(function(e) {
                         if (this != $t[0]) {
                             $(this).removeClass("trSelected");
                         }
-                        $("input.itemchk", this).each(function (e) { this.checked = false; });
+                        $("input.itemchk", this).each(function(e) { this.checked = false; });
                     });
                 }
                 if ($t.hasClass("trSelected")) {
@@ -782,14 +782,14 @@
                     $t.addClass("trSelected");
                 }
             },
-            addRowProp: function () {
+            addRowProp: function() {
                 var $gF = this.rowProp;
                 var $cf = this.checkhandler;
                 $('tbody tr', g.bDiv).each(
-                    function () {
+                    function() {
                         if (p.showcheckbox) {
-                            $("input.itemchk", this).each(function () {
-                                $(this).click(function (e) {
+                            $("input.itemchk", this).each(function() {
+                                $(this).click(function(e) {
                                     var ptr = $(this).parent().parent().parent();
                                     $cf.call(ptr);
                                     if (p.onrowchecked) {
@@ -808,9 +808,9 @@
                 );
                 $gF = null;
             },
-            checkAllOrNot: function (parent) {
+            checkAllOrNot: function(parent) {
                 var ischeck = $(this).attr("checked");
-                $('tbody tr', g.bDiv).each(function () {
+                $('tbody tr', g.bDiv).each(function() {
                     if (ischeck) {
                         $(this).addClass("trSelected");
                     }
@@ -818,7 +818,7 @@
                         $(this).removeClass("trSelected");
                     }
                 });
-                $("input.itemchk", g.bDiv).each(function () {
+                $("input.itemchk", g.bDiv).each(function() {
                     this.checked = ischeck;
                     //Raise Event
                     if (p.onrowchecked) {
@@ -941,14 +941,14 @@
                     if (btn.onpress) {
                         $(btnDiv).click
 							(
-								function () {
+								function() {
 								    this.onpress(this.name, g.gDiv);
 								}
 							);
                     }
                     $(tDiv2).append(btnDiv);
                     if ($.browser.msie && $.browser.version < 7.0) {
-                        $(btnDiv).hover(function () { $(this).addClass('fbOver'); }, function () { $(this).removeClass('fbOver'); });
+                        $(btnDiv).hover(function() { $(this).addClass('fbOver'); }, function() { $(this).removeClass('fbOver'); });
                     }
 
                 } else {
@@ -979,11 +979,11 @@
         //setup thead			
         $('thead tr:first th', g.hDiv).each
 			(
-			 	function () {
+			 	function() {
 			 	    var thdiv = document.createElement('div');
 			 	    if ($(this).attr('abbr')) {
 			 	        $(this).click(
-								function (e) {
+								function(e) {
 								    if (!$(this).hasClass('thOver')) return false;
 								    var obj = (e.target || e.srcElement);
 								    if (obj.href || obj.type) return true;
@@ -1009,11 +1009,11 @@
 
 			 	    $(this).empty().append(thdiv).removeAttr('width');
 			 	    if (!$(this).attr("isch")) {
-			 	        $(this).mousedown(function (e) {
+			 	        $(this).mousedown(function(e) {
 			 	            g.dragStart('colMove', e, this);
 			 	        })
 						.hover(
-							function () {
+							function() {
 
 							    if (!g.colresize && !$(this).hasClass('thMove') && !g.colCopy) $(this).addClass('thOver');
 
@@ -1077,7 +1077,7 @@
 							    }
 
 							},
-							function () {
+							function() {
 							    $(this).removeClass('thOver');
 							    if ($(this).attr('abbr') != p.sortname) $('div', this).removeClass('s' + p.sortorder);
 							    else if ($(this).attr('abbr') == p.sortname) {
@@ -1103,7 +1103,7 @@
         $(t).before(g.bDiv);
         $(g.bDiv)
 		.css({ height: (p.height == 'auto') ? 'auto' : p.height + "px" })
-		.scroll(function (e) { g.scroll(); })
+		.scroll(function(e) { g.scroll(); })
 		.append(t)
 		;
 
@@ -1144,21 +1144,21 @@
 
             $('thead tr:first th', g.hDiv).each
 			(
-			 	function () {
+			 	function() {
 			 	    var cgDiv = document.createElement('div');
 			 	    $(g.cDrag).append(cgDiv);
 			 	    if (!p.cgwidth) p.cgwidth = $(cgDiv).width();
 			 	    $(cgDiv).css({ height: cdheight + hdheight })
-						.mousedown(function (e) { g.dragStart('colresize', e, this); })
+						.mousedown(function(e) { g.dragStart('colresize', e, this); })
 						;
 			 	    if ($.browser.msie && $.browser.version < 7.0) {
 			 	        g.fixHeight($(g.gDiv).height());
 			 	        $(cgDiv).hover(
-								function () {
+								function() {
 								    g.fixHeight();
 								    $(this).addClass('dragging');
 								},
-								function () { if (!g.colresize) $(this).removeClass('dragging'); }
+								function() { if (!g.colresize) $(this).removeClass('dragging'); }
 							);
 			 	    }
 			 	}
@@ -1177,7 +1177,7 @@
         if (p.resizable && p.height != 'auto') {
             g.vDiv.className = 'vGrip';
             $(g.vDiv)
-		.mousedown(function (e) { g.dragStart('vresize', e); })
+		.mousedown(function(e) { g.dragStart('vresize', e); })
 		.html('<span></span>');
             $(g.bDiv).after(g.vDiv);
         }
@@ -1185,12 +1185,12 @@
         if (p.resizable && p.width != 'auto' && !p.nohresize) {
             g.rDiv.className = 'hGrip';
             $(g.rDiv)
-		.mousedown(function (e) { g.dragStart('vresize', e, true); })
+		.mousedown(function(e) { g.dragStart('vresize', e, true); })
 		.html('<span></span>')
 		.css('height', $(g.gDiv).height())
 		;
             if ($.browser.msie && $.browser.version < 7.0) {
-                $(g.rDiv).hover(function () { $(this).addClass('hgOver'); }, function () { $(this).removeClass('hgOver'); });
+                $(g.rDiv).hover(function() { $(this).addClass('hgOver'); }, function() { $(this).removeClass('hgOver'); });
             }
             $(g.gDiv).append(g.rDiv);
         }
@@ -1203,13 +1203,13 @@
             var html = '<div class="pGroup"><div class="pFirst pButton" title="转到第一页"><span></span></div><div class="pPrev pButton" title="转到上一页"><span></span></div> </div><div class="btnseparator"></div> <div class="pGroup"><span class="pcontrol">当前 <input type="text" size="1" value="1" /> ,总页数 <span> 1 </span></span></div><div class="btnseparator"></div><div class="pGroup"> <div class="pNext pButton" title="转到下一页"><span></span></div><div class="pLast pButton" title="转到最后一页"><span></span></div></div><div class="btnseparator"></div><div class="pGroup"> <div class="pReload pButton" title="刷新"><span></span></div> </div> <div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
             $('div', g.pDiv).html(html);
 
-            $('.pReload', g.pDiv).click(function () { g.populate(); });
-            $('.pFirst', g.pDiv).click(function () { g.changePage('first'); });
-            $('.pPrev', g.pDiv).click(function () { g.changePage('prev'); });
-            $('.pNext', g.pDiv).click(function () { g.changePage('next'); });
-            $('.pLast', g.pDiv).click(function () { g.changePage('last'); });
-            $('.pcontrol input', g.pDiv).keydown(function (e) { if (e.keyCode == 13) g.changePage('input'); });
-            if ($.browser.msie && $.browser.version < 7) $('.pButton', g.pDiv).hover(function () { $(this).addClass('pBtnOver'); }, function () { $(this).removeClass('pBtnOver'); });
+            $('.pReload', g.pDiv).click(function() { g.populate(); });
+            $('.pFirst', g.pDiv).click(function() { g.changePage('first'); });
+            $('.pPrev', g.pDiv).click(function() { g.changePage('prev'); });
+            $('.pNext', g.pDiv).click(function() { g.changePage('next'); });
+            $('.pLast', g.pDiv).click(function() { g.changePage('last'); });
+            $('.pcontrol input', g.pDiv).keydown(function(e) { if (e.keyCode == 13) g.changePage('input'); });
+            if ($.browser.msie && $.browser.version < 7) $('.pButton', g.pDiv).hover(function() { $(this).addClass('pBtnOver'); }, function() { $(this).removeClass('pBtnOver'); });
 
             if (p.useRp) {
                 var opt = "";
@@ -1219,7 +1219,7 @@
                 };
                 $('.pDiv2', g.pDiv).prepend("<div class='pGroup'>每页 <select name='rp'>" + opt + "</select>条</div> <div class='btnseparator'></div>");
                 $('select', g.pDiv).change(
-					function () {
+					function() {
 					    if (p.onRpChange)
 					        p.onRpChange(+this.value);
 					    else {
@@ -1234,7 +1234,7 @@
             //add search button
             if (p.searchitems) {
                 $('.pDiv2', g.pDiv).prepend("<div class='pGroup'> <div class='pSearch pButton'><span></span></div> </div>  <div class='btnseparator'></div>");
-                $('.pSearch', g.pDiv).click(function () { $(g.sDiv).slideToggle('fast', function () { $('.sDiv:visible input:first', g.gDiv).trigger('focus'); }); });
+                $('.pSearch', g.pDiv).click(function() { $(g.sDiv).slideToggle('fast', function() { $('.sDiv:visible input:first', g.gDiv).trigger('focus'); }); });
                 //add search box
                 g.sDiv.className = 'sDiv';
 
@@ -1260,8 +1260,8 @@
 
                 $(g.sDiv).append("<div class='sDiv2'>快速检索：<input type='text' size='30' name='q' class='qsbox' /> <select name='qtype'>" + sopt + "</select> <input type='button' name='qclearbtn' value='清空' /></div>");
 
-                $('input[name=q],select[name=qtype]', g.sDiv).keydown(function (e) { if (e.keyCode == 13) g.doSearch(); });
-                $('input[name=qclearbtn]', g.sDiv).click(function () { $('input[name=q]', g.sDiv).val(''); p.query = ''; g.doSearch(); });
+                $('input[name=q],select[name=qtype]', g.sDiv).keydown(function(e) { if (e.keyCode == 13) g.doSearch(); });
+                $('input[name=qclearbtn]', g.sDiv).click(function() { $('input[name=q]', g.sDiv).val(''); p.query = ''; g.doSearch(); });
                 $(g.bDiv).after(g.sDiv);
 
             }
@@ -1278,7 +1278,7 @@
                 $(g.mDiv).append('<div class="ptogtitle" title="Minimize/Maximize Table"><span></span></div>');
                 $('div.ptogtitle', g.mDiv).click
 					(
-					 	function () {
+					 	function() {
 					 	    $(g.gDiv).toggleClass('hideBody');
 					 	    $(this).toggleClass('vsble');
 					 	}
@@ -1331,36 +1331,39 @@
 
             $('th div', g.hDiv).each
 			(
-			 	function () {
-			 	    var kcol = $("th[axis='col" + cn + "']", g.hDiv)[0];
-			 	    if (kcol == null) return;
-			 	    var chkall = $("input[type='checkbox']", this);
-			 	    if (chkall.length > 0) {
-			 	        chkall[0].onclick = g.checkAllOrNot;
-			 	        return;
-			 	    }
-			 	    if (kcol.toggle == false || this.innerHTML == "") {
-			 	        cn++;
-			 	        return;
-			 	    }
-			 	    var chk = 'checked="checked"';
-			 	    if (kcol.style.display == 'none') chk = '';
+			 	function() {
+                        var kcol = $(this).parent("th");
+                        var chkall = $("input[type='checkbox']", this);
+                        if (chkall.length > 0) {
+                            chkall[0].onclick = g.checkAllOrNot;
+                            return;
+                        }
+                        if (kcol.attr("isch")) {
+                            return;
+                        }
+                        if (kcol[0].toggle == false || this.innerHTML == "") {
+                            cn++;
+                            return;
+                        }
+                        var chk = 'checked="checked"';
+                        if (kcol.css("display") == 'none')
+                        { chk = ''; }
 
-			 	    $('tbody', g.nDiv).append('<tr><td class="ndcol1"><input type="checkbox" ' + chk + ' class="togCol noborder" value="' + cn + '" /></td><td class="ndcol2">' + this.innerHTML + '</td></tr>');
-			 	    cn++;
+                        $('tbody', g.nDiv).append('<tr><td class="ndcol1"><input type="checkbox" ' + chk + ' class="togCol noborder" value="' + cn + '" /></td><td class="ndcol2">' + this.innerHTML + '</td></tr>');
+                        cn++;
 			 	}
 			);
 
             if ($.browser.msie && $.browser.version < 7.0)
                 $('tr', g.nDiv).hover
 				(
-				 	function () { $(this).addClass('ndcolover'); },
-					function () { $(this).removeClass('ndcolover'); }
+				 	function() { $(this).addClass('ndcolover'); },
+					function() { $(this).removeClass('ndcolover'); }
 				);
 
             $('td.ndcol2', g.nDiv).click
 			(
-			 	function () {
+			 	function() {
 			 	    if ($('input:checked', g.nDiv).length <= p.minColToggle && $(this).prev().find('input')[0].checked) return false;
 			 	    return g.toggleCol($(this).prev().find('input').val());
 			 	}
@@ -1368,7 +1371,7 @@
 
             $('input.togCol', g.nDiv).click
 			(
-			 	function () {
+			 	function() {
 
 			 	    if ($('input:checked', g.nDiv).length < p.minColToggle && this.checked == false) return false;
 			 	    $(this).parent().next().trigger('click');
@@ -1384,7 +1387,7 @@
             //.attr('title', 'Hide/Show Columns')
 			.click
 			(
-			 	function () {
+			 	function() {
 			 	    $(g.nDiv).toggle(); return true;
 			 	}
 			);
@@ -1403,17 +1406,17 @@
 
         // add flexigrid events
         $(g.bDiv)
-		.hover(function () { $(g.nDiv).hide(); $(g.nBtn).hide(); }, function () { if (g.multisel) g.multisel = false; })
+		.hover(function() { $(g.nDiv).hide(); $(g.nBtn).hide(); }, function() { if (g.multisel) g.multisel = false; })
 		;
         $(g.gDiv)
-		.hover(function () { }, function () { $(g.nDiv).hide(); $(g.nBtn).hide(); })
+		.hover(function() { }, function() { $(g.nDiv).hide(); $(g.nBtn).hide(); })
 		;
 
         //add document events
         $(document)
-		.mousemove(function (e) { g.dragMove(e); })
-		.mouseup(function (e) { g.dragEnd(); })
-		.hover(function () { }, function () { g.dragEnd(); })
+		.mousemove(function(e) { g.dragMove(e); })
+		.mouseup(function(e) { g.dragEnd(); })
+		.hover(function() { }, function() { g.dragEnd(); })
 		;
 
         //browser adjustments
@@ -1442,17 +1445,17 @@
 
     var docloaded = false;
 
-    $(document).ready(function () { docloaded = true });
+    $(document).ready(function() { docloaded = true });
 
-    $.fn.flexigrid = function (p) {
+    $.fn.flexigrid = function(p) {
 
-        return this.each(function () {
+        return this.each(function() {
             if (!docloaded) {
                 $(this).hide();
                 var t = this;
                 $(document).ready
 					(
-						function () {
+						function() {
 						    $.addFlex(t, p);
 						}
 					);
@@ -1463,74 +1466,74 @@
 
     }; //end flexigrid
 
-    $.fn.flexReload = function (p) { // function to reload grid
+    $.fn.flexReload = function(p) { // function to reload grid
 
-        return this.each(function () {
+        return this.each(function() {
             if (this.grid && this.p.url) this.grid.populate();
         });
 
     }; //end flexReload
     //重新指定宽度和高度
-    $.fn.flexResize = function (w, h) {
+    $.fn.flexResize = function(w, h) {
         var p = { width: w, height: h };
-        return this.each(function () {
+        return this.each(function() {
             if (this.grid) {
                 $.extend(this.p, p);
                 this.grid.reSize();
             }
         });
     };
-    $.fn.ChangePage = function (type) {
-        return this.each(function () {
+    $.fn.ChangePage = function(type) {
+        return this.each(function() {
             if (this.grid) {
                 this.grid.changePage(type);
             }
         })
     };
-    $.fn.flexOptions = function (p) { //function to update general options
+    $.fn.flexOptions = function(p) { //function to update general options
 
-        return this.each(function () {
+        return this.each(function() {
             if (this.grid) $.extend(this.p, p);
         });
 
     }; //end flexOptions
-    $.fn.GetOptions = function () {
+    $.fn.GetOptions = function() {
         if (this[0].grid) {
             return this[0].p;
         }
         return null;
     };
     // 获取选中的行，返回选中行的主键
-    $.fn.getCheckedRows = function () {
+    $.fn.getCheckedRows = function() {
         if (this[0].grid) {
             return this[0].grid.getCheckedRows();
         }
         return [];
     };
     // 获取选中的行，返回选中行的所有数据
-    $.fn.getSelectedRows = function () {
+    $.fn.getSelectedRows = function() {
         if (this[0].grid) {
             return this[0].grid.getSelectedRows();
         }
         return [];
     };
-    $.fn.flexToggleCol = function (cid, visible) { // function to reload grid
+    $.fn.flexToggleCol = function(cid, visible) { // function to reload grid
 
-        return this.each(function () {
+        return this.each(function() {
             if (this.grid) this.grid.toggleCol(cid, visible);
         });
 
     }; //end flexToggleCol
 
-    $.fn.flexAddData = function (data) { // function to add data to grid
+    $.fn.flexAddData = function(data) { // function to add data to grid
 
-        return this.each(function () {
+        return this.each(function() {
             if (this.grid) this.grid.addData(data);
         });
 
     };
 
-    $.fn.noSelect = function (p) { //no select plugin by me :-)
+    $.fn.noSelect = function(p) { //no select plugin by me :-)
         if (p == null)
             prevent = true;
         else
@@ -1538,20 +1541,20 @@
 
         if (prevent) {
 
-            return this.each(function () {
-                if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function () { return false; });
+            return this.each(function() {
+                if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function() { return false; });
                 else if ($.browser.mozilla) {
                     $(this).css('MozUserSelect', 'none');
                     $('body').trigger('focus');
                 }
-                else if ($.browser.opera) $(this).bind('mousedown', function () { return false; });
+                else if ($.browser.opera) $(this).bind('mousedown', function() { return false; });
                 else $(this).attr('unselectable', 'on');
             });
 
         } else {
 
 
-            return this.each(function () {
+            return this.each(function() {
                 if ($.browser.msie || $.browser.safari) $(this).unbind('selectstart');
                 else if ($.browser.mozilla) $(this).css('MozUserSelect', 'inherit');
                 else if ($.browser.opera) $(this).unbind('mousedown');
