@@ -7,6 +7,7 @@ using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Exceptions;
 using xEasyApp.Core.Configurations;
 using xEasyApp.Core.Entities;
+using System.Transactions;
 
 namespace xEasyApp.Core.Biz
 {
@@ -16,9 +17,11 @@ namespace xEasyApp.Core.Biz
         {
             _roleRepository=new RoleInfoRepository();
             _deptRepository =new DepartmentRepository();
+            _userRepository = new UserInfoRepository();
         }
         private RoleInfoRepository _roleRepository;
         private DepartmentRepository _deptRepository;
+        private UserInfoRepository _userRepository;
         public List<RoleInfo> QueryRoleList()
         {
             return _roleRepository.QueryAll();
@@ -102,6 +105,54 @@ namespace xEasyApp.Core.Biz
         { 
             return _deptRepository.QueryDeptUserList(view,deptCode);
         }
+        public int DeleteDeptInfo(string id)
+        {
+            int ret = -1;
+            try
+            {              
+               ret = _deptRepository.DeleteDeptInfo(id);
+              
+            }
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
+            return ret;
 
+        }
+        public UserInfo GetUserInfo(string UserUID)
+        {
+            return _userRepository.Get(UserUID);
+        }
+
+        public bool ValidUserUID(string UserUID)
+        {
+            return _userRepository.ValidUserUID(UserUID);
+        }
+
+        public int DeleteUserInfo(string id)
+        {
+            int ret = -1;
+            try
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    ret = _userRepository.DeleteUserInfo(id);
+                    scope.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
+            return ret;
+        }
+
+        public void SaveUserInfo(UserInfo user)
+        {
+            _userRepository.Save(user);
+        }
+
+        
     }
 }

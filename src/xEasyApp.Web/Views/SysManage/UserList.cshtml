@@ -1,0 +1,149 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+    <title>角色列表</title>
+    @Html.Css("main", "flexigrid","tree")
+    <style type="text/css">
+        .title
+        {
+            color:#15428b;
+            font-weight:bold; 
+            background:url("../../images/icons/grid.png") no-repeat 2px center;   
+            padding:2px 2px 2px 24px;
+            margin-left:5px;           
+            display:block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="MainContainer" style="margin: 1px 0px 0xp 0px;overflow:hidden;">  
+      <table width="100%" cellpadding="0" cellspacing="0" class="tree_grid_panel_table">
+        <tbody>
+            <tr>
+                <td style="width:170px;">
+                    <div class="toolbar"><span class="title" >部门列表</span></div>
+                    <div id="depttree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
+                </td>
+                <td style="width:2px;">
+                </td>
+                <td>          
+                 <div id="deptheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="depttitle" class="title">用户管理</span></div>      
+                 <table id="UserInfoList" style="display:none;"></table>      
+                </td>
+            </tr>
+        </tbody>
+       </table> 
+       <input type="hidden" value="-1" id="hdDeptid" />    
+       <input type="hidden" value="" id="hdDeptName" />
+    </div>
+   
+    @Html.Js("jquery", "common",  "flexigrid","tree")   
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth - 2 - 170; // 减去边框和左边的宽度
+            var otherpm = 113;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("DeptUserList",new { DeptCode=ViewData["DeptCode"] })',
+                colModel: [
+                    { display: '用户标识', name: 'UserUID', width: 100, sortable: false, align: 'left', iskey: true },
+			        { display: '用户名称', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },
+                    { display: '账号状态', name: 'AccountState', width: 60, sortable: false, align: 'left', process: fomartAccountState },
+                    { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, align: 'left' },
+			        { display: '最后修改时间', name: 'LastUpdateTime', width: 120, sortable: false, align: 'left' },
+                    { display: '排序号', name: 'Sequence', width: 50, sortable: false, align: 'left', hide: true },
+                    { display: '操作', name: 'UserUID', width: 120, sortable: false, align: 'left', process: formatOp, toggle: false }
+				],
+                buttons: [
+                            { name: 'Add', displayname: "新建", title: "新建用户", bclass: 'Add', onpress: toolbarItem_onclick },
+                            { separator: true }
+                         ],
+                sortname: "Sequence",
+                sortorder: "asc",
+                title: false,
+                usepager: true,
+                showcheckbox: false,
+                rowbinddata: true
+            };
+
+            var grid = $("#UserInfoList").flexigrid(option);
+
+            function fomartAccountState(value) {
+                if (value == "0") {
+                    return "正常";
+                }
+                else if (value == "1") { 
+                    return "停用"
+                }
+                return value;
+            }
+
+            $("#depttree").treeview({
+                url: '@Url.Action("DeptInfoTreeList")',
+                showcheck: false,
+                onnodeclick: TreeNode_Click,
+                theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+            }).height(maiheight - 30);
+            function TreeNode_Click(data) {
+                var p = { extParam: [{ name: "deptCode", value: data.value}] };
+                $("#UserInfoList").flexOptions(p).flexReload();
+                $("#hdDeptid").val(data.value);
+                $("#hdDeptName").val(data.text);
+                $("#depttitle").text(data.text);
+                //data.expand();
+            } // end of TreeNode_Click
+
+            function formatOp(value, id, cell) {
+                var a = [];                
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='edit' title='编辑'>编辑</span></a>&nbsp;");
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:del('", value, "','", cell[1], "')\"><span class='delete' title='删除'>删除</span></a>");
+              
+                return a.join("");
+            }
+            function toolbarItem_onclick(cmd, grid) {
+                if (cmd == "Add") {
+                    var parentCode = $("#hdDeptid").val();
+                    var parentName = encodeURIComponent($("#hdDeptName").val());
+                    OpenModelWindow('@Url.Action("EditUser")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+                }
+            } // end of toolbarItem_onclick
+
+
+        });                         // end of ready
+        function del(userCode, userName) {
+            if (confirm("你确定要删除[" + userName + "]?")) {
+                showLoadingMsg("正在删除...", { left: 300, top: 2 })
+                $.post('@Url.Action("DeleteUserInfo","SysManage")', { id: deptCode },
+                     function (data) {
+                         if (data.IsSuccess) {
+                             showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
+                             flushGrid();
+                         }
+                         else {
+                             hideLoadingMsg();
+                             showErrorTip(data.Msg, { left: 300, top: 2 }, true, 5000);
+                         }
+                     },
+                "json"
+                );
+            }
+        }
+        function edit(deptCode) {
+            OpenModelWindow('@Url.Action("EditUser")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改用户信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+        }
+      
+        function flushGrid() {
+            $("#UserInfoList").flexReload(); //
+        }
+    </script>
+</body>
+</html>
