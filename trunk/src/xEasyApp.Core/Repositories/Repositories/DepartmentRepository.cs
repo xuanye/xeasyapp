@@ -126,5 +126,10 @@ namespace xEasyApp.Core.Repositories
 
             return pl;
         }
+
+        public int DeleteDeptInfo(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

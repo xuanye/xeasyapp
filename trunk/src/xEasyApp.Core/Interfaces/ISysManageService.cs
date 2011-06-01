@@ -32,5 +32,15 @@ namespace xEasyApp.Core.Interfaces
         bool ValidDeptCode(string deptCode);
 
         PagedList<UserInfo> QueryDeptUserList(Entities.PageView view, string DeptCode);
+
+        UserInfo GetUserInfo(string UserUID);
+
+        bool ValidUserUID(string UserUID);
+
+        int DeleteUserInfo(string id);
+
+        void SaveUserInfo(UserInfo user);
+
+        int DeleteDeptInfo(string id);
     }
 }

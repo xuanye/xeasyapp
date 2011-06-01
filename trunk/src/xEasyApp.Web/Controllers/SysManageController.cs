@@ -8,6 +8,7 @@ using xEasyApp.Core.JsonEntities;
 using xEasyApp.Core.Interfaces;
 using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Entities;
+using xEasyApp.Core.Exceptions;
 
 namespace xEasyApp.Web.Controllers
 {
@@ -278,7 +279,44 @@ namespace xEasyApp.Web.Controllers
             return Json(msg);
         }
 
-
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteDeptInfo(string id)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            if (!string.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    int ret = sysManageService.DeleteDeptInfo(id);
+                    if (ret > 0)
+                    {
+                        msg.IsSuccess = true;
+                        msg.Msg = "操作成功";
+                    }
+                    else
+                    {
+                        msg.IsSuccess = false;
+                        msg.Msg = "操作失败:操作完成了,但是莫有效果";
+                    }
+                }
+                catch (BizException bizex)
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = bizex.Message;
+                }
+                catch //(Exception ex)
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = "操作失败,请稍后重试！";
+                }
+            }
+            else
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "参数错误";
+            }
+            return Json(msg);
+        }
         public ContentResult ValidDeptCode(string DeptCode)
         {
             bool isValid = sysManageService.ValidDeptCode(DeptCode);
@@ -314,6 +352,105 @@ namespace xEasyApp.Web.Controllers
             PagedList<UserInfo> pageList = sysManageService.QueryDeptUserList(view, DeptCode);
             var data = JsonFlexiGridData.ConvertFromPagedList(pageList, colkey, colsinfo.Split(','));
             return Json(data);
+        }
+       #endregion
+
+       #region 用户管理
+        public ActionResult UserList()
+        {
+            return View();
+        }
+
+        public ActionResult EditUser(string id,string deptCode,string deptName)
+        {
+            UserInfo u = null;
+            if (!string.IsNullOrEmpty(id))
+            {
+                u = sysManageService.GetUserInfo(id);
+                if (u == null)
+                {
+                    throw new ArgumentException("参数错误", "id");
+                }
+            }
+            else
+            {
+                u = new UserInfo();
+                u.DeptCode = deptCode;
+                u.DeptName = deptName;
+            }
+            return View(u);
+        }
+         [AcceptVerbs(HttpVerbs.Post)]
+        public ContentResult ValidUserUID(string UserUID)
+        {
+            bool isValid = sysManageService.ValidUserUID(UserUID);
+            return Content(isValid ? "true" : "false", "application/json");
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteUserInfo(string id)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            if (!string.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    int ret = sysManageService.DeleteUserInfo(id);
+                    if (ret > 0)
+                    {
+                        msg.IsSuccess = true;
+                        msg.Msg = "操作成功";
+                    }
+                    else
+                    {
+                        msg.IsSuccess = false;
+                        msg.Msg = "操作失败:操作完成了,但是莫有效果";
+                    }
+                }
+                catch (BizException bizex)
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = bizex.Message;
+                }
+                catch //(Exception ex)
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = "操作失败,请稍后重试！";
+                }
+            }
+            else
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "参数错误";
+            }
+            return Json(msg);
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SaveUserInfo(string id, UserInfo user)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                user.IsNew = string.IsNullOrEmpty(id);
+
+                user.LastUpdateUserUID = base.UserId;
+                user.LastUpdateUserName = base.CurrentUser.FullName;
+                user.LastUpdateTime = DateTime.Now;
+
+                sysManageService.SaveUserInfo(user);
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (BizException ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = ex.Message;
+            }
+            catch
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败,请稍后重试！";
+            }
+            return Json(msg);
         }
        #endregion
     }

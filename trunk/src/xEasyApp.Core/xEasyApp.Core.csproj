@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -78,6 +79,7 @@
     <Compile Include="Repositories\Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\Repositories\RoleInfoRepository.cs" />
+    <Compile Include="Repositories\Repositories\UserInfoRepository.cs" />
     <Compile Include="Repositories\SqlHelper.cs" />
     <Compile Include="Repositories\SqlHelperConfig.cs" />
     <Compile Include="Repositories\StoredProcedure.cs" />
