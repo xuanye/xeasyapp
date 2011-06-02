@@ -1139,7 +1139,7 @@ namespace xEasyApp.Core.Repositories {
 			}	
 		    public UserInfo Get(string key)
 			{
-				string sql = "SELECT [UserUID],[FullName],[Password],[DeptCode],[DeptName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [UserInfos] WHERE [UserUID]=@UserUID";
+				string sql = "SELECT [UserUID],[FullName],[Password],[DeptCode],[DeptName],[IsManager],[IsSystem],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [UserInfos] WHERE [UserUID]=@UserUID";
 				SqlParameter p =new SqlParameter("@UserUID",key);
 				UserInfo item =null;
 				using(IDataReader reader = base.ExcuteDataReader(sql,p))
@@ -1155,11 +1155,16 @@ namespace xEasyApp.Core.Repositories {
 						 {
 							item.DeptName = reader.GetString(4);
 						 }
-						 item.Sequence = reader.GetInt32(5);
-							item.AccountState = reader.GetByte(6);
-							item.LastUpdateUserUID = reader.GetString(7);
-							item.LastUpdateUserName = reader.GetString(8);
-							item.LastUpdateTime = reader.GetDateTime(9);
+						 item.IsManager = reader.GetBoolean(5);
+							if(!reader.IsDBNull(6))
+						 {
+							item.IsSystem = reader.GetBoolean(6);
+						 }
+						 item.Sequence = reader.GetInt32(7);
+							item.AccountState = reader.GetByte(8);
+							item.LastUpdateUserUID = reader.GetString(9);
+							item.LastUpdateUserName = reader.GetString(10);
+							item.LastUpdateTime = reader.GetDateTime(11);
 							
 					}
 				}
@@ -1173,13 +1178,15 @@ namespace xEasyApp.Core.Repositories {
 			}
 			public void Insert(UserInfo item)
 			{
-				string sql="INSERT INTO [UserInfos] ([UserUID],[FullName],[Password],[DeptCode],[DeptName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@UserUID,@FullName,@Password,@DeptCode,@DeptName,@Sequence,@AccountState,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
+				string sql="INSERT INTO [UserInfos] ([UserUID],[FullName],[Password],[DeptCode],[DeptName],[IsManager],[IsSystem],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@UserUID,@FullName,@Password,@DeptCode,@DeptName,@IsManager,@IsSystem,@Sequence,@AccountState,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
 				List<SqlParameter> SPParams = new List<SqlParameter>();
 				SPParams.Add(new SqlParameter("@UserUID",item.UserUID));	
 				SPParams.Add(new SqlParameter("@FullName",item.FullName));	
 				SPParams.Add(new SqlParameter("@Password",item.Password));	
 				SPParams.Add(new SqlParameter("@DeptCode",item.DeptCode));	
 				SPParams.Add(new SqlParameter("@DeptName",item.DeptName));	
+				SPParams.Add(new SqlParameter("@IsManager",item.IsManager));	
+				SPParams.Add(new SqlParameter("@IsSystem",item.IsSystem));	
 				SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
 				SPParams.Add(new SqlParameter("@AccountState",item.AccountState));	
 				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
@@ -1198,6 +1205,8 @@ namespace xEasyApp.Core.Repositories {
 					cols.Add("Password","[Password]");
 					cols.Add("DeptCode","[DeptCode]");
 					cols.Add("DeptName","[DeptName]");
+					cols.Add("IsManager","[IsManager]");
+					cols.Add("IsSystem","[IsSystem]");
 					cols.Add("Sequence","[Sequence]");
 					cols.Add("AccountState","[AccountState]");
 					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
@@ -1240,6 +1249,14 @@ namespace xEasyApp.Core.Repositories {
 					{
 						SPParams.Add(new SqlParameter("@DeptName",item.DeptName));	
 					} 	
+					if(item.IsChanged("IsManager"))
+					{
+						SPParams.Add(new SqlParameter("@IsManager",item.IsManager));	
+					} 	
+					if(item.IsChanged("IsSystem"))
+					{
+						SPParams.Add(new SqlParameter("@IsSystem",item.IsSystem));	
+					} 	
 					if(item.IsChanged("Sequence"))
 					{
 						SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
@@ -1265,7 +1282,7 @@ namespace xEasyApp.Core.Repositories {
 			}
 			public List<UserInfo> QueryAll()
 			{
-				string sql ="SELECT [UserUID],[FullName],[Password],[DeptCode],[DeptName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [UserInfos]";
+				string sql ="SELECT [UserUID],[FullName],[Password],[DeptCode],[DeptName],[IsManager],[IsSystem],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [UserInfos]";
 				List<UserInfo>  list =new List<UserInfo>();
 				using(IDataReader reader = base.ExcuteDataReader(sql))
 				{
@@ -1280,139 +1297,16 @@ namespace xEasyApp.Core.Repositories {
 						 {
 							item.DeptName = reader.GetString(4);
 						 }
-						 item.Sequence = reader.GetInt32(5);
-							item.AccountState = reader.GetByte(6);
-							item.LastUpdateUserUID = reader.GetString(7);
-							item.LastUpdateUserName = reader.GetString(8);
-							item.LastUpdateTime = reader.GetDateTime(9);
-													list.Add(item);
-					}
-				}
-				return list;
-			}
-
-        }
-        
-        /// <summary>
-        /// Table: UserDeptRelation
-        /// Primary Key: UDRID
-        /// </summary>
-        public partial class UserDeptRelationRepository:BaseRepository 
-		{			
-			public void Save(UserDeptRelation item)
-			{
-				if(item.IsNew)
-				{
-					Insert(item);
-				}
-				else
-				{
-					Update(item);
-				}
-			}	
-		    public UserDeptRelation Get(int key)
-			{
-				string sql = "SELECT [UDRID],[UserUID],[DeptCode],[IsPrimary] FROM [UserDeptRelation] WHERE [UDRID]=@UDRID";
-				SqlParameter p =new SqlParameter("@UDRID",key);
-				UserDeptRelation item =null;
-				using(IDataReader reader = base.ExcuteDataReader(sql,p))
-				{
-					if(reader.Read())
-					{
-						item =new UserDeptRelation();
-						item.UDRID = reader.GetInt32(0);
-							item.UserUID = reader.GetString(1);
-							if(!reader.IsDBNull(2))
+						 item.IsManager = reader.GetBoolean(5);
+							if(!reader.IsDBNull(6))
 						 {
-							item.DeptCode = reader.GetString(2);
+							item.IsSystem = reader.GetBoolean(6);
 						 }
-						 item.IsPrimary = reader.GetBoolean(3);
-							
-					}
-				}
-				return item;
-			}
-			public int Delete(int key)
-			{
-				string sql ="DELETE FROM [UserDeptRelation] WHERE [UDRID]=@UDRID";
-				SqlParameter p =new SqlParameter("@UDRID",key);
-				return base.ExecuteNonQuery(sql,p);	
-			}
-			public void Insert(UserDeptRelation item)
-			{
-				string sql="INSERT INTO [UserDeptRelation] ([UserUID],[DeptCode],[IsPrimary]) VALUES (@UserUID,@DeptCode,@IsPrimary)";
-				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@UserUID",item.UserUID));	
-				SPParams.Add(new SqlParameter("@DeptCode",item.DeptCode));	
-				SPParams.Add(new SqlParameter("@IsPrimary",item.IsPrimary));	
-				sql +=";SELECT Scope_Identity()";
-				object o = base.ExecuteScalar(sql, SPParams.ToArray());
-				if(o!=null){
-					item.UDRID =Convert.ToInt32(o);
-				}
-			}
-            public void Update(UserDeptRelation item)
-			{
-				if(item.ChangedPropertyCount>0)
-				{
-					StringBuilder sqlbuilder = new StringBuilder();
-					sqlbuilder.Append("UPDATE [UserDeptRelation] SET ");
-					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("UserUID","[UserUID]");
-					cols.Add("DeptCode","[DeptCode]");
-					cols.Add("IsPrimary","[IsPrimary]");
-					int i = 0;
-					//UPDATE COLUMNS
-					foreach (string p in item.ChangedPropertyList)
-					{ 
-						if(!cols.ContainsKey(p))
-						{
-							continue;
-						}
-						if (i > 0)
-						{
-							sqlbuilder.Append(",");
-						}
-						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
-						i++;
-					}
-					//WHERE;
-					sqlbuilder.Append(" WHERE [UDRID]=@UDRID");
-
-					List<SqlParameter> SPParams = new List<SqlParameter>();
-					 SPParams.Add(new SqlParameter("@UDRID",item.UDRID));	
- 	
-					if(item.IsChanged("UserUID"))
-					{
-						SPParams.Add(new SqlParameter("@UserUID",item.UserUID));	
-					} 	
-					if(item.IsChanged("DeptCode"))
-					{
-						SPParams.Add(new SqlParameter("@DeptCode",item.DeptCode));	
-					} 	
-					if(item.IsChanged("IsPrimary"))
-					{
-						SPParams.Add(new SqlParameter("@IsPrimary",item.IsPrimary));	
-					}
-					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
-				}
-			}
-			public List<UserDeptRelation> QueryAll()
-			{
-				string sql ="SELECT [UDRID],[UserUID],[DeptCode],[IsPrimary] FROM [UserDeptRelation]";
-				List<UserDeptRelation>  list =new List<UserDeptRelation>();
-				using(IDataReader reader = base.ExcuteDataReader(sql))
-				{
-					while(reader.Read())
-					{
-						UserDeptRelation item =new UserDeptRelation();
-						item.UDRID = reader.GetInt32(0);
-							item.UserUID = reader.GetString(1);
-							if(!reader.IsDBNull(2))
-						 {
-							item.DeptCode = reader.GetString(2);
-						 }
-						 item.IsPrimary = reader.GetBoolean(3);
+						 item.Sequence = reader.GetInt32(7);
+							item.AccountState = reader.GetByte(8);
+							item.LastUpdateUserUID = reader.GetString(9);
+							item.LastUpdateUserName = reader.GetString(10);
+							item.LastUpdateTime = reader.GetDateTime(11);
 													list.Add(item);
 					}
 				}
