@@ -873,6 +873,34 @@ namespace xEasyApp.Core.Repositories {
 					OnPropertyChanged("DeptName");
 				}
             }
+			private bool _IsManager;
+			/// <summary>
+			///  IsManager
+			/// </summary>
+            public bool IsManager{
+                get{
+					return _IsManager;
+				}
+				set
+				{
+					_IsManager= value;
+					OnPropertyChanged("IsManager");
+				}
+            }
+			private bool? _IsSystem;
+			/// <summary>
+			///  IsSystem
+			/// </summary>
+            public bool? IsSystem{
+                get{
+					return _IsSystem;
+				}
+				set
+				{
+					_IsSystem= value;
+					OnPropertyChanged("IsSystem");
+				}
+            }
 			private int _Sequence;
 			/// <summary>
 			///  Sequence
@@ -941,71 +969,6 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_LastUpdateTime= value;
 					OnPropertyChanged("LastUpdateTime");
-				}
-            }
-  		      
-        }
-        
-        /// <summary>
-        /// Table: UserDeptRelation
-        /// Primary Key: UDRID
-        /// </summary>
-        public partial class UserDeptRelation:BaseEntity {  
-            
-			private int _UDRID;
-			/// <summary>
-			///  UDRID
-			/// </summary>
-            public int UDRID{
-                get{
-					return _UDRID;
-				}
-				set
-				{
-					_UDRID= value;
-					OnPropertyChanged("UDRID");
-				}
-            }
-			private string _UserUID;
-			/// <summary>
-			///  UserUID
-			/// </summary>
-            public string UserUID{
-                get{
-					return _UserUID;
-				}
-				set
-				{
-					_UserUID= value;
-					OnPropertyChanged("UserUID");
-				}
-            }
-			private string _DeptCode;
-			/// <summary>
-			///  DeptCode
-			/// </summary>
-            public string DeptCode{
-                get{
-					return _DeptCode;
-				}
-				set
-				{
-					_DeptCode= value;
-					OnPropertyChanged("DeptCode");
-				}
-            }
-			private bool _IsPrimary;
-			/// <summary>
-			///  IsPrimary
-			/// </summary>
-            public bool IsPrimary{
-                get{
-					return _IsPrimary;
-				}
-				set
-				{
-					_IsPrimary= value;
-					OnPropertyChanged("IsPrimary");
 				}
             }
   		      

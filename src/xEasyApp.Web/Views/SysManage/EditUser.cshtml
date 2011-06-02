@@ -60,6 +60,16 @@
                 </tr>
                  <tr>
                   <td style="width:70px;">
+                        <label>密码：</label>
+                  </td>
+                  <td>
+                        @Html.TextBox("Password", Model.Password, new { style = "width:90%;" })
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
                         <label>排序：</label>
                   </td>
                   <td>
@@ -68,7 +78,15 @@
                   </td>
                 
                 </tr>
-               
+                 <tr>
+                  <td style="width:70px;">
+                        <label>是否启用：</label>
+                  </td>
+                  <td>
+                       @Html.CheckBox("AccountState", Model.AccountState == 1);
+                  </td>
+                
+                </tr>
             </table>
            
             </div>
@@ -114,7 +132,7 @@
                  {
                      DeptCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.DeptCode))
                       {                        
-                        @:,remote:"@Url.Action("ValidDeptCode")"
+                        @:,remote:"@Url.Action("ValidUserCode")"
                       } 
                       },DeptName: { required: true, safe: true },
                       Sequence:{required:true,digits:true}
