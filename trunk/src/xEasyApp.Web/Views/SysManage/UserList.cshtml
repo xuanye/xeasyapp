@@ -53,7 +53,7 @@
             var option = {
                 height: gh,
                 width: mainWidth,
-                url: '@Url.Action("DeptUserList",new { DeptCode=ViewData["DeptCode"] })',
+                url: '@Url.Action("DeptUserList")',
                 colModel: [
                     { display: '用户标识', name: 'UserUID', width: 100, sortable: false, align: 'left', iskey: true },
 			        { display: '用户名称', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },
@@ -111,9 +111,9 @@
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
-                    var parentCode = $("#hdDeptid").val();
-                    var parentName = encodeURIComponent($("#hdDeptName").val());
-                    OpenModelWindow('@Url.Action("EditUser")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+                    var deptCode = $("#hdDeptid").val();
+                    var deptName = encodeURIComponent($("#hdDeptName").val());
+                    OpenModelWindow('@Url.Action("EditUser")?deptCode=' + deptCode + '&deptName=' + deptName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
                 }
             } // end of toolbarItem_onclick
 

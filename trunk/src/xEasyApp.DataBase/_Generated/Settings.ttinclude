@@ -201,6 +201,7 @@
         public bool IsNullable;
         public bool IsForeignKey;
 		public string Description;
+		public int Precision;
     }
     public class FKTable{
         public string ThisTable;

@@ -9,6 +9,7 @@ namespace xEasyApp.Core.Interfaces
 {
     public interface ISysManageService
     {
+       #region 角色相关
         List<RoleInfo> QueryRoleList();
 
         void SaveRoleInfo(RoleInfo ri);
@@ -19,6 +20,9 @@ namespace xEasyApp.Core.Interfaces
 
         bool ValidRoleCode(string RoleCode);
 
+        #endregion 
+
+       #region 部门相关
         List<Department> QueryDepartmentList();
 
         Department GetDeptInfo(string deptCode);
@@ -32,7 +36,11 @@ namespace xEasyApp.Core.Interfaces
         bool ValidDeptCode(string deptCode);
 
         PagedList<UserInfo> QueryDeptUserList(Entities.PageView view, string DeptCode);
+        int DeleteDeptInfo(string id);
 
+       #endregion
+
+       #region 用户相关
         UserInfo GetUserInfo(string UserUID);
 
         bool ValidUserUID(string UserUID);
@@ -40,7 +48,54 @@ namespace xEasyApp.Core.Interfaces
         int DeleteUserInfo(string id);
 
         void SaveUserInfo(UserInfo user);
+        #endregion
 
-        int DeleteDeptInfo(string id);
+       #region 权限相关
+
+        /// <summary>
+        /// 验证权限代码是否存在
+        /// </summary>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns></returns>
+        bool ValidPrivilegeCode(string privilegeCode);
+
+        /// <summary>
+        /// 判断用户是否拥有某个权限
+        /// </summary>
+        /// <param name="userUid">The user uid.</param>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified user uid has right; otherwise, <c>false</c>.
+        /// </returns>
+        bool HasRight(string userUid, string privilegeCode);
+
+        /// <summary>
+        /// 根据父权限表示获取子权限列表 ，用于树状结构，返回的字段不同
+        /// </summary>
+        /// <param name="parentCode">The parent code.</param>
+        /// <returns></returns>
+        List<Privilege> GetChildPrivileges(string parentCode);
+
+        /// <summary>
+        /// 根据父权限表示获取子权限列表 ，用于列表
+        /// </summary>
+        /// <param name="parentCode">The parent code.</param>
+        /// <returns></returns>
+        List<Privilege> QueryPrivilegeListByParentCode(string parentCode);
+        /// <summary>
+        ///保存对权限的修改
+        /// </summary>
+        /// <param name="p">The p.</param>
+        /// <returns></returns>
+        void SavePrivilege(Privilege p);
+
+        /// <summary>
+        /// 删除某个权限
+        /// </summary>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns></returns>
+        int DeletePrivilege(string privilegeCode);
+            
+       #endregion
     }
 }

@@ -1,9 +1,13 @@
-<#@ template language="C#" debug="False" hostspecific="True"  #>
+﻿<#@ template language="C#" debug="False" hostspecific="True"  #>
 <#@ output extension=".cs" #>
 <#@ include file="SQLServer.ttinclude" #>
 <#
 var tables = LoadTables();
 #>
+//=============================================
+// 该代码文件有程序自动生成，
+// 生成时间: <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #>
+// =============================================
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,13 +20,14 @@ namespace <#=Namespace#> {
         /// <summary>
         /// Table: <#=tbl.Name#>
         /// Primary Key: <#=tbl.PrimaryKey#>
+		/// <#=string.IsNullOrEmpty(tbl.Description)?tbl.Name:tbl.Description.Replace("\r\n", "\r\n            ///")#>
         /// </summary>
         public partial class <#=Cleans(tbl.CleanName)#>:BaseEntity {  
             
 <#          foreach(var col in tbl.Columns){#>
 			private <#=col.SysType#> _<#=col.CleanName#>;
 			/// <summary>
-			///  <#=col.Name.Replace("\r\n", "\r\n            ///")#>
+			///  <#=string.IsNullOrEmpty(col.Description)?col.Name:col.Description.Replace("\r\n", "\r\n            ///")#>
 			/// </summary>
             public <#=col.SysType#> <#=col.CleanName#>{
                 get{

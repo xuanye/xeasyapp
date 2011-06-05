@@ -18,10 +18,12 @@ namespace xEasyApp.Core.Biz
             _roleRepository=new RoleInfoRepository();
             _deptRepository =new DepartmentRepository();
             _userRepository = new UserInfoRepository();
+            _privilegeDao = new PrivilegeRepository();
         }
         private RoleInfoRepository _roleRepository;
         private DepartmentRepository _deptRepository;
         private UserInfoRepository _userRepository;
+        private PrivilegeRepository _privilegeDao;
         public List<RoleInfo> QueryRoleList()
         {
             return _roleRepository.QueryAll();
@@ -153,6 +155,98 @@ namespace xEasyApp.Core.Biz
             _userRepository.Save(user);
         }
 
-        
+        #region 权限相关
+
+        /// <summary>
+        /// 验证权限代码是否存在
+        /// </summary>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns></returns>
+        public bool ValidPrivilegeCode(string privilegeCode)
+        {
+            return _privilegeDao.ValidPrivilegeCode(privilegeCode);
+        }
+
+        /// <summary>
+        /// 判断用户是否拥有某个权限
+        /// </summary>
+        /// <param name="userUid">The user uid.</param>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified user uid has right; otherwise, <c>false</c>.
+        /// </returns>
+        public bool HasRight(string userUid, string privilegeCode)
+        {
+            return false;
+        }
+
+        /// <summary>
+        ///  根据父权限表示获取子权限列表 ，用于树状结构，返回的字段不同
+        /// </summary>
+        /// <param name="parentCode">The parent code.</param>
+        /// <returns></returns>
+        public List<Privilege> GetChildPrivileges(string parentCode)
+        {
+            if (parentCode == null)
+            {
+                return _privilegeDao.GetTopLevelPrivileges();
+            }
+            else
+            {
+                return _privilegeDao.GetChildPrivileges(parentCode);
+            }
+        }
+
+        /// <summary>
+        /// 根据父权限表示获取子权限列表 ，用于列表
+        /// </summary>
+        /// <param name="parentCode">The parent code.</param>
+        /// <returns></returns>
+        public List<Privilege> QueryPrivilegeListByParentCode(string parentCode)
+        {
+            if (parentCode == null)
+            {
+                return _privilegeDao.QueryTopLevelPrivilegeList();
+            }
+            else
+            {
+                return _privilegeDao.QueryPrivilegeListByParentCode(parentCode);
+            }
+        }
+
+        /// <summary>
+        ///保存对权限的修改
+        /// </summary>
+        /// <param name="p">The p.</param>
+        /// <returns></returns>
+        public void SavePrivilege(Privilege p)
+        {
+            _privilegeDao.Save(p);
+        }
+
+        /// <summary>
+        /// 删除某个权限
+        /// </summary>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns></returns>
+        public int DeletePrivilege(string privilegeCode)
+        {
+            int ret = -1;
+            try
+            {
+                using(TransactionScope scope =new TransactionScope())
+                {
+                     ret =_privilegeDao.DeletePrivilege(privilegeCode);
+                     scope.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
+            return ret;
+        }
+
+        #endregion
     }
 }

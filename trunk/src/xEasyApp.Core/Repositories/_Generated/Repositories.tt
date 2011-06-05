@@ -1,9 +1,11 @@
 ﻿<#@ template language="C#v3.5" debug="False" hostspecific="True"  #>
 <#@ output extension=".cs" #>
 <#@ include file="SQLServer.ttinclude" #>
-<#
-    var tables = LoadTables();
-#>
+<# var tables = LoadTables();#>
+//=============================================
+// 该代码文件有程序自动生成，
+// 生成时间: <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #>
+// =============================================
 using System;
 using System.Data;
 using System.Text;

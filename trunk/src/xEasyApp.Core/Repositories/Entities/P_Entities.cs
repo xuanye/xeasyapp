@@ -17,4 +17,16 @@ namespace xEasyApp.Core.Repositories
             set;
         }
     }
+
+    public partial class Privilege
+    {
+        public string ParentName
+        { get; set; }
+
+        public bool HasChild
+        {
+            get;
+            set;
+        }
+    }
 }

@@ -78,6 +78,7 @@
     <Compile Include="Repositories\Entities\P_Entities.cs" />
     <Compile Include="Repositories\Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Repositories\DepartmentRepository.cs" />
+    <Compile Include="Repositories\Repositories\PrivilegeRepository.cs" />
     <Compile Include="Repositories\Repositories\RoleInfoRepository.cs" />
     <Compile Include="Repositories\Repositories\UserInfoRepository.cs" />
     <Compile Include="Repositories\SqlHelper.cs" />
