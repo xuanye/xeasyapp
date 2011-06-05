@@ -10,6 +10,7 @@ namespace xEasyApp.Core.Repositories
         public BaseEntity()
         {
             this.IsNew = true;
+   
         }
 
         public void ClearChangedList()

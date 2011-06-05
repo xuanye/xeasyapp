@@ -1,6 +1,10 @@
+﻿
 
 
-
+//=============================================
+// 该代码文件有程序自动生成，
+// 生成时间: 2011-06-05 16:54:29
+// =============================================
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,12 +13,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: ShortCut
         /// Primary Key: ShortCutID
+		/// ShortCut
         /// </summary>
         public partial class ShortCut:BaseEntity {  
             
 			private int _ShortCutID;
 			/// <summary>
-			///  ShortCutID
+			///  主键ID
 			/// </summary>
             public int ShortCutID{
                 get{
@@ -28,7 +33,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _ShortCutName;
 			/// <summary>
-			///  ShortCutName
+			///  快捷方式名称
 			/// </summary>
             public string ShortCutName{
                 get{
@@ -42,7 +47,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Remark;
 			/// <summary>
-			///  Remark
+			///  备注
 			/// </summary>
             public string Remark{
                 get{
@@ -56,7 +61,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _PrivilegeCode;
 			/// <summary>
-			///  PrivilegeCode
+			///  链接
 			/// </summary>
             public string PrivilegeCode{
                 get{
@@ -70,7 +75,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _UserUID;
 			/// <summary>
-			///  UserUID
+			///  所属用户
 			/// </summary>
             public string UserUID{
                 get{
@@ -84,7 +89,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime? _LastModifyTime;
 			/// <summary>
-			///  LastModifyTime
+			///  最后更新时间
 			/// </summary>
             public DateTime? LastModifyTime{
                 get{
@@ -116,12 +121,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: DictInfos
         /// Primary Key: DictID
+		/// DictInfos
         /// </summary>
         public partial class DictInfo:BaseEntity {  
             
 			private int _DictID;
 			/// <summary>
-			///  DictID
+			///  数据字典目录ID
 			/// </summary>
             public int DictID{
                 get{
@@ -135,7 +141,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _DictName;
 			/// <summary>
-			///  DictName
+			///  目录名称
 			/// </summary>
             public string DictName{
                 get{
@@ -149,7 +155,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _DictCode;
 			/// <summary>
-			///  DictCode
+			///  目录代码
 			/// </summary>
             public string DictCode{
                 get{
@@ -163,7 +169,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private byte _DictType;
 			/// <summary>
-			///  DictType
+			///  数据类型
 			/// </summary>
             public byte DictType{
                 get{
@@ -177,7 +183,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private int? _ParentID;
 			/// <summary>
-			///  ParentID
+			///  父ID
 			/// </summary>
             public int? ParentID{
                 get{
@@ -191,7 +197,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private int? _Sequence;
 			/// <summary>
-			///  Sequence
+			///  排序字段
 			/// </summary>
             public int? Sequence{
                 get{
@@ -205,7 +211,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _SQLCMD;
 			/// <summary>
-			///  SQLCMD
+			///  获取数据项的Sql
 			/// </summary>
             public string SQLCMD{
                 get{
@@ -219,7 +225,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Remark;
 			/// <summary>
-			///  Remark
+			///  备注
 			/// </summary>
             public string Remark{
                 get{
@@ -235,149 +241,15 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
-        /// Table: Privileges
-        /// Primary Key: PrivilegeCode
-        /// </summary>
-        public partial class Privilege:BaseEntity {  
-            
-			private string _PrivilegeCode;
-			/// <summary>
-			///  PrivilegeCode
-			/// </summary>
-            public string PrivilegeCode{
-                get{
-					return _PrivilegeCode;
-				}
-				set
-				{
-					_PrivilegeCode= value;
-					OnPropertyChanged("PrivilegeCode");
-				}
-            }
-			private string _PrivilegeName;
-			/// <summary>
-			///  PrivilegeName
-			/// </summary>
-            public string PrivilegeName{
-                get{
-					return _PrivilegeName;
-				}
-				set
-				{
-					_PrivilegeName= value;
-					OnPropertyChanged("PrivilegeName");
-				}
-            }
-			private byte _PrivilegeType;
-			/// <summary>
-			///  PrivilegeType
-			/// </summary>
-            public byte PrivilegeType{
-                get{
-					return _PrivilegeType;
-				}
-				set
-				{
-					_PrivilegeType= value;
-					OnPropertyChanged("PrivilegeType");
-				}
-            }
-			private string _ParentID;
-			/// <summary>
-			///  ParentID
-			/// </summary>
-            public string ParentID{
-                get{
-					return _ParentID;
-				}
-				set
-				{
-					_ParentID= value;
-					OnPropertyChanged("ParentID");
-				}
-            }
-			private string _Uri;
-			/// <summary>
-			///  Uri
-			/// </summary>
-            public string Uri{
-                get{
-					return _Uri;
-				}
-				set
-				{
-					_Uri= value;
-					OnPropertyChanged("Uri");
-				}
-            }
-			private int? _Sequence;
-			/// <summary>
-			///  Sequence
-			/// </summary>
-            public int? Sequence{
-                get{
-					return _Sequence;
-				}
-				set
-				{
-					_Sequence= value;
-					OnPropertyChanged("Sequence");
-				}
-            }
-			private string _LastUpdateUserUID;
-			/// <summary>
-			///  LastUpdateUserUID
-			/// </summary>
-            public string LastUpdateUserUID{
-                get{
-					return _LastUpdateUserUID;
-				}
-				set
-				{
-					_LastUpdateUserUID= value;
-					OnPropertyChanged("LastUpdateUserUID");
-				}
-            }
-			private string _LastUpdateUserName;
-			/// <summary>
-			///  LastUpdateUserName
-			/// </summary>
-            public string LastUpdateUserName{
-                get{
-					return _LastUpdateUserName;
-				}
-				set
-				{
-					_LastUpdateUserName= value;
-					OnPropertyChanged("LastUpdateUserName");
-				}
-            }
-			private DateTime _LastUpdateTime;
-			/// <summary>
-			///  LastUpdateTime
-			/// </summary>
-            public DateTime LastUpdateTime{
-                get{
-					return _LastUpdateTime;
-				}
-				set
-				{
-					_LastUpdateTime= value;
-					OnPropertyChanged("LastUpdateTime");
-				}
-            }
-  		      
-        }
-        
-        /// <summary>
         /// Table: Logs
         /// Primary Key: Id
+		/// Logs
         /// </summary>
         public partial class Log:BaseEntity {  
             
 			private int _Id;
 			/// <summary>
-			///  Id
+			///  主键标识
 			/// </summary>
             public int Id{
                 get{
@@ -391,7 +263,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Topic;
 			/// <summary>
-			///  Topic
+			///  标题
 			/// </summary>
             public string Topic{
                 get{
@@ -405,7 +277,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Content;
 			/// <summary>
-			///  Content
+			///  内容
 			/// </summary>
             public string Content{
                 get{
@@ -419,7 +291,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _OperateCode;
 			/// <summary>
-			///  OperateCode
+			///  操作标识
 			/// </summary>
             public string OperateCode{
                 get{
@@ -433,7 +305,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private byte _LogType;
 			/// <summary>
-			///  LogType
+			///  日志类型
 			/// </summary>
             public byte LogType{
                 get{
@@ -447,7 +319,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _OperateUID;
 			/// <summary>
-			///  OperateUID
+			///  操作人员标识
 			/// </summary>
             public string OperateUID{
                 get{
@@ -461,7 +333,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _OperateName;
 			/// <summary>
-			///  OperateName
+			///  操作人员姓名
 			/// </summary>
             public string OperateName{
                 get{
@@ -475,7 +347,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _IPAddress;
 			/// <summary>
-			///  IPAddress
+			///  IP
 			/// </summary>
             public string IPAddress{
                 get{
@@ -489,7 +361,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _OperateTime;
 			/// <summary>
-			///  OperateTime
+			///  操作时间
 			/// </summary>
             public DateTime OperateTime{
                 get{
@@ -507,12 +379,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: RolePrivilegeRelation
         /// Primary Key: PrivilegeCode
+		/// RolePrivilegeRelation
         /// </summary>
         public partial class RolePrivilegeRelation:BaseEntity {  
             
 			private string _RoleCode;
 			/// <summary>
-			///  RoleCode
+			///  角色标识
 			/// </summary>
             public string RoleCode{
                 get{
@@ -526,7 +399,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _PrivilegeCode;
 			/// <summary>
-			///  PrivilegeCode
+			///  权限标识
 			/// </summary>
             public string PrivilegeCode{
                 get{
@@ -540,7 +413,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserUID;
 			/// <summary>
-			///  LastUpdateUserUID
+			///  最后一次更新用户标识
 			/// </summary>
             public string LastUpdateUserUID{
                 get{
@@ -554,7 +427,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserName;
 			/// <summary>
-			///  LastUpdateUserName
+			///  最后一次更新用户姓名
 			/// </summary>
             public string LastUpdateUserName{
                 get{
@@ -568,7 +441,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _LastUpdateTime;
 			/// <summary>
-			///  LastUpdateTime
+			///  最后一次更新时间
 			/// </summary>
             public DateTime LastUpdateTime{
                 get{
@@ -586,12 +459,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: RoleUserRelation
         /// Primary Key: RoleCode
+		/// RoleUserRelation
         /// </summary>
         public partial class RoleUserRelation:BaseEntity {  
             
 			private string _RoleCode;
 			/// <summary>
-			///  RoleCode
+			///  角色标识
 			/// </summary>
             public string RoleCode{
                 get{
@@ -605,7 +479,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _UserUID;
 			/// <summary>
-			///  UserUID
+			///  用户标识
 			/// </summary>
             public string UserUID{
                 get{
@@ -619,7 +493,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserUID;
 			/// <summary>
-			///  LastUpdateUserUID
+			///  最后一次更新用户标识
 			/// </summary>
             public string LastUpdateUserUID{
                 get{
@@ -633,7 +507,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserName;
 			/// <summary>
-			///  LastUpdateUserName
+			///  最后一次更新用户姓名
 			/// </summary>
             public string LastUpdateUserName{
                 get{
@@ -647,7 +521,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _LastUpdateTime;
 			/// <summary>
-			///  LastUpdateTime
+			///  最后一次更新时间
 			/// </summary>
             public DateTime LastUpdateTime{
                 get{
@@ -665,12 +539,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: Departments
         /// Primary Key: DeptCode
+		/// Departments
         /// </summary>
         public partial class Department:BaseEntity {  
             
 			private string _DeptCode;
 			/// <summary>
-			///  DeptCode
+			///  部门标识
 			/// </summary>
             public string DeptCode{
                 get{
@@ -684,7 +559,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _DeptName;
 			/// <summary>
-			///  DeptName
+			///  部门名称
 			/// </summary>
             public string DeptName{
                 get{
@@ -698,7 +573,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _ParentCode;
 			/// <summary>
-			///  ParentCode
+			///  上属部门ID
 			/// </summary>
             public string ParentCode{
                 get{
@@ -712,7 +587,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Path;
 			/// <summary>
-			///  Path
+			///  组织机构路径
 			/// </summary>
             public string Path{
                 get{
@@ -726,7 +601,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Remark;
 			/// <summary>
-			///  Remark
+			///  备注
 			/// </summary>
             public string Remark{
                 get{
@@ -740,7 +615,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private int _Sequence;
 			/// <summary>
-			///  Sequence
+			///  排序
 			/// </summary>
             public int Sequence{
                 get{
@@ -754,7 +629,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserUID;
 			/// <summary>
-			///  LastUpdateUserUID
+			///  最后一次更新用户标识
 			/// </summary>
             public string LastUpdateUserUID{
                 get{
@@ -768,7 +643,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserName;
 			/// <summary>
-			///  LastUpdateUserName
+			///  最后一次更新用户姓名
 			/// </summary>
             public string LastUpdateUserName{
                 get{
@@ -782,7 +657,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _LastUpdateTime;
 			/// <summary>
-			///  LastUpdateTime
+			///  最后一次更新时间
 			/// </summary>
             public DateTime LastUpdateTime{
                 get{
@@ -800,12 +675,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: UserInfos
         /// Primary Key: UserUID
+		/// UserInfos
         /// </summary>
         public partial class UserInfo:BaseEntity {  
             
 			private string _UserUID;
 			/// <summary>
-			///  UserUID
+			///  用户标识
 			/// </summary>
             public string UserUID{
                 get{
@@ -819,7 +695,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _FullName;
 			/// <summary>
-			///  FullName
+			///  用户姓名
 			/// </summary>
             public string FullName{
                 get{
@@ -833,7 +709,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Password;
 			/// <summary>
-			///  Password
+			///  登录密码
 			/// </summary>
             public string Password{
                 get{
@@ -847,7 +723,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _DeptCode;
 			/// <summary>
-			///  DeptCode
+			///  所属部门
 			/// </summary>
             public string DeptCode{
                 get{
@@ -861,7 +737,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _DeptName;
 			/// <summary>
-			///  DeptName
+			///  部门名称
 			/// </summary>
             public string DeptName{
                 get{
@@ -875,7 +751,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private bool _IsManager;
 			/// <summary>
-			///  IsManager
+			///  是否组长
 			/// </summary>
             public bool IsManager{
                 get{
@@ -887,11 +763,11 @@ namespace xEasyApp.Core.Repositories {
 					OnPropertyChanged("IsManager");
 				}
             }
-			private bool? _IsSystem;
+			private bool _IsSystem;
 			/// <summary>
 			///  IsSystem
 			/// </summary>
-            public bool? IsSystem{
+            public bool IsSystem{
                 get{
 					return _IsSystem;
 				}
@@ -903,7 +779,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private int _Sequence;
 			/// <summary>
-			///  Sequence
+			///  排序号
 			/// </summary>
             public int Sequence{
                 get{
@@ -917,7 +793,9 @@ namespace xEasyApp.Core.Repositories {
             }
 			private byte _AccountState;
 			/// <summary>
-			///  AccountState
+			///  账号状态
+            ///   0	正常
+            ///   1	停用
 			/// </summary>
             public byte AccountState{
                 get{
@@ -931,7 +809,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserUID;
 			/// <summary>
-			///  LastUpdateUserUID
+			///  最后一次更新用户标识
 			/// </summary>
             public string LastUpdateUserUID{
                 get{
@@ -945,7 +823,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserName;
 			/// <summary>
-			///  LastUpdateUserName
+			///  最后一次更新用户姓名
 			/// </summary>
             public string LastUpdateUserName{
                 get{
@@ -959,7 +837,157 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _LastUpdateTime;
 			/// <summary>
-			///  LastUpdateTime
+			///  最后一次更新时间
+			/// </summary>
+            public DateTime LastUpdateTime{
+                get{
+					return _LastUpdateTime;
+				}
+				set
+				{
+					_LastUpdateTime= value;
+					OnPropertyChanged("LastUpdateTime");
+				}
+            }
+  		      
+        }
+        
+        /// <summary>
+        /// Table: Privileges
+        /// Primary Key: PrivilegeCode
+		/// Privileges
+        /// </summary>
+        public partial class Privilege:BaseEntity {  
+            
+			private string _PrivilegeCode;
+			/// <summary>
+			///  权限标识
+			/// </summary>
+            public string PrivilegeCode{
+                get{
+					return _PrivilegeCode;
+				}
+				set
+				{
+					_PrivilegeCode= value;
+					OnPropertyChanged("PrivilegeCode");
+				}
+            }
+			private string _PrivilegeName;
+			/// <summary>
+			///  权限名称
+			/// </summary>
+            public string PrivilegeName{
+                get{
+					return _PrivilegeName;
+				}
+				set
+				{
+					_PrivilegeName= value;
+					OnPropertyChanged("PrivilegeName");
+				}
+            }
+			private byte _PrivilegeType;
+			/// <summary>
+			///  权限类型
+			/// </summary>
+            public byte PrivilegeType{
+                get{
+					return _PrivilegeType;
+				}
+				set
+				{
+					_PrivilegeType= value;
+					OnPropertyChanged("PrivilegeType");
+				}
+            }
+			private string _Remark;
+			/// <summary>
+			///  Remark
+			/// </summary>
+            public string Remark{
+                get{
+					return _Remark;
+				}
+				set
+				{
+					_Remark= value;
+					OnPropertyChanged("Remark");
+				}
+            }
+			private string _ParentID;
+			/// <summary>
+			///  父权限标识
+			/// </summary>
+            public string ParentID{
+                get{
+					return _ParentID;
+				}
+				set
+				{
+					_ParentID= value;
+					OnPropertyChanged("ParentID");
+				}
+            }
+			private string _Uri;
+			/// <summary>
+			///  菜单权限对应的链接地址
+			/// </summary>
+            public string Uri{
+                get{
+					return _Uri;
+				}
+				set
+				{
+					_Uri= value;
+					OnPropertyChanged("Uri");
+				}
+            }
+			private int _Sequence;
+			/// <summary>
+			///  排序号
+			/// </summary>
+            public int Sequence{
+                get{
+					return _Sequence;
+				}
+				set
+				{
+					_Sequence= value;
+					OnPropertyChanged("Sequence");
+				}
+            }
+			private string _LastUpdateUserUID;
+			/// <summary>
+			///  最后一次更新用户标识
+			/// </summary>
+            public string LastUpdateUserUID{
+                get{
+					return _LastUpdateUserUID;
+				}
+				set
+				{
+					_LastUpdateUserUID= value;
+					OnPropertyChanged("LastUpdateUserUID");
+				}
+            }
+			private string _LastUpdateUserName;
+			/// <summary>
+			///  最后一次更新用户姓名
+			/// </summary>
+            public string LastUpdateUserName{
+                get{
+					return _LastUpdateUserName;
+				}
+				set
+				{
+					_LastUpdateUserName= value;
+					OnPropertyChanged("LastUpdateUserName");
+				}
+            }
+			private DateTime _LastUpdateTime;
+			/// <summary>
+			///  最后一次更新时间
 			/// </summary>
             public DateTime LastUpdateTime{
                 get{
@@ -977,12 +1005,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: RoleInfos
         /// Primary Key: RoleCode
+		/// RoleInfos
         /// </summary>
         public partial class RoleInfo:BaseEntity {  
             
 			private string _RoleCode;
 			/// <summary>
-			///  RoleCode
+			///  角色标识
 			/// </summary>
             public string RoleCode{
                 get{
@@ -996,7 +1025,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _RoleName;
 			/// <summary>
-			///  RoleName
+			///  角色名称
 			/// </summary>
             public string RoleName{
                 get{
@@ -1010,7 +1039,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserUID;
 			/// <summary>
-			///  LastUpdateUserUID
+			///  最后一次更新用户标识
 			/// </summary>
             public string LastUpdateUserUID{
                 get{
@@ -1024,7 +1053,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _LastUpdateUserName;
 			/// <summary>
-			///  LastUpdateUserName
+			///  最后一次更新用户姓名
 			/// </summary>
             public string LastUpdateUserName{
                 get{
@@ -1038,7 +1067,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private DateTime _LastUpdateTime;
 			/// <summary>
-			///  LastUpdateTime
+			///  最后一次更新时间
 			/// </summary>
             public DateTime LastUpdateTime{
                 get{
@@ -1052,7 +1081,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private bool? _IsSystem;
 			/// <summary>
-			///  IsSystem
+			///  是否系统角色
 			/// </summary>
             public bool? IsSystem{
                 get{
@@ -1070,12 +1099,13 @@ namespace xEasyApp.Core.Repositories {
         /// <summary>
         /// Table: SysParams
         /// Primary Key: ParamCode
+		/// SysParams
         /// </summary>
         public partial class SysParam:BaseEntity {  
             
 			private string _ParamCode;
 			/// <summary>
-			///  ParamCode
+			///  参数代码
 			/// </summary>
             public string ParamCode{
                 get{
@@ -1089,7 +1119,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _ParamName;
 			/// <summary>
-			///  ParamName
+			///  参数名
 			/// </summary>
             public string ParamName{
                 get{
@@ -1103,7 +1133,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _ParamValue;
 			/// <summary>
-			///  ParamValue
+			///  参数值
 			/// </summary>
             public string ParamValue{
                 get{
@@ -1117,7 +1147,7 @@ namespace xEasyApp.Core.Repositories {
             }
 			private string _Remark;
 			/// <summary>
-			///  Remark
+			///  备注
 			/// </summary>
             public string Remark{
                 get{

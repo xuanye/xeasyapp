@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using xEasyApp.Core.Configurations;
 
 
 namespace xEasyApp.Core.Common
@@ -17,6 +18,11 @@ namespace xEasyApp.Core.Common
         private static object _lockobject = new object();
         private static string GetUserId()
         {
+            xEasyAppConfig config =xEasyAppConfig.Instance();
+            if (config.RuntimeInfo.Mode == RunMode.Debug)
+            {
+                return config.RuntimeInfo.UserId;
+            }
             string uid = HttpContext.Current.User.Identity.Name;
             if (string.IsNullOrEmpty(uid))
             {

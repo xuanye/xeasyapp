@@ -9,6 +9,7 @@ using xEasyApp.Core.Interfaces;
 using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Entities;
 using xEasyApp.Core.Exceptions;
+using xEasyApp.Core.Configurations;
 
 namespace xEasyApp.Web.Controllers
 {
@@ -377,10 +378,15 @@ namespace xEasyApp.Web.Controllers
                 u = new UserInfo();
                 u.DeptCode = deptCode;
                 u.DeptName = deptName;
+                if (u.DeptCode == AppConfig.RootDeptCode)
+                {
+                    u.DeptName = AppConfig.RootDeptName;
+                }
+               
             }
             return View(u);
         }
-         [AcceptVerbs(HttpVerbs.Post)]
+
         public ContentResult ValidUserUID(string UserUID)
         {
             bool isValid = sysManageService.ValidUserUID(UserUID);
@@ -451,6 +457,11 @@ namespace xEasyApp.Web.Controllers
                 msg.Msg = "操作失败,请稍后重试！";
             }
             return Json(msg);
+        }
+
+        public ActionResult SetDept()
+        {
+            return View();
         }
        #endregion
     }

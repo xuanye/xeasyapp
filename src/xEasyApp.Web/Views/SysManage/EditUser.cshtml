@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <title>EditRoleInfo</title>
+    <title>修改用户信息</title>
     @Html.Css("main","form")
 
 <html>
@@ -27,8 +27,10 @@
                         <label>上层部门：</label>
                   </td>
                   <td>
-                        @Html.Hidden("ParentCode", Model.DeptCode)
+                        @Html.Hidden("DeptCode", Model.DeptCode)
+                         @Html.Hidden("DeptName", Model.DeptName)
                         @Html.DisplayTextFor(x => x.DeptName) 
+                        <a href="javascript:void(0);" id="selectdept" style="margin-left:5px;" class="linkbtn"><span class="setGroup">移动</span></a>
                   </td>
                 
                 </tr>
@@ -63,7 +65,7 @@
                         <label>密码：</label>
                   </td>
                   <td>
-                        @Html.TextBox("Password", Model.Password, new { style = "width:90%;" })
+                        @Html.Password("Password", Model.Password, new { style = "width:90%;" })
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 
@@ -83,7 +85,16 @@
                         <label>是否启用：</label>
                   </td>
                   <td>
-                       @Html.CheckBox("AccountState", Model.AccountState == 1);
+                       @Html.CheckBox("AccountState", Model.AccountState == 1, new { value="1"})
+                  </td>
+                
+                </tr>
+                  <tr>
+                  <td style="width:70px;">
+                        <label>是否经理：</label>
+                  </td>
+                  <td>
+                       @Html.CheckBox("IsManager", Model.IsManager, new { value = "True" })
                   </td>
                 
                 </tr>
@@ -104,7 +115,7 @@
     <script type="text/javascript">
         $(document).ready(function (e) {
             $("#btnSave").click(function (e) {
-                $("#fmEdit").submit();
+                            $("#fmEdit").submit();
             });
             $("#btnCancel").click(function (e) {
                 CloseModelWindow(null, false);
@@ -130,16 +141,18 @@
                  },
                  rules:
                  {
-                     DeptCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.DeptCode))
+                     UserUID: { required: true, safe: true @if(string.IsNullOrEmpty(Model.UserUID))
                       {                        
-                        @:,remote:"@Url.Action("ValidUserCode")"
+                        @:,remote:"@Url.Action("ValidUserUID")"
                       } 
-                      },DeptName: { required: true, safe: true },
-                      Sequence:{required:true,digits:true}
+                      },FullName: { required: true, safe: true },
+                      Password: { required: true },
+                      Sequence:{required:true,number:true}
                  },
                  messages: {
-                     DeptCode: { required: "部门代码不能为空",remote:"部门代码必须唯一" },
-                     DeptName: { required: "部门名称不能为空" }
+                     UserUID: { required: "用户标识不能为空",remote:"部门代码必须唯一" },
+                     FullName: { required: "用户姓名不能为空" },
+                     Password: { required:  "用户密码不能为空" }
                  },
                  errorElement: "div",
 			     errorClass: "cusErrorPanel",
@@ -149,8 +162,19 @@
                 return this.optional(element) || /^[^$\<\>]+$/.test(value);
             }, "不能包含以下符号: $<>");
 
-          
+            $("#selectdept").click(function(e){
+                 OpenModalDialog("@Url.Action("setdept")?mode=2", { caption: "选择用户组", width: 240, height: 300, onclose: selecgroup_callback });
+            });
+            
+            function selecgroup_callback(group) {
+                if (group && group.length > 0) {                   
+                  
+                }
+            }           
         });
+        function getSelectNodeId() {
+           return "";
+        }
     </script>
 </body>
 </html>

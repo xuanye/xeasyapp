@@ -6,6 +6,9 @@ using System.Data;
 
 namespace xEasyApp.Core.Repositories
 {
+    /// <summary>
+    /// 存储过程类
+    /// </summary>
     public partial class StoredProcedures
     {
         public static StoredProcedure SP_PAGESELECT(string SQLPARAMS, int PAGESIZE, int PAGEINDEX, string SQLTABLE, string SQLCOLUMNS, string SQLPK, string SQLORDER)

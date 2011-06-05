@@ -1,6 +1,10 @@
 ﻿
 
 
+//=============================================
+// 该代码文件有程序自动生成，
+// 生成时间: 2011-06-05 16:54:28
+// =============================================
 using System;
 using System.Data;
 using System.Text;
@@ -357,183 +361,6 @@ namespace xEasyApp.Core.Repositories {
 							item.Remark = reader.GetString(7);
 						 }
 						 						list.Add(item);
-					}
-				}
-				return list;
-			}
-
-        }
-        
-        /// <summary>
-        /// Table: Privileges
-        /// Primary Key: PrivilegeCode
-        /// </summary>
-        public partial class PrivilegeRepository:BaseRepository 
-		{			
-			public void Save(Privilege item)
-			{
-				if(item.IsNew)
-				{
-					Insert(item);
-				}
-				else
-				{
-					Update(item);
-				}
-			}	
-		    public Privilege Get(string key)
-			{
-				string sql = "SELECT [PrivilegeCode],[PrivilegeName],[PrivilegeType],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Privileges] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
-				Privilege item =null;
-				using(IDataReader reader = base.ExcuteDataReader(sql,p))
-				{
-					if(reader.Read())
-					{
-						item =new Privilege();
-						item.PrivilegeCode = reader.GetString(0);
-							item.PrivilegeName = reader.GetString(1);
-							item.PrivilegeType = reader.GetByte(2);
-							if(!reader.IsDBNull(3))
-						 {
-							item.ParentID = reader.GetString(3);
-						 }
-						 if(!reader.IsDBNull(4))
-						 {
-							item.Uri = reader.GetString(4);
-						 }
-						 if(!reader.IsDBNull(5))
-						 {
-							item.Sequence = reader.GetInt32(5);
-						 }
-						 item.LastUpdateUserUID = reader.GetString(6);
-							item.LastUpdateUserName = reader.GetString(7);
-							item.LastUpdateTime = reader.GetDateTime(8);
-							
-					}
-				}
-				return item;
-			}
-			public int Delete(string key)
-			{
-				string sql ="DELETE FROM [Privileges] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
-				return base.ExecuteNonQuery(sql,p);	
-			}
-			public void Insert(Privilege item)
-			{
-				string sql="INSERT INTO [Privileges] ([PrivilegeCode],[PrivilegeName],[PrivilegeType],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@PrivilegeCode,@PrivilegeName,@PrivilegeType,@ParentID,@Uri,@Sequence,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
-				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
-				SPParams.Add(new SqlParameter("@PrivilegeName",item.PrivilegeName));	
-				SPParams.Add(new SqlParameter("@PrivilegeType",item.PrivilegeType));	
-				SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
-				SPParams.Add(new SqlParameter("@Uri",item.Uri));	
-				SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
-				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
-				base.ExecuteNonQuery(sql, SPParams.ToArray());
-			}
-            public void Update(Privilege item)
-			{
-				if(item.ChangedPropertyCount>0)
-				{
-					StringBuilder sqlbuilder = new StringBuilder();
-					sqlbuilder.Append("UPDATE [Privileges] SET ");
-					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("PrivilegeName","[PrivilegeName]");
-					cols.Add("PrivilegeType","[PrivilegeType]");
-					cols.Add("ParentID","[ParentID]");
-					cols.Add("Uri","[Uri]");
-					cols.Add("Sequence","[Sequence]");
-					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
-					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
-					cols.Add("LastUpdateTime","[LastUpdateTime]");
-					int i = 0;
-					//UPDATE COLUMNS
-					foreach (string p in item.ChangedPropertyList)
-					{ 
-						if(!cols.ContainsKey(p))
-						{
-							continue;
-						}
-						if (i > 0)
-						{
-							sqlbuilder.Append(",");
-						}
-						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
-						i++;
-					}
-					//WHERE;
-					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
-
-					List<SqlParameter> SPParams = new List<SqlParameter>();
-					 SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
- 	
-					if(item.IsChanged("PrivilegeName"))
-					{
-						SPParams.Add(new SqlParameter("@PrivilegeName",item.PrivilegeName));	
-					} 	
-					if(item.IsChanged("PrivilegeType"))
-					{
-						SPParams.Add(new SqlParameter("@PrivilegeType",item.PrivilegeType));	
-					} 	
-					if(item.IsChanged("ParentID"))
-					{
-						SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
-					} 	
-					if(item.IsChanged("Uri"))
-					{
-						SPParams.Add(new SqlParameter("@Uri",item.Uri));	
-					} 	
-					if(item.IsChanged("Sequence"))
-					{
-						SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
-					} 	
-					if(item.IsChanged("LastUpdateUserUID"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
-					} 	
-					if(item.IsChanged("LastUpdateUserName"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
-					} 	
-					if(item.IsChanged("LastUpdateTime"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
-					}
-					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
-				}
-			}
-			public List<Privilege> QueryAll()
-			{
-				string sql ="SELECT [PrivilegeCode],[PrivilegeName],[PrivilegeType],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Privileges]";
-				List<Privilege>  list =new List<Privilege>();
-				using(IDataReader reader = base.ExcuteDataReader(sql))
-				{
-					while(reader.Read())
-					{
-						Privilege item =new Privilege();
-						item.PrivilegeCode = reader.GetString(0);
-							item.PrivilegeName = reader.GetString(1);
-							item.PrivilegeType = reader.GetByte(2);
-							if(!reader.IsDBNull(3))
-						 {
-							item.ParentID = reader.GetString(3);
-						 }
-						 if(!reader.IsDBNull(4))
-						 {
-							item.Uri = reader.GetString(4);
-						 }
-						 if(!reader.IsDBNull(5))
-						 {
-							item.Sequence = reader.GetInt32(5);
-						 }
-						 item.LastUpdateUserUID = reader.GetString(6);
-							item.LastUpdateUserName = reader.GetString(7);
-							item.LastUpdateTime = reader.GetDateTime(8);
-													list.Add(item);
 					}
 				}
 				return list;
@@ -1156,11 +983,8 @@ namespace xEasyApp.Core.Repositories {
 							item.DeptName = reader.GetString(4);
 						 }
 						 item.IsManager = reader.GetBoolean(5);
-							if(!reader.IsDBNull(6))
-						 {
 							item.IsSystem = reader.GetBoolean(6);
-						 }
-						 item.Sequence = reader.GetInt32(7);
+							item.Sequence = reader.GetInt32(7);
 							item.AccountState = reader.GetByte(8);
 							item.LastUpdateUserUID = reader.GetString(9);
 							item.LastUpdateUserName = reader.GetString(10);
@@ -1298,15 +1122,197 @@ namespace xEasyApp.Core.Repositories {
 							item.DeptName = reader.GetString(4);
 						 }
 						 item.IsManager = reader.GetBoolean(5);
-							if(!reader.IsDBNull(6))
-						 {
 							item.IsSystem = reader.GetBoolean(6);
-						 }
-						 item.Sequence = reader.GetInt32(7);
+							item.Sequence = reader.GetInt32(7);
 							item.AccountState = reader.GetByte(8);
 							item.LastUpdateUserUID = reader.GetString(9);
 							item.LastUpdateUserName = reader.GetString(10);
 							item.LastUpdateTime = reader.GetDateTime(11);
+													list.Add(item);
+					}
+				}
+				return list;
+			}
+
+        }
+        
+        /// <summary>
+        /// Table: Privileges
+        /// Primary Key: PrivilegeCode
+        /// </summary>
+        public partial class PrivilegeRepository:BaseRepository 
+		{			
+			public void Save(Privilege item)
+			{
+				if(item.IsNew)
+				{
+					Insert(item);
+				}
+				else
+				{
+					Update(item);
+				}
+			}	
+		    public Privilege Get(string key)
+			{
+				string sql = "SELECT [PrivilegeCode],[PrivilegeName],[PrivilegeType],[Remark],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Privileges] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				Privilege item =null;
+				using(IDataReader reader = base.ExcuteDataReader(sql,p))
+				{
+					if(reader.Read())
+					{
+						item =new Privilege();
+						item.PrivilegeCode = reader.GetString(0);
+							item.PrivilegeName = reader.GetString(1);
+							item.PrivilegeType = reader.GetByte(2);
+							if(!reader.IsDBNull(3))
+						 {
+							item.Remark = reader.GetString(3);
+						 }
+						 if(!reader.IsDBNull(4))
+						 {
+							item.ParentID = reader.GetString(4);
+						 }
+						 if(!reader.IsDBNull(5))
+						 {
+							item.Uri = reader.GetString(5);
+						 }
+						 item.Sequence = reader.GetInt32(6);
+							item.LastUpdateUserUID = reader.GetString(7);
+							item.LastUpdateUserName = reader.GetString(8);
+							item.LastUpdateTime = reader.GetDateTime(9);
+							
+					}
+				}
+				return item;
+			}
+			public int Delete(string key)
+			{
+				string sql ="DELETE FROM [Privileges] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				return base.ExecuteNonQuery(sql,p);	
+			}
+			public void Insert(Privilege item)
+			{
+				string sql="INSERT INTO [Privileges] ([PrivilegeCode],[PrivilegeName],[PrivilegeType],[Remark],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@PrivilegeCode,@PrivilegeName,@PrivilegeType,@Remark,@ParentID,@Uri,@Sequence,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
+				List<SqlParameter> SPParams = new List<SqlParameter>();
+				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+				SPParams.Add(new SqlParameter("@PrivilegeName",item.PrivilegeName));	
+				SPParams.Add(new SqlParameter("@PrivilegeType",item.PrivilegeType));	
+				SPParams.Add(new SqlParameter("@Remark",item.Remark));	
+				SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
+				SPParams.Add(new SqlParameter("@Uri",item.Uri));	
+				SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+				base.ExecuteNonQuery(sql, SPParams.ToArray());
+			}
+            public void Update(Privilege item)
+			{
+				if(item.ChangedPropertyCount>0)
+				{
+					StringBuilder sqlbuilder = new StringBuilder();
+					sqlbuilder.Append("UPDATE [Privileges] SET ");
+					Dictionary<string,string> cols =new Dictionary<string,string>();
+					cols.Add("PrivilegeName","[PrivilegeName]");
+					cols.Add("PrivilegeType","[PrivilegeType]");
+					cols.Add("Remark","[Remark]");
+					cols.Add("ParentID","[ParentID]");
+					cols.Add("Uri","[Uri]");
+					cols.Add("Sequence","[Sequence]");
+					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
+					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
+					cols.Add("LastUpdateTime","[LastUpdateTime]");
+					int i = 0;
+					//UPDATE COLUMNS
+					foreach (string p in item.ChangedPropertyList)
+					{ 
+						if(!cols.ContainsKey(p))
+						{
+							continue;
+						}
+						if (i > 0)
+						{
+							sqlbuilder.Append(",");
+						}
+						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
+						i++;
+					}
+					//WHERE;
+					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
+
+					List<SqlParameter> SPParams = new List<SqlParameter>();
+					 SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+ 	
+					if(item.IsChanged("PrivilegeName"))
+					{
+						SPParams.Add(new SqlParameter("@PrivilegeName",item.PrivilegeName));	
+					} 	
+					if(item.IsChanged("PrivilegeType"))
+					{
+						SPParams.Add(new SqlParameter("@PrivilegeType",item.PrivilegeType));	
+					} 	
+					if(item.IsChanged("Remark"))
+					{
+						SPParams.Add(new SqlParameter("@Remark",item.Remark));	
+					} 	
+					if(item.IsChanged("ParentID"))
+					{
+						SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
+					} 	
+					if(item.IsChanged("Uri"))
+					{
+						SPParams.Add(new SqlParameter("@Uri",item.Uri));	
+					} 	
+					if(item.IsChanged("Sequence"))
+					{
+						SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
+					} 	
+					if(item.IsChanged("LastUpdateUserUID"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+					} 	
+					if(item.IsChanged("LastUpdateUserName"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+					} 	
+					if(item.IsChanged("LastUpdateTime"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+					}
+					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
+				}
+			}
+			public List<Privilege> QueryAll()
+			{
+				string sql ="SELECT [PrivilegeCode],[PrivilegeName],[PrivilegeType],[Remark],[ParentID],[Uri],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Privileges]";
+				List<Privilege>  list =new List<Privilege>();
+				using(IDataReader reader = base.ExcuteDataReader(sql))
+				{
+					while(reader.Read())
+					{
+						Privilege item =new Privilege();
+						item.PrivilegeCode = reader.GetString(0);
+							item.PrivilegeName = reader.GetString(1);
+							item.PrivilegeType = reader.GetByte(2);
+							if(!reader.IsDBNull(3))
+						 {
+							item.Remark = reader.GetString(3);
+						 }
+						 if(!reader.IsDBNull(4))
+						 {
+							item.ParentID = reader.GetString(4);
+						 }
+						 if(!reader.IsDBNull(5))
+						 {
+							item.Uri = reader.GetString(5);
+						 }
+						 item.Sequence = reader.GetInt32(6);
+							item.LastUpdateUserUID = reader.GetString(7);
+							item.LastUpdateUserName = reader.GetString(8);
+							item.LastUpdateTime = reader.GetDateTime(9);
 													list.Add(item);
 					}
 				}

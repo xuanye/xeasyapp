@@ -173,7 +173,7 @@ List<Column> LoadColumns(Table tbl){
             col.IsPK = rdr["COLUMN_ISPK"].ToString() == "yes";
             col.Description = rdr["COLUMN_DESC"].ToString();
             int.TryParse(rdr["COLUMN_LENGTH"].ToString(),out col.MaxLength);
-            
+             int.TryParse(rdr["COLUMN_PRECISION"].ToString(),out col.Precision);
             result.Add(col);
         }
 
@@ -351,6 +351,70 @@ DbType GetDbType(string sqlType){
             return DbType.Xml;
        default:
             return DbType.AnsiString;
+    }
+
+}
+
+string GetRealSqlType(string sqlType,int maxLength,int precision){
+	string length =maxLength>0? maxLength.ToString():"MAX";
+	switch(sqlType)
+    {
+        case "varchar":
+            return "VARCHAR("+length+")";
+        case "nvarchar":
+            return "NVARCHAR("+length+")";
+        case "int":
+            return "INT";
+        case "uniqueidentifier":
+            return "UNIQUEIDENTIFIER";
+        case "datetime":
+            return "DATETIME";
+        case "bigint":
+            return "BIGINT";
+        case "binary":
+            return "binary";
+        case "bit":
+            return "TINYINT";
+        case "char":
+            return "CHAR";
+        case "decimal":
+            return "DECIMAL("+length+","+precision+")";
+        case "float":
+            return "float("+length+","+precision+")";
+        case "image":
+            return "IMAGE";
+        case "money":
+            return "MONEY";
+        case "nchar":
+            return "NCHAR("+length+")";
+        case "ntext":
+            return "NTEXT";
+        case "numeric":
+            return "NUMERIC("+length+","+precision+")";
+        case "real":
+            return "REAL("+length+","+precision+")";
+        case "smalldatetime":
+            return "SMALLDATETIME";
+        case "smallint":
+            return "SMALLINT";
+        case "smallmoney":
+            return "smallmoney";
+        case "sql_variant":
+            return "sql_variant";
+        case "sysname":
+            return "sysname";
+        case "text":
+            return "text";
+        case "timestamp":
+            return "text";
+        case "tinyint":
+            return "TINYINT";
+        case "varbinary":
+            return "varbinary";
+         case "xml":
+            return "xml";
+      	 default:
+			return "";
     }
 
 }
