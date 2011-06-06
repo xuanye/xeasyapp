@@ -2,7 +2,7 @@
     Layout = null;
 }
 
-@model  xEasyApp.Core.Repositories.Department
+@model  xEasyApp.Core.Repositories.Privilege
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -17,46 +17,64 @@
 <body>
     <div style="padding:5px;">
        
-            @using (Html.BeginForm("SaveDeptInfo", "SysManage", new { id = Model.DeptCode }, FormMethod.Post, new { id = "fmEdit" }))
+            @using (Html.BeginForm("SavePrivilegeInfo", "SysManage", new { id = Model.PrivilegeCode }, FormMethod.Post, new { id = "fmEdit" }))
             {
         
         <div class="mainpanel">
             <table id="xeasy-form-table" width="100%" class="xeasy-form" cellspacing="4"  cellpadding="1">
                  <tr>
                   <td style="width:70px;">
-                        <label>上层部门：</label>
+                        <label>上层权限：</label>
                   </td>
                   <td>
-                        @Html.Hidden("ParentCode", Model.ParentCode)
+                        @Html.Hidden("ParentID", Model.ParentID)
                         @Html.DisplayTextFor(x => x.ParentName) 
                   </td>
                 
                 </tr>
                 <tr>
                     <td style="width:70px;">
-                        <label>部门代码：</label>
+                        <label>权限代码：</label>
                     </td>
                     <td>
-                        @if (string.IsNullOrEmpty(Model.DeptCode))
+                        @if (string.IsNullOrEmpty(Model.PrivilegeCode))
                         {                        
-                            @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;" })
+                            @Html.TextBox("PrivilegeCode", Model.PrivilegeCode, new { style = "width:90%;" })
                         }
                         else
                         { 
-                           @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
+                           @Html.TextBox("PrivilegeCode", Model.PrivilegeCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
                         } 
                         <span class="xeasy-formItemMust">*</span>
                     </td> 
                 </tr>
                 <tr>
                   <td style="width:70px;">
-                        <label>部门名称：</label>
+                        <label>权限名称：</label>
                   </td>
                   <td>
-                        @Html.TextBox("DeptName", Model.DeptName, new { style = "width:90%;" })
+                        @Html.TextBox("PrivilegeName", Model.PrivilegeName, new { style = "width:90%;" })
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
+                        <label>权限类型：</label>
+                  </td>
+                  <td>                     
+                        @Html.DictDropdownList("PrivilegeType", "PrivilegeType", xEasyApp.Core.DictValueType.DictCode, Model.PrivilegeType, null)
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                <tr>
+                  <td style="width:70px;">
+                        <label>资源：</label>
+                  </td>
+                  <td> 
+                        @Html.TextBox("Uri", Model.Uri, new { style = "width:90%;" })                       
+                  </td>                
                 </tr>
                  <tr>
                   <td style="width:70px;">
@@ -65,8 +83,7 @@
                   <td>
                         @Html.TextBox("Sequence", Model.Sequence, new { style = "width:80px;"})
                         <span class="xeasy-formItemMust">*</span>
-                  </td>
-                
+                  </td>                
                 </tr>
                   <tr>
                   <td style="width:70px;">
@@ -120,16 +137,16 @@
                  },
                  rules:
                  {
-                     DeptCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.DeptCode))
+                     PrivilegeCode: { required: true, safe: true @if (string.IsNullOrEmpty(Model.PrivilegeCode))
                       {                        
-                        @:,remote:"@Url.Action("ValidDeptCode")"
+                        @:,remote:"@Url.Action("ValidPrivilegeCode")"
                       } 
-                      },DeptName: { required: true, safe: true },
+                      }, PrivilegeName: { required: true, safe: true },
                       Sequence:{required:true,digits:true}
                  },
                  messages: {
-                     DeptCode: { required: "部门代码不能为空",remote:"部门代码必须唯一" },
-                     DeptName: { required: "部门名称不能为空" }
+                     PrivilegeCode: { required: "权限代码不能为空",remote:"权限代码必须唯一" },
+                     PrivilegeName: { required: "权限名称不能为空" }
                  },
                  errorElement: "div",
 			     errorClass: "cusErrorPanel",

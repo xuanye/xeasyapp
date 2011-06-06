@@ -1,0 +1,146 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+    <title>权限管理</title>
+    @Html.Css("main", "flexigrid","tree")
+    <style type="text/css">
+        .title
+        {
+            color:#15428b;
+            font-weight:bold; 
+            background:url("../../images/icons/grid.png") no-repeat 2px center;   
+            padding:2px 2px 2px 24px;
+            margin-left:5px;           
+            display:block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="MainContainer" style="margin: 1px 0px 0xp 0px;overflow:hidden;">  
+      <table width="100%" cellpadding="0" cellspacing="0" class="tree_grid_panel_table">
+        <tbody>
+            <tr>
+                <td style="width:170px;">
+                    <div class="toolbar"><span class="title" >权限管理</span></div>
+                    <div id="ptree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
+                </td>
+                <td style="width:2px;">
+                </td>
+                <td>          
+                 <div id="titleheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="title" class="title">权限列表</span></div>      
+                 <table id="PrivilegeList" style="display:none;"></table>      
+                </td>
+            </tr>
+        </tbody>
+       </table> 
+       <input type="hidden" value="" id="hdParentCode" />    
+       <input type="hidden" value="" id="hdParentName" />
+    </div>
+   
+    @Html.Js("jquery", "common",  "flexigrid","tree")   
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth - 3 - 170; // 减去边框和左边的宽度
+            var otherpm = 82;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("PrivilegeList")',
+                colModel: [
+                    { display: '权限代码', name: 'PrivilegeCode', width: 80, sortable: false, align: 'left', iskey: true },
+			        { display: '权限名称', name: 'PrivilegeName', width: 100, sortable: false, hide: false, align: 'left' },
+                    { display: '权限类型', name: 'PrivilegeType', width: 60, sortable: false, hide: false, align: 'left',process: formatType },
+                    { display: '说明', name: 'Remark', width: 120, sortable: false, hide: false, align: 'left' },
+                    { display: '链接', name: 'Uri', width: 120, sortable: false, hide: false, align: 'left' },     
+			        { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, hide: true, align: 'left' },
+			        { display: '最后修改时间', name: 'LastUpdateTime', width: 150, sortable: false, hide: true, align: 'left' },
+                    { display: '排序', name: 'Sequence', width: 120, sortable: false, hide: false,hide: true, align: 'left' },
+                    { display: '操作', name: 'PrivilegeCode', width: 120, sortable: false, align: 'left', process: formatOp, toggle: false }
+				],
+                buttons: [
+                            { name: 'Add', displayname: "新建", title: "新建权限", bclass: 'Add', onpress: toolbarItem_onclick },
+                            { separator: true }
+                         ],
+                sortname: "Sequence",
+                sortorder: "asc",
+                title: false,
+                usepager: false,
+                showcheckbox: true,
+                rowbinddata: true
+            };
+
+            $("#ptree").treeview({
+                url: '@Url.Action("PrivilegeTreeList")',
+                showcheck: false,
+                onnodeclick: TreeNode_Click,
+                theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+            }).height(maiheight - 30);
+            function TreeNode_Click(data) {
+                var p = { extParam: [{ name: "parentCode", value: data.id}] };
+                $("#PrivilegeList").flexOptions(p).flexReload();
+                $("#hdParentCode").val(data.id);
+                $("#hdParentName").val(data.text);
+                $("#title").text(data.text);
+                //data.expand();
+            } // end of TreeNode_Click
+
+            var grid = $("#PrivilegeList").flexigrid(option);
+
+            function formatType(value) {
+                if (value == '1') {
+                    return '菜单';
+                } else {
+                    return '权限';
+                }
+            }
+            function formatOp(value, id, cell) {
+                var a = [];
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='edit' title='编辑'>编辑</span></a>&nbsp;");
+                a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:del('", value, "','", cell[1], "')\"><span class='delete' title='删除'>删除</span></a>&nbsp;");
+                return a.join("");
+            }
+            function toolbarItem_onclick(cmd, grid) {
+                if (cmd == "Add") {
+                    var parentCode = $("#hdParentCode").val();
+                    var parentName = encodeURIComponent($("#hdParentName").val());
+                    OpenModelWindow('@Url.Action("EditPrivilege")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 470, height: 370, caption: "新增权限", 
+                    onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); refresh(); } });
+                }
+            } // end of toolbarItem_onclick
+
+
+        });  
+        function del(privilegeCode, privilegeName) {
+            if (confirm("你确定要删除[" + privilegeName + "]?")) {
+                showLoadingMsg("正在删除...", { left: 300, top: 2 })
+                $.post('@Url.Action("DeletePrivilegeInfo","SysManage")', { id: privilegeCode },
+                     function (data) {
+                         if (data.IsSuccess) {
+                             showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
+                             refresh();
+                         }
+                         else {
+                             hideLoadingMsg();
+                             showErrorTip(data.Msg, { left: 300, top: 2 }, true, 5000);
+                         }
+                     },
+                "json"
+                );
+            }
+        }
+        function edit(privilegeCode) {
+            OpenModelWindow('@Url.Action("EditPrivilege")/' + encodeURIComponent(privilegeCode), { width: 470, height: 370, caption: "修改权限信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); refresh(); } });
+        }      
+        function refresh() {
+            $("#PrivilegeList").flexReload(); //
+        }
+    </script>
+</body>
+</html>

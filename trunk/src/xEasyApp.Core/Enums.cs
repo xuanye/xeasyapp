@@ -10,4 +10,10 @@ namespace xEasyApp.Core
         Default,
         Share
     }
+    public enum DictValueType
+    { 
+        DictID,
+        DictCode,
+        DictName
+    }
 }

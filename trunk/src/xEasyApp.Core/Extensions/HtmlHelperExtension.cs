@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using xEasyApp.Core.Configurations;
+using xEasyApp.Core.Repositories;
+using StructureMap;
+using xEasyApp.Core.Interfaces;
 
 namespace xEasyApp.Core.Extensions
 {
@@ -47,6 +52,27 @@ namespace xEasyApp.Core.Extensions
             }
             return MvcHtmlString.Empty;
 
+        }
+       
+        public static MvcHtmlString DictDropdownList(this HtmlHelper html,string name, string dictCode, DictValueType dictValueType, object selectedValue, object htmlAttributes)
+        {
+           ISysManageService service=  ObjectFactory.GetInstance<ISysManageService>();
+           List<DictInfo> dictlsit = service.GetChildDictInfos(dictCode);
+            string valueField = "";
+            if (dictValueType == DictValueType.DictName)
+            {
+                valueField = "DictName";
+            }
+            else if (dictValueType == DictValueType.DictCode)
+            {
+                valueField = "DictCode";
+            }
+            else
+            {
+                valueField = "DictID";
+            }
+            SelectList list = new SelectList(dictlsit, valueField, "DictName", selectedValue);
+            return html.DropDownList(name, list, htmlAttributes);
         }
     }
 }
