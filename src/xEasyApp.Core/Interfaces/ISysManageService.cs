@@ -95,7 +95,23 @@ namespace xEasyApp.Core.Interfaces
         /// <param name="privilegeCode">The privilege code.</param>
         /// <returns></returns>
         int DeletePrivilege(string privilegeCode);
-            
+
+        /// <summary>
+        /// 获取权限信息
+        /// </summary>
+        /// <param name="privilegeCode">The privilege code.</param>
+        /// <returns></returns>
+        Privilege GetPrivilege(string privilegeCode);
+       #endregion
+
+       #region 数据字典相关
+        /// <summary>
+        /// 根据数据字典想获取
+        /// </summary>
+        /// <param name="dictCode">The dict code.</param>
+        /// <returns></returns>
+        List<DictInfo> GetChildDictInfos(string dictCode);
+
        #endregion
     }
 }

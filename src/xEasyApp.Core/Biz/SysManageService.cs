@@ -8,47 +8,107 @@ using xEasyApp.Core.Exceptions;
 using xEasyApp.Core.Configurations;
 using xEasyApp.Core.Entities;
 using System.Transactions;
+using xEasyApp.Core.Common;
 
 namespace xEasyApp.Core.Biz
 {
     public class SysManageService : ISysManageService
     {
-        public SysManageService()
-        {
-            _roleRepository=new RoleInfoRepository();
-            _deptRepository =new DepartmentRepository();
-            _userRepository = new UserInfoRepository();
-            _privilegeDao = new PrivilegeRepository();
-        }
+
+       #region 属性
         private RoleInfoRepository _roleRepository;
         private DepartmentRepository _deptRepository;
         private UserInfoRepository _userRepository;
-        private PrivilegeRepository _privilegeDao;
+        private PrivilegeRepository _privilegeRepository;
+
+        private DictInfoRepository _dictRepository;
+
+        protected DictInfoRepository dictRepository
+        {
+            get
+            {
+                if (_dictRepository == null)
+                {
+                    _dictRepository = new DictInfoRepository();
+                }
+                return _dictRepository;
+            }
+        }
+
+        protected RoleInfoRepository roleRepository
+        {
+            get {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new RoleInfoRepository();
+                }
+                return _roleRepository; 
+            }
+        }
+        protected DepartmentRepository deptRepository
+        {
+            get
+            {
+                if (_deptRepository == null)
+                {
+                    _deptRepository = new DepartmentRepository();
+                }
+                return _deptRepository;
+            }
+        }
+
+        protected UserInfoRepository userRepository
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new UserInfoRepository();
+                }
+                return _userRepository;
+            }
+        }
+
+        protected PrivilegeRepository privilegeRepository
+        {
+            get
+            {
+                if (_privilegeRepository == null)
+                {
+                    _privilegeRepository = new PrivilegeRepository();
+                }
+                return _privilegeRepository;
+            }
+        }
+
+        #endregion
+
+       #region 角色管理
         public List<RoleInfo> QueryRoleList()
         {
-            return _roleRepository.QueryAll();
+            return roleRepository.QueryAll();
         }
 
         public void SaveRoleInfo(RoleInfo ri)
         {
             if (ri.IsNew)
             {
-               bool IsValid =  _roleRepository.ValidRoleCode(ri.RoleCode);
+               bool IsValid =  roleRepository.ValidRoleCode(ri.RoleCode);
                if (!IsValid)
                {
                   throw new BizException("角色代码必须唯一");
                }
             }
-            _roleRepository.Save(ri);
+            roleRepository.Save(ri);
         }
         public RoleInfo GetRoleInfo(string roleCode)
         {
-           return _roleRepository.Get(roleCode);
+           return roleRepository.Get(roleCode);
         }
        
         public int DeleteRoleInfo(string roleCode)
         {
-            RoleInfo ri = _roleRepository.Get(roleCode);
+            RoleInfo ri = roleRepository.Get(roleCode);
             if (ri == null)
             {
                 return 0;
@@ -57,24 +117,25 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException("系统角色不允许被删除");
             }
-            return _roleRepository.Delete(roleCode);
+            return roleRepository.Delete(roleCode);
         }
 
 
         public bool ValidRoleCode(string roleCode)
         {
-            return _roleRepository.ValidRoleCode(roleCode);
+            return roleRepository.ValidRoleCode(roleCode);
         }
+        #endregion
 
-
+       #region 部门管理
         public List<Department> QueryDepartmentList()
         {
-           return _deptRepository.QueryAll();
+           return deptRepository.QueryAll();
         }
 
         public Department GetDeptInfo(string deptCode)
         {
-            Department d= _deptRepository.GetDepartment(deptCode);
+            Department d= deptRepository.GetDepartment(deptCode);
             if (d.ParentCode == AppConfig.RootDeptCode)
             {
                 d.ParentName = AppConfig.RootDeptName;
@@ -91,28 +152,28 @@ namespace xEasyApp.Core.Biz
 
         public List<Department> GetChildDeptsByParentCode(string parentCode)
         {
-            return _deptRepository.GetChildDeptsByParentCode(parentCode);
+            return deptRepository.GetChildDeptsByParentCode(parentCode);
         }
 
         public void SaveDeptInfo(Department department)
         {
-            _deptRepository.SaveDeptInfo(department);
+            deptRepository.SaveDeptInfo(department);
         }
 
         public bool ValidDeptCode(string deptCode)
         {
-            return _deptRepository.ValidDeptCode(deptCode);
+            return deptRepository.ValidDeptCode(deptCode);
         }
         public PagedList<UserInfo> QueryDeptUserList(PageView view, string deptCode)
         { 
-            return _deptRepository.QueryDeptUserList(view,deptCode);
+            return deptRepository.QueryDeptUserList(view,deptCode);
         }
         public int DeleteDeptInfo(string id)
         {
             int ret = -1;
             try
             {              
-               ret = _deptRepository.DeleteDeptInfo(id);
+               ret = deptRepository.DeleteDeptInfo(id);
               
             }
             catch (Exception ex)
@@ -122,14 +183,19 @@ namespace xEasyApp.Core.Biz
             return ret;
 
         }
+
+        #endregion
+
+       #region 用户管理
+
         public UserInfo GetUserInfo(string UserUID)
         {
-            return _userRepository.Get(UserUID);
+            return userRepository.Get(UserUID); 
         }
 
         public bool ValidUserUID(string UserUID)
         {
-            return _userRepository.ValidUserUID(UserUID);
+            return userRepository.ValidUserUID(UserUID);
         }
 
         public int DeleteUserInfo(string id)
@@ -139,7 +205,7 @@ namespace xEasyApp.Core.Biz
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
-                    ret = _userRepository.DeleteUserInfo(id);
+                    ret = userRepository.DeleteUserInfo(id);
                     scope.Complete();
                 }
             }
@@ -152,10 +218,12 @@ namespace xEasyApp.Core.Biz
 
         public void SaveUserInfo(UserInfo user)
         {
-            _userRepository.Save(user);
+            userRepository.Save(user);
         }
 
-        #region 权限相关
+       #endregion
+             
+       #region 权限相关
 
         /// <summary>
         /// 验证权限代码是否存在
@@ -164,7 +232,7 @@ namespace xEasyApp.Core.Biz
         /// <returns></returns>
         public bool ValidPrivilegeCode(string privilegeCode)
         {
-            return _privilegeDao.ValidPrivilegeCode(privilegeCode);
+            return privilegeRepository.ValidPrivilegeCode(privilegeCode);
         }
 
         /// <summary>
@@ -187,13 +255,13 @@ namespace xEasyApp.Core.Biz
         /// <returns></returns>
         public List<Privilege> GetChildPrivileges(string parentCode)
         {
-            if (parentCode == null)
+            if (string.IsNullOrEmpty(parentCode))
             {
-                return _privilegeDao.GetTopLevelPrivileges();
+                return privilegeRepository.GetTopLevelPrivileges();
             }
             else
             {
-                return _privilegeDao.GetChildPrivileges(parentCode);
+                return privilegeRepository.GetChildPrivileges(parentCode);
             }
         }
 
@@ -204,13 +272,13 @@ namespace xEasyApp.Core.Biz
         /// <returns></returns>
         public List<Privilege> QueryPrivilegeListByParentCode(string parentCode)
         {
-            if (parentCode == null)
+            if (string.IsNullOrEmpty(parentCode))
             {
-                return _privilegeDao.QueryTopLevelPrivilegeList();
+                return privilegeRepository.QueryTopLevelPrivilegeList();
             }
             else
             {
-                return _privilegeDao.QueryPrivilegeListByParentCode(parentCode);
+                return privilegeRepository.QueryPrivilegeListByParentCode(parentCode);
             }
         }
 
@@ -221,7 +289,7 @@ namespace xEasyApp.Core.Biz
         /// <returns></returns>
         public void SavePrivilege(Privilege p)
         {
-            _privilegeDao.Save(p);
+            privilegeRepository.Save(p);
         }
 
         /// <summary>
@@ -236,7 +304,7 @@ namespace xEasyApp.Core.Biz
             {
                 using(TransactionScope scope =new TransactionScope())
                 {
-                     ret =_privilegeDao.DeletePrivilege(privilegeCode);
+                    ret = privilegeRepository.DeletePrivilege(privilegeCode);
                      scope.Complete();
                 }
             }
@@ -246,7 +314,36 @@ namespace xEasyApp.Core.Biz
             }
             return ret;
         }
-
+        public Privilege GetPrivilege(string privilegeCode)
+        {
+            return privilegeRepository.GetPrivilege(privilegeCode);
+        }
         #endregion
+
+       #region 数据字典管理
+        public List<DictInfo> GetChildDictInfos(string dictCode)
+        {
+            switch (dictCode)
+            { 
+                case Constants.PrivilegeTypeCode:
+                    return GetPrivilegeTypeDictList();               
+            }
+           return dictRepository.GetChildDictInfos(dictCode);
+        }
+        private List<DictInfo> GetPrivilegeTypeDictList()
+        {
+            List<DictInfo> list = new List<DictInfo>();
+            DictInfo dict1 = new DictInfo();
+            dict1.DictCode = "1";
+            dict1.DictName = "普通权限";
+
+            DictInfo dict2 = new DictInfo();
+            dict2.DictCode = "2";
+            dict2.DictName = "菜单权限";
+            list.Add(dict1);
+            list.Add(dict2);
+            return list;
+        }
+       #endregion
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="BaseClass\MyControllerBase.cs" />
     <Compile Include="Biz\SysManageService.cs" />
     <Compile Include="Biz\UserService.cs" />
+    <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\StringKeyValueCache.cs" />
     <Compile Include="Common\UserCache.cs" />
     <Compile Include="Common\Utility.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Repositories\Entities\P_Entities.cs" />
     <Compile Include="Repositories\Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Repositories\DepartmentRepository.cs" />
+    <Compile Include="Repositories\Repositories\DictInfoRepository.cs" />
     <Compile Include="Repositories\Repositories\PrivilegeRepository.cs" />
     <Compile Include="Repositories\Repositories\RoleInfoRepository.cs" />
     <Compile Include="Repositories\Repositories\UserInfoRepository.cs" />

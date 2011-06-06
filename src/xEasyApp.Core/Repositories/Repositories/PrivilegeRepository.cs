@@ -28,19 +28,22 @@ namespace xEasyApp.Core.Repositories
             List<Privilege> list =new List<Privilege>();
             using (IDataReader reader = base.ExcuteDataReader(sql, pa))
             {
-                Privilege p = new Privilege();
-                p.PrivilegeCode = reader.GetString(0);
-                p.PrivilegeName = reader.GetString(1);
-                p.PrivilegeType = reader.GetByte(2);
-                p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
-                p.Remark = reader.IsDBNull(4) ? null : reader.GetString(4);
-                p.Uri = reader.IsDBNull(5) ? null : reader.GetString(5);
-                p.Sequence = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
-                p.LastUpdateUserUID = reader.GetString(7);
-                p.LastUpdateUserName = reader.GetString(8);
-                p.LastUpdateTime = reader.GetDateTime(9);
-                p.ParentName = reader.IsDBNull(10) ? null : reader.GetString(10);
-                list.Add(p);
+                while (reader.Read())
+                {
+                    Privilege p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);
+                    p.PrivilegeType = reader.GetByte(2);
+                    p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    p.Remark = reader.IsDBNull(4) ? null : reader.GetString(4);
+                    p.Uri = reader.IsDBNull(5) ? null : reader.GetString(5);
+                    p.Sequence = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
+                    p.LastUpdateUserUID = reader.GetString(7);
+                    p.LastUpdateUserName = reader.GetString(8);
+                    p.LastUpdateTime = reader.GetDateTime(9);
+                    p.ParentName = reader.IsDBNull(10) ? null : reader.GetString(10);
+                    list.Add(p);
+                }
             }
             return list;
         }
@@ -55,19 +58,22 @@ namespace xEasyApp.Core.Repositories
             List<Privilege> list = new List<Privilege>();
             using (IDataReader reader = base.ExcuteDataReader(sql))
             {
-                Privilege p = new Privilege();
-                p.PrivilegeCode = reader.GetString(0);
-                p.PrivilegeName = reader.GetString(1);
-                p.PrivilegeType = reader.GetByte(2);
-                p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
-                p.Remark = reader.IsDBNull(4) ? null : reader.GetString(4);
-                p.Uri = reader.IsDBNull(5) ? null : reader.GetString(5);
-                p.Sequence = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
-                p.LastUpdateUserUID = reader.GetString(7);
-                p.LastUpdateUserName = reader.GetString(8);
-                p.LastUpdateTime = reader.GetDateTime(9);
-                p.ParentName = reader.IsDBNull(10) ? null : reader.GetString(10);
-                list.Add(p);
+                while (reader.Read())
+                {
+                    Privilege p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);
+                    p.PrivilegeType = reader.GetByte(2);
+                    p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    p.Remark = reader.IsDBNull(4) ? null : reader.GetString(4);
+                    p.Uri = reader.IsDBNull(5) ? null : reader.GetString(5);
+                    p.Sequence = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
+                    p.LastUpdateUserUID = reader.GetString(7);
+                    p.LastUpdateUserName = reader.GetString(8);
+                    p.LastUpdateTime = reader.GetDateTime(9);
+                    p.ParentName = reader.IsDBNull(10) ? null : reader.GetString(10);
+                    list.Add(p);
+                }
             }
             return list;
         }
@@ -92,15 +98,18 @@ namespace xEasyApp.Core.Repositories
             List<Privilege> list = new List<Privilege>();
             using (IDataReader reader = base.ExcuteDataReader(sql))
             {
-                Privilege p = new Privilege();
-                p.PrivilegeCode = reader.GetString(0);
-                p.PrivilegeName = reader.GetString(1);
-                p.PrivilegeType = reader.GetByte(2);
-                p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
-              
-                p.Uri = reader.IsDBNull(4) ? null : reader.GetString(4);
-                p.HasChild = reader.GetInt32(5) > 0;
-                list.Add(p);
+                while (reader.Read())
+                {
+                    Privilege p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);
+                    p.PrivilegeType = reader.GetByte(2);
+                    p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
+
+                    p.Uri = reader.IsDBNull(4) ? null : reader.GetString(4);
+                    p.HasChild = reader.GetInt32(5) > 0;
+                    list.Add(p);
+                }
             }
             return list;
         }
@@ -117,17 +126,51 @@ namespace xEasyApp.Core.Repositories
             List<Privilege> list = new List<Privilege>();
             using (IDataReader reader = base.ExcuteDataReader(sql,pa))
             {
-                Privilege p = new Privilege();
-                p.PrivilegeCode = reader.GetString(0);
-                p.PrivilegeName = reader.GetString(1);
-                p.PrivilegeType = reader.GetByte(2);
-                p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
+                while (reader.Read())
+                {
+                    Privilege p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);
+                    p.PrivilegeType = reader.GetByte(2);
+                    p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
 
-                p.Uri = reader.IsDBNull(4) ? null : reader.GetString(4);
-                p.HasChild = reader.GetInt32(5) > 0;
-                list.Add(p);
+                    p.Uri = reader.IsDBNull(4) ? null : reader.GetString(4);
+                    p.HasChild = reader.GetInt32(5) > 0;
+                    list.Add(p);
+                }
             }
             return list;
+        }
+
+        public Privilege GetPrivilege(string privilegeCode)
+        {
+            string sql = @"SELECT A.[PrivilegeCode],A.[PrivilegeName],A.[PrivilegeType],A.[ParentID],A.[Remark]
+                                  ,A.[Uri],A.[Sequence],A.[LastUpdateUserUID],A.[LastUpdateUserName],A.[LastUpdateTime],B.[PrivilegeName] AS ParentName
+                            FROM Privileges A
+                            LEFT JOIN Privileges B on A.[ParentID] =B.[PrivilegeCode]
+                            where A.PrivilegeCode = @PrivilegeCode ";
+
+            Privilege p = null;
+            SqlParameter pa = new SqlParameter("@PrivilegeCode",privilegeCode);
+            using (IDataReader reader = base.ExcuteDataReader(sql, pa))
+            {
+                if (reader.Read())
+                {
+                    p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);
+                    p.PrivilegeType = reader.GetByte(2);
+                    p.ParentID = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    p.Remark = reader.IsDBNull(4) ? null : reader.GetString(4);
+                    p.Uri = reader.IsDBNull(5) ? null : reader.GetString(5);
+                    p.Sequence = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
+                    p.LastUpdateUserUID = reader.GetString(7);
+                    p.LastUpdateUserName = reader.GetString(8);
+                    p.LastUpdateTime = reader.GetDateTime(9);
+                    p.ParentName = reader.IsDBNull(10) ? null : reader.GetString(10);
+                }
+            }
+            return p;
         }
     }
 }
