@@ -10,6 +10,7 @@ using xEasyApp.Core.Repositories;
 using xEasyApp.Core.Entities;
 using xEasyApp.Core.Exceptions;
 using xEasyApp.Core.Configurations;
+using xEasyApp.Web.Models;
 
 namespace xEasyApp.Web.Controllers
 {
@@ -34,6 +35,12 @@ namespace xEasyApp.Web.Controllers
         {
             string colkey = form["colkey"];
             string colsinfo = form["colsinfo"];
+            string strparentId = form["ParentID"];
+            int? parentId =null;
+            if (!string.IsNullOrEmpty(strparentId))
+            {
+                parentId = Convert.ToInt32(strparentId);
+            }
             if (string.IsNullOrEmpty(colkey))
             {
                 throw new ArgumentNullException("colkey", "主键表示没有传递，请在前台js中配置");
@@ -42,25 +49,65 @@ namespace xEasyApp.Web.Controllers
             {
                 throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
             }
-            List<RoleInfo> list = sysManageService.QueryRoleList();
+            List<RoleInfo> list = sysManageService.QueryRoleList(parentId,base.UserId);
             var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));           
             return Json(data);
         }
-
-        public ActionResult EditRole(string id)
+        
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RoleTreeList(FormCollection form)
+        {
+            List<JsonTreeNode> nodes = new List<JsonTreeNode>();
+            string strparentId = form["id"];// ?? "0";
+            int? parentId = null;
+            if (!string.IsNullOrEmpty(strparentId))
+            {
+                parentId = Convert.ToInt32(strparentId);
+              
+            }
+            var list = sysManageService.GetRoles(parentId, base.UserId);
+            foreach (var item in list)
+            {
+                JsonTreeNode cnode = new JsonTreeNode();
+                cnode.id = item.RoleID.ToString();
+                cnode.text = item.RoleName;
+                cnode.value = item.RoleCode;
+                cnode.hasChildren = item.HasChild;
+                cnode.classes = item.IsSystem ? "system" : "normal";
+                nodes.Add(cnode);
+            }
+            return Json(nodes);
+        }
+        public ActionResult EditRole(int? id,int? ParentID,string ParentName)
         {
             RoleInfo ri;
-            if (!string.IsNullOrEmpty(id))
+            if (id.HasValue)
             {
-                ri = sysManageService.GetRoleInfo(id);
+                ri = sysManageService.GetRoleInfo(id.Value);
                 if (ri == null)
                 {
-                    throw new Exception("参数错误，不存在对应的角色");
+                    throw new ArgumentException("参数错误，不存在对应的角色", "RoleID");
+                }
+                else
+                {
+                    if (ri.IsSystem)
+                    {
+                        throw new NoPermissionExecption("您无法编辑系统角色");
+                    }
                 }
             }
             else
             {
                 ri = new RoleInfo();
+                if (ParentID.HasValue)
+                {
+                    ri.ParentID = ParentID;
+                    ri.ParentName = ParentName;
+                }
+                else
+                {
+                    ri.ParentName = "根角色";
+                }
             }
             return View(ri);
         }
@@ -70,19 +117,21 @@ namespace xEasyApp.Web.Controllers
             return Content(isValid ? "true" : "false","application/json");
         }
         [AcceptVerbs( HttpVerbs.Post)]
-        public JsonResult SaveRoleInfo(string id,RoleInfo ri)
+        public JsonResult SaveRoleInfo(int? id,RoleInfo ri)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if(id.HasValue && id.Value>0)
                 {
-                    ri.IsNew = true;
+                     ri.IsNew =false;
+                     ri.RoleID = id.Value;
                 }
                 else
                 {
-                    ri.IsNew = false;
-                }
+                    ri.IsNew = true;
+                }               
+                
                 ri.LastUpdateUserUID = base.UserId;
                 ri.LastUpdateUserName = base.CurrentUser.FullName;
                 ri.LastUpdateTime = DateTime.Now;
@@ -91,6 +140,11 @@ namespace xEasyApp.Web.Controllers
                 msg.IsSuccess = true;
                 msg.Msg = "操作成功";
             }
+            catch (BizException ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg =ex.Message;
+            }     
             catch (Exception ex)
             {
                 msg.IsSuccess = false;
@@ -99,36 +153,30 @@ namespace xEasyApp.Web.Controllers
             return Json(msg);
         }
         [AcceptVerbs( HttpVerbs.Post)]
-        public JsonResult DeleteRoleInfo(string id)
+        public JsonResult DeleteRoleInfo(int id)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
-            if (!string.IsNullOrEmpty(id))
+            
+            try
             {
-                try
+                int ret = sysManageService.DeleteRoleInfo(id);
+                if (ret > 0)
                 {
-                    int ret = sysManageService.DeleteRoleInfo(id);
-                    if (ret > 0)
-                    {
-                        msg.IsSuccess = true;
-                        msg.Msg = "操作成功";
-                    }
-                    else
-                    {
-                        msg.IsSuccess = false;
-                        msg.Msg = "操作失败:操作完成了,但是莫有效果";
-                    }
+                    msg.IsSuccess = true;
+                    msg.Msg = "操作成功";
                 }
-                catch (Exception ex)
+                else
                 {
                     msg.IsSuccess = false;
-                    msg.Msg = "操作失败:" + ex.Message;
+                    msg.Msg = "操作失败:操作完成了,但是莫有效果";
                 }
             }
-            else
+            catch (Exception ex)
             {
                 msg.IsSuccess = false;
-                msg.Msg = "参数错误";
+                msg.Msg = "操作失败:" + ex.Message;
             }
+         
             return Json(msg);
         }
         public ActionResult RoleUserRelationList(string id)
@@ -354,6 +402,57 @@ namespace xEasyApp.Web.Controllers
             var data = JsonFlexiGridData.ConvertFromPagedList(pageList, colkey, colsinfo.Split(','));
             return Json(data);
         }
+
+        public JsonResult QueryDeptTree(string ExtId, FormCollection form)
+        {
+            var nodes = new List<JsonTreeNode>();
+            string parentId = form["id"];// ?? "0";
+            if (string.IsNullOrEmpty(parentId))
+            {
+                Department root = sysManageService.GetRootDepartment();
+                JsonTreeNode node = new JsonTreeNode();
+                node.id = root.DeptCode;
+                node.text = root.DeptName;
+                node.value = root.DeptCode;
+                node.isexpand = true;
+                node.complete = true;
+                var clist = sysManageService.GetChildDeptsByParentCode(root.DeptCode);
+                if (clist != null)
+                {
+                    node.hasChildren = true;
+                    foreach (var item in clist)
+                    {
+                        if (item.DeptCode == ExtId)
+                        {
+                            continue;
+                        }
+                        JsonTreeNode cnode = new JsonTreeNode();
+                        cnode.id = item.DeptCode;
+                        cnode.text = item.DeptName;
+                        cnode.value = item.DeptCode;
+                        node.ChildNodes.Add(cnode);
+                    }
+                }
+                nodes.Add(node);
+            }
+            else
+            {
+                var list = sysManageService.GetChildDeptsByParentCode(parentId);
+                foreach (var item in list)
+                {
+                    if (item.DeptCode == ExtId)
+                    {
+                        continue;
+                    }
+                    JsonTreeNode cnode = new JsonTreeNode();
+                    cnode.id = item.DeptCode;
+                    cnode.text = item.DeptName;
+                    cnode.value = item.DeptCode;
+                    nodes.Add(cnode);
+                }
+            }
+            return Json(nodes);
+        }
        #endregion
 
        #region 用户管理
@@ -459,9 +558,12 @@ namespace xEasyApp.Web.Controllers
             return Json(msg);
         }
 
-        public ActionResult SetDept()
+        public ActionResult SetDept(int mode,string extid)
         {
-            return View();
+            SetDeptViewModel model = new SetDeptViewModel();
+            model.IsMuliSelect = mode == 1;
+            model.Url = Url.Action("QueryDeptTree", new{ ExtId=extid });
+            return View(model);
         }
        #endregion
 

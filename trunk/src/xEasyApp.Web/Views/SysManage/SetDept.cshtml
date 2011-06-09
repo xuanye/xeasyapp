@@ -1,16 +1,117 @@
 ﻿@{
     Layout = null;
 }
+@model xEasyApp.Web.Models.SetDeptViewModel
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head">
+    <title>选择用户</title>
+    @Html.Css("main","form","tree")
+    
+    @Html.Js("jquery","common","tree")
+    <style type="text/css">
+       .bbit-tree-selected a span
+       {
+            padding-right:20px;
+            background:url("../../images/icons/check.png") no-repeat right center;	
+       }
+    </style>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>SetDept</title>
-</head>
-<body>
-    <div>
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth;
+            var selectNodeIds = "";
+            if (parent && parent.getSelectNodeId) {
+                selectNodeIds = parent.getSelectNodeId();
+            }
+            $("#grouptree").treeview(
+                      {
+                          url: '@Model.Url',
+                          showcheck:@(Model.IsMuliSelect?"false":"true"),
+                          cascadecheck: false,
+                          parsedata:CheckNodesState,
+                          onnodeclick: TreeNode_Click,
+                          theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                      }
+             );
+            function CheckNodesState(data) {
+                if (selectNodeIds == "") {
+                    return;
+                }
+                for (var i = 0, j = data.length; i < j; i++) {
+                    var index = selectNodeIds.indexOf("," + data[i].value + ",");
+                    if (index > -1) {
+                        data[i].checkstate = 1;
+                    }
+                }
+            }
+       
+           function TreeNode_Click(data) {
+                data.expand();
+                  
+            } // end of TreeNode_Click
+          
+             //初始化按钮样式
+            $("#grouptree").height(maiheight - 38);        
+            $("#grouptree").width(mainWidth - 10);
+           @if(!Model.IsMuliSelect)
+           {
+                @:function Ok() {
+                @:var node= $("#grouptree").getTCT();                
+                @:    CloseModalDialog(null, true, [node]);
+                @: }
+              
+           }
+           else
+           {
+             @:function Ok() {
+             @:    var nodes = $("#grouptree").getTSNs();
+             @:    var sg = [];
+             @:     for (var i = 0, l = nodes.length; i < l; i++) {
+             @:        sg.push({ name: nodes[i].text, value: nodes[i].value });
+             @:    }
+             @:   CloseModalDialog(null, true, sg);
+             @:   }
+                
+          }
+            function Cancel() {
+                CloseModalDialog(null, false);
+            }
+            $("#btnOk").click(Ok);
+            $("#btnCancel").click(Cancel);
+        });                     // end of ready
+    </script>
+    <style type="text/css">
+        .ctree
+        {
+         overflow:auto;
+         border:solid 1px #999;	
+         margin:5px 0px 0px 4px;
+         /*--background-color:#E8F1F8; */
+         background-color:#fff;
+        }
         
-    </div>
+          body 
+         {
+     	    overflow:hidden;     	    
+         }
+         .group .bbit-tree-node-icon
+         {
+            background:url("../statics/images/icons/user.gif") no-repeat ; 
+         }
+        
+    </style>
+</head>
+
+<body style="background:#dfe8f6">
+    <div id="grouptree"  class="ctree"></div>      
+    
+    <div style="position:absolute;left:50px;">      
+        <a id="btnOk" class="button" href="javascript:void(0);"><span>确 定</span></a>       
+        <a id="btnCancel" class="button" href="javascript:void(0);"><span>取 消</span></a>
+    </div> 
+   
 </body>
 </html>

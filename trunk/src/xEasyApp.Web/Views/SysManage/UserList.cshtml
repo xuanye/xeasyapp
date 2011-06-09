@@ -113,7 +113,7 @@
                 if (cmd == "Add") {
                     var deptCode = $("#hdDeptid").val();
                     var deptName = encodeURIComponent($("#hdDeptName").val());
-                    OpenModelWindow('@Url.Action("EditUser")?deptCode=' + deptCode + '&deptName=' + deptName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+                    OpenModelWindow('@Url.Action("EditUser")?deptCode=' + deptCode + '&deptName=' + deptName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
                 }
             } // end of toolbarItem_onclick
 
@@ -138,7 +138,7 @@
             }
         }
         function edit(deptCode) {
-            OpenModelWindow('@Url.Action("EditUser")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改用户信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+            OpenModelWindow('@Url.Action("EditUser")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改用户信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
         }
       
         function flushGrid() {

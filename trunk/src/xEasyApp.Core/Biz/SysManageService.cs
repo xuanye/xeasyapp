@@ -84,40 +84,146 @@ namespace xEasyApp.Core.Biz
         #endregion
 
        #region 角色管理
-        public List<RoleInfo> QueryRoleList()
+
+        public bool IsInRole(string roleCode,string userCode)
         {
-            return roleRepository.QueryAll();
+            string userrols = UserCache.GetItem("UserRoles");
+            if (!string.IsNullOrEmpty(userrols))
+            {
+                return userrols.IndexOf("," + roleCode + ",") >= 0;
+            }
+            else
+            {
+                List<string> roles = userRepository.GetUserRoleCodes(userCode);
+                UserCache.AddItem("UserRoles", "," + string.Join(",", roles.ToArray()) + ",");
+                return roles.Contains(roleCode);
+            }
+        }
+
+        public List<RoleInfo> GetUserTopRoles(string userCode)
+        {
+            bool IsAdminRole = IsInRole(userCode, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole)
+            {
+                return roleRepository.GetTopRoles();
+            }
+            else
+            {
+                List<RoleInfo> list = roleRepository.GetTopUserRoles(userCode);
+                List<RoleInfo> listcopy = new List<RoleInfo>();
+                foreach (RoleInfo r in list) //过滤已有权限，并拥有下级权限，此处只获取顶级
+                {
+                    if (r.IsSystem) //系统角色过滤掉
+                    {
+                        continue;
+                    }
+                    bool exists = list.Exists(x => x.RoleID != r.RoleID && x.RolePath != r.RolePath && r.RolePath.IndexOf(x.RolePath) >= 0);
+                    if (!exists)
+                    {
+                        listcopy.Add(r);
+                    }
+                }
+
+                return listcopy;
+            }
+        }
+        public List<RoleInfo> GetRoles(int? parentId, string userCode)
+        {
+            if (!parentId.HasValue)
+            {
+                return GetUserTopRoles(userCode);
+            }
+            else
+            {
+                return roleRepository.GetRolesByParentID(parentId.Value);
+            }
+        }
+        public List<RoleInfo> QueryRoleList(int? parentId,string userCode)
+        {
+            if (!parentId.HasValue)
+            {
+                return QueryTopRoleList(userCode);
+            }
+            else
+            {
+                return roleRepository.QueryRoleList(parentId.Value);
+            }
+        }
+        public List<RoleInfo> QueryTopRoleList(string userCode)
+        {
+            bool IsAdminRole = IsInRole(userCode, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole)
+            {
+                return roleRepository.QueryTopRoleList();
+            }
+            else
+            {
+                List<RoleInfo> list = roleRepository.QueryTopUserRolesList(userCode);
+                List<RoleInfo> listcopy = new List<RoleInfo>();
+                foreach (RoleInfo r in list) //过滤已有权限，并拥有下级权限，此处只获取顶级
+                {
+                    if (r.IsSystem) //系统角色过滤掉
+                    {
+                        continue;
+                    }
+                    bool exists = list.Exists(x => x.RoleID != r.RoleID && x.RolePath != r.RolePath && r.RolePath.IndexOf(x.RolePath) >= 0);
+                    if (!exists)
+                    {
+                        listcopy.Add(r);
+                    }
+                }
+
+                return listcopy;
+            }
         }
 
         public void SaveRoleInfo(RoleInfo ri)
         {
-            if (ri.IsNew)
+            try
             {
-               bool IsValid =  roleRepository.ValidRoleCode(ri.RoleCode);
-               if (!IsValid)
-               {
-                  throw new BizException("角色代码必须唯一");
-               }
+                if (ri.IsNew)
+                {
+                    bool IsValid = roleRepository.ValidRoleCode(ri.RoleCode);
+                    if (!IsValid)
+                    {
+                        throw new BizException("角色代码必须唯一");
+                    }
+                }
+                roleRepository.SaveRoleInfo(ri);
             }
-            roleRepository.Save(ri);
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
         }
-        public RoleInfo GetRoleInfo(string roleCode)
+        public RoleInfo GetRoleInfo(int roleId)
         {
-           return roleRepository.Get(roleCode);
+            RoleInfo ri = roleRepository.GetRoleInfo(roleId);
+            if (!ri.ParentID.HasValue)
+            {
+                ri.ParentName = "根角色";
+            }
+            return ri;
+
         }
-       
-        public int DeleteRoleInfo(string roleCode)
+
+        /// <summary>
+        /// Deletes the role info.
+        /// </summary>
+        /// <param name="role">The role.</param>
+        /// <returns></returns>
+        public int DeleteRoleInfo(int roleId)
         {
-            RoleInfo ri = roleRepository.Get(roleCode);
+            RoleInfo ri = roleRepository.Get(roleId);
             if (ri == null)
             {
                 return 0;
             }
-            if (ri.IsSystem.HasValue && ri.IsSystem.Value)
+            if ( ri.IsSystem)
             {
                 throw new BizException("系统角色不允许被删除");
             }
-            return roleRepository.Delete(roleCode);
+            return roleRepository.Delete(roleId);
         }
 
 

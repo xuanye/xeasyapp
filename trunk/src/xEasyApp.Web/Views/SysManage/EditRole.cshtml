@@ -17,7 +17,7 @@
 <body>
     <div style="padding:5px;">
        
-            @using (Html.BeginForm("SaveRoleInfo", "SysManage", new { id = Model.RoleCode }, FormMethod.Post, new { id = "fmEdit" }))
+            @using (Html.BeginForm("SaveRoleInfo", "SysManage", new { id = Model.RoleID }, FormMethod.Post, new { id = "fmEdit" }))
             {
         
         <div class="mainpanel">
@@ -28,7 +28,7 @@
                     </td>
                     <td>                      
                        
-                        @if (string.IsNullOrEmpty(Model.RoleCode))
+                        @if (Model.RoleID==0)
                         {                        
                             @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;" })
                         }
@@ -44,8 +44,29 @@
                         <label>角色名称：</label>
                   </td>
                   <td>
-                        @Html.TextBox("RoleName", Model.RoleName, new { style = "width:90%;", Class = "required safe" })
+                        @Html.TextBox("RoleName", Model.RoleName, new { style = "width:90%;" })
                         <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
+                        <label>父角色：</label>
+                  </td>
+                  <td>
+                        @Html.Hidden("ParentID", Model.ParentID, new { style = "width:90%;"})
+                        <span id="lbParentName">
+                             @Html.DisplayTextFor(x => x.ParentName) 
+                        </span>
+                  </td>
+                
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
+                        <label>角色说明：</label>
+                  </td>
+                  <td>
+                        @Html.TextArea("Remark", Model.Remark, new { style = "width:90%;" })                       
                   </td>
                 
                 </tr>
@@ -92,7 +113,7 @@
                  },
                  rules:
                  {
-                     RoleCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.RoleCode))
+                     RoleCode: { required: true, safe: true @if(Model.RoleID==0)
                       {                        
                         @:,remote:"@Url.Action("ValidRoleCode")"
                       } 

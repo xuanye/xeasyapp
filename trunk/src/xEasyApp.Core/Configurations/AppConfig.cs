@@ -44,5 +44,13 @@ namespace xEasyApp.Core.Configurations
             }
         }
 
+
+        public static string SuperAdminRoleCode
+        {
+            get
+            {
+                return "admin";
+            }
+        }
     }
 }

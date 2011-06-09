@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-05 16:54:29
+// 生成时间: 2011-06-09 20:20:11
 // =============================================
 using System;
 using System.Collections.Generic;
@@ -383,18 +383,18 @@ namespace xEasyApp.Core.Repositories {
         /// </summary>
         public partial class RolePrivilegeRelation:BaseEntity {  
             
-			private string _RoleCode;
+			private int _RoleID;
 			/// <summary>
-			///  角色标识
+			///  角色ID
 			/// </summary>
-            public string RoleCode{
+            public int RoleID{
                 get{
-					return _RoleCode;
+					return _RoleID;
 				}
 				set
 				{
-					_RoleCode= value;
-					OnPropertyChanged("RoleCode");
+					_RoleID= value;
+					OnPropertyChanged("RoleID");
 				}
             }
 			private string _PrivilegeCode;
@@ -409,6 +409,20 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_PrivilegeCode= value;
 					OnPropertyChanged("PrivilegeCode");
+				}
+            }
+			private byte _AuthorizedType;
+			/// <summary>
+			///  授权级别
+			/// </summary>
+            public byte AuthorizedType{
+                get{
+					return _AuthorizedType;
+				}
+				set
+				{
+					_AuthorizedType= value;
+					OnPropertyChanged("AuthorizedType");
 				}
             }
 			private string _LastUpdateUserUID;
@@ -458,23 +472,23 @@ namespace xEasyApp.Core.Repositories {
         
         /// <summary>
         /// Table: RoleUserRelation
-        /// Primary Key: RoleCode
+        /// Primary Key: RoleID
 		/// RoleUserRelation
         /// </summary>
         public partial class RoleUserRelation:BaseEntity {  
             
-			private string _RoleCode;
+			private int _RoleID;
 			/// <summary>
-			///  角色标识
+			///  角色ID
 			/// </summary>
-            public string RoleCode{
+            public int RoleID{
                 get{
-					return _RoleCode;
+					return _RoleID;
 				}
 				set
 				{
-					_RoleCode= value;
-					OnPropertyChanged("RoleCode");
+					_RoleID= value;
+					OnPropertyChanged("RoleID");
 				}
             }
 			private string _UserUID;
@@ -489,6 +503,156 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_UserUID= value;
 					OnPropertyChanged("UserUID");
+				}
+            }
+			private string _LastUpdateUserUID;
+			/// <summary>
+			///  最后一次更新用户标识
+			/// </summary>
+            public string LastUpdateUserUID{
+                get{
+					return _LastUpdateUserUID;
+				}
+				set
+				{
+					_LastUpdateUserUID= value;
+					OnPropertyChanged("LastUpdateUserUID");
+				}
+            }
+			private string _LastUpdateUserName;
+			/// <summary>
+			///  最后一次更新用户姓名
+			/// </summary>
+            public string LastUpdateUserName{
+                get{
+					return _LastUpdateUserName;
+				}
+				set
+				{
+					_LastUpdateUserName= value;
+					OnPropertyChanged("LastUpdateUserName");
+				}
+            }
+			private DateTime _LastUpdateTime;
+			/// <summary>
+			///  最后一次更新时间
+			/// </summary>
+            public DateTime LastUpdateTime{
+                get{
+					return _LastUpdateTime;
+				}
+				set
+				{
+					_LastUpdateTime= value;
+					OnPropertyChanged("LastUpdateTime");
+				}
+            }
+  		      
+        }
+        
+        /// <summary>
+        /// Table: RoleInfos
+        /// Primary Key: RoleID
+		/// RoleInfos
+        /// </summary>
+        public partial class RoleInfo:BaseEntity {  
+            
+			private int _RoleID;
+			/// <summary>
+			///  角色ID
+			/// </summary>
+            public int RoleID{
+                get{
+					return _RoleID;
+				}
+				set
+				{
+					_RoleID= value;
+					OnPropertyChanged("RoleID");
+				}
+            }
+			private string _RoleCode;
+			/// <summary>
+			///  角色标识
+			/// </summary>
+            public string RoleCode{
+                get{
+					return _RoleCode;
+				}
+				set
+				{
+					_RoleCode= value;
+					OnPropertyChanged("RoleCode");
+				}
+            }
+			private string _RoleName;
+			/// <summary>
+			///  角色名称
+			/// </summary>
+            public string RoleName{
+                get{
+					return _RoleName;
+				}
+				set
+				{
+					_RoleName= value;
+					OnPropertyChanged("RoleName");
+				}
+            }
+			private string _Remark;
+			/// <summary>
+			///   角色说明
+			/// </summary>
+            public string Remark{
+                get{
+					return _Remark;
+				}
+				set
+				{
+					_Remark= value;
+					OnPropertyChanged("Remark");
+				}
+            }
+			private int? _ParentID;
+			/// <summary>
+			///  父角色ID
+			/// </summary>
+            public int? ParentID{
+                get{
+					return _ParentID;
+				}
+				set
+				{
+					_ParentID= value;
+					OnPropertyChanged("ParentID");
+				}
+            }
+			private bool _IsSystem;
+			/// <summary>
+			///  是否系统角色
+			/// </summary>
+            public bool IsSystem{
+                get{
+					return _IsSystem;
+				}
+				set
+				{
+					_IsSystem= value;
+					OnPropertyChanged("IsSystem");
+				}
+            }
+			private string _RolePath;
+			/// <summary>
+			///  角色路径
+			/// </summary>
+            public string RolePath{
+                get{
+					return _RolePath;
+				}
+				set
+				{
+					_RolePath= value;
+					OnPropertyChanged("RolePath");
 				}
             }
 			private string _LastUpdateUserUID;
@@ -997,100 +1161,6 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_LastUpdateTime= value;
 					OnPropertyChanged("LastUpdateTime");
-				}
-            }
-  		      
-        }
-        
-        /// <summary>
-        /// Table: RoleInfos
-        /// Primary Key: RoleCode
-		/// RoleInfos
-        /// </summary>
-        public partial class RoleInfo:BaseEntity {  
-            
-			private string _RoleCode;
-			/// <summary>
-			///  角色标识
-			/// </summary>
-            public string RoleCode{
-                get{
-					return _RoleCode;
-				}
-				set
-				{
-					_RoleCode= value;
-					OnPropertyChanged("RoleCode");
-				}
-            }
-			private string _RoleName;
-			/// <summary>
-			///  角色名称
-			/// </summary>
-            public string RoleName{
-                get{
-					return _RoleName;
-				}
-				set
-				{
-					_RoleName= value;
-					OnPropertyChanged("RoleName");
-				}
-            }
-			private string _LastUpdateUserUID;
-			/// <summary>
-			///  最后一次更新用户标识
-			/// </summary>
-            public string LastUpdateUserUID{
-                get{
-					return _LastUpdateUserUID;
-				}
-				set
-				{
-					_LastUpdateUserUID= value;
-					OnPropertyChanged("LastUpdateUserUID");
-				}
-            }
-			private string _LastUpdateUserName;
-			/// <summary>
-			///  最后一次更新用户姓名
-			/// </summary>
-            public string LastUpdateUserName{
-                get{
-					return _LastUpdateUserName;
-				}
-				set
-				{
-					_LastUpdateUserName= value;
-					OnPropertyChanged("LastUpdateUserName");
-				}
-            }
-			private DateTime _LastUpdateTime;
-			/// <summary>
-			///  最后一次更新时间
-			/// </summary>
-            public DateTime LastUpdateTime{
-                get{
-					return _LastUpdateTime;
-				}
-				set
-				{
-					_LastUpdateTime= value;
-					OnPropertyChanged("LastUpdateTime");
-				}
-            }
-			private bool? _IsSystem;
-			/// <summary>
-			///  是否系统角色
-			/// </summary>
-            public bool? IsSystem{
-                get{
-					return _IsSystem;
-				}
-				set
-				{
-					_IsSystem= value;
-					OnPropertyChanged("IsSystem");
 				}
             }
   		      
