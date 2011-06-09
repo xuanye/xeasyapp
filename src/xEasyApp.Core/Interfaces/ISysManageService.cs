@@ -10,13 +10,15 @@ namespace xEasyApp.Core.Interfaces
     public interface ISysManageService
     {
        #region 角色相关
-        List<RoleInfo> QueryRoleList();
+        List<RoleInfo> GetRoles(int? parentId, string userCode);
+
+        List<RoleInfo> QueryRoleList(int? parentId, string userCode);
 
         void SaveRoleInfo(RoleInfo ri);
 
-        RoleInfo GetRoleInfo(string roleCode);
+        RoleInfo GetRoleInfo(int roleid);
 
-        int DeleteRoleInfo(string roleCode);
+        int DeleteRoleInfo(int roleId);
 
         bool ValidRoleCode(string RoleCode);
 

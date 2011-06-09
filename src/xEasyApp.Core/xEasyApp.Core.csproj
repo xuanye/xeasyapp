@@ -66,6 +66,9 @@
     <Compile Include="Entities\PageView.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions\BizException.cs" />
+    <Compile Include="Exceptions\DataConvertException.cs" />
+    <Compile Include="Exceptions\NoAuthorizeExecption.cs" />
+    <Compile Include="Exceptions\NoPermissionExecption.cs" />
     <Compile Include="Extensions\ControllerExtension.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
     <Compile Include="Interfaces\ISysManageService.cs" />

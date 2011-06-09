@@ -4,7 +4,7 @@
   
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-05 16:54:29
+// 生成时间: 2011-06-09 21:53:30
 // =============================================
 using System;
 using System.Data;
@@ -54,6 +54,18 @@ namespace xEasyApp.Core.Repositories{
             sp.AddParameter("ParentID",ParentID,DbType.AnsiString);
             sp.AddParameter("Uri",Uri,DbType.AnsiString);
             sp.AddParameter("Sequence",Sequence,DbType.Int32);
+            sp.AddParameter("LastUpdateUserUID",LastUpdateUserUID,DbType.AnsiString);
+            sp.AddParameter("LastUpdateUserName",LastUpdateUserName,DbType.String);
+            return sp;
+        }
+        public static StoredProcedure SP_SaveRoleInfo(int RoleID,string RoleCode,string RoleName,string Remark,int ParentID,bool IsSystem,string LastUpdateUserUID,string LastUpdateUserName){
+            StoredProcedure sp=new StoredProcedure("SP_SaveRoleInfo");
+            sp.AddParameter("RoleID",RoleID,DbType.Int32);
+            sp.AddParameter("RoleCode",RoleCode,DbType.AnsiString);
+            sp.AddParameter("RoleName",RoleName,DbType.String);
+            sp.AddParameter("Remark",Remark,DbType.String);
+            sp.AddParameter("ParentID",ParentID,DbType.Int32);
+            sp.AddParameter("IsSystem",IsSystem,DbType.Boolean);
             sp.AddParameter("LastUpdateUserUID",LastUpdateUserUID,DbType.AnsiString);
             sp.AddParameter("LastUpdateUserName",LastUpdateUserName,DbType.String);
             return sp;

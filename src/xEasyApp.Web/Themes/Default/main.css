@@ -105,6 +105,54 @@ span.close
 }
 
 
+span.setGroup
+{
+	padding-left: 20px;
+	background: url(../../images/icons/group.gif) no-repeat 1px;
+}
+
+span.query
+{
+	padding-left: 20px;
+	background: url(../../images/icons/query.png) no-repeat 1px center;
+}
+
+span.trash
+{
+	padding-left: 16px;
+	background: url(../../images/icons/trash.gif) no-repeat 2px 3px;
+}
+
+span.setPermission
+{
+	padding-left: 20px;
+	background: url(../../images/icons/key_go.png) no-repeat 1px;
+}
+span.authorization
+{
+	padding-left: 20px;
+	background: url(../../images/icons/app_key.png) no-repeat 1px;
+}
+span.sdelete
+{
+	padding-left: 16px;
+	background: url(../../images/icons/sdelete.png) no-repeat 1px;
+}
+span.qdelete
+{
+	padding-left: 16px;
+	background: url(../../images/icons/qdelete.gif) no-repeat 1px;
+}
+span.qcheck
+{
+	padding-left: 16px;
+	background: url(../../images/icons/qcheck.gif) no-repeat 1px;
+}
+span.uquery
+{
+	padding-left: 18px;
+	background: url(../../images/icons/uquery.gif) no-repeat 1px center;
+}
 div.errorpanel
 {
    
