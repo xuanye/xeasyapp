@@ -8,21 +8,21 @@ using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Core.Repositories
 {
-    public partial class DepartmentRepository
+    public partial class OrganizationRepository
     {
 
-        public List<Department> GetChildDeptsByParentCode(string parentCode)
+        public List<Organization> GetChildOrgsByParentCode(string parentCode)
         {
-            string sql = "SELECT [DeptCode],[DeptName],[ParentCode],[Path],[Remark],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Departments] where ParentCode=@ParentCode Order by [Sequence]";
+            string sql = "SELECT [OrgCode],[OrgName],[ParentCode],[Path],[Remark],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Organizations] where ParentCode=@ParentCode Order by [Sequence]";
             SqlParameter p = new SqlParameter("@ParentCode", parentCode);
-            List<Department> list = new List<Department>();
+            List<Organization> list = new List<Organization>();
             using (IDataReader reader = base.ExcuteDataReader(sql, p))
             {
                 while (reader.Read())
                 {
-                    Department item = new Department();
-                    item.DeptCode = reader.GetString(0);
-                    item.DeptName = reader.GetString(1);
+                    Organization item = new Organization();
+                    item.OrgCode = reader.GetString(0);
+                    item.OrgName = reader.GetString(1);
                     if (!reader.IsDBNull(2))
                     {
                         item.ParentCode = reader.GetString(2);
@@ -42,27 +42,28 @@ namespace xEasyApp.Core.Repositories
             return list;
         }
 
-        public void SaveDeptInfo(Department d)
+        public void SaveOrgInfo(Organization d)
         {
-            StoredProcedure sp = StoredProcedures.SP_SaveDeptInfo(d.DeptCode, d.DeptName, d.ParentCode, d.Remark, d.Sequence, d.LastUpdateUserUID, d.LastUpdateUserName);
+            StoredProcedure sp = StoredProcedures.SP_SaveOrgInfo(d.OrgCode, d.OrgName, d.ParentCode, d.Remark, d.Sequence, d.LastUpdateUserUID, d.LastUpdateUserName);
             base.SPExecuteNonQuery(sp);
         }
 
-        public Department GetDepartment(string deptCode)
+        public Organization GetOrganization(string orgCode)
         {
-            string sql = @"SELECT D1.[DeptCode],D1.[DeptName],D1.[ParentCode],D1.[Path],D1.[Remark],D1.[Sequence],D1.[LastUpdateUserUID],D1.[LastUpdateUserName],D1.[LastUpdateTime],D2.[DeptName] as ParentName 
-                        FROM Departments D1
-                        LEFT JOIN Departments D2 ON D1.ParentCode =D2.DeptCode
-                        WHERE D1.DeptCode=@DeptCode";
-            SqlParameter p = new SqlParameter("@DeptCode", deptCode);
-            Department item = null;
+            string sql = @"SELECT D1.[OrgCode],D1.[OrgName],D1.[ParentCode],D1.[Path],D1.[Remark],D1.[OrgType],D1.[UnitName],D1.[UnitCode]
+                        ,D1.[Sequence],D1.[LastUpdateUserUID],D1.[LastUpdateUserName],D1.[LastUpdateTime],D2.[OrgName] as ParentName 
+                        FROM Organizations D1
+                        LEFT JOIN Organizations D2 ON D1.ParentCode =D2.OrgCode
+                        WHERE D1.OrgCode=@OrgCode";
+            SqlParameter p = new SqlParameter("@OrgCode", orgCode);
+            Organization item = null;
             using (IDataReader reader = base.ExcuteDataReader(sql, p))
             {
                 if (reader.Read())
                 {
-                    item = new Department();
-                    item.DeptCode = reader.GetString(0);
-                    item.DeptName = reader.GetString(1);
+                    item = new Organization();
+                    item.OrgCode = reader.GetString(0);
+                    item.OrgName = reader.GetString(1);
                     if (!reader.IsDBNull(2))
                     {
                         item.ParentCode = reader.GetString(2);
@@ -72,29 +73,35 @@ namespace xEasyApp.Core.Repositories
                     {
                         item.Remark = reader.GetString(4);
                     }
-                    item.Sequence = reader.GetInt32(5);
-                    item.LastUpdateUserUID = reader.GetString(6);
-                    item.LastUpdateUserName = reader.GetString(7);
-                    item.LastUpdateTime = reader.GetDateTime(8);
-                    item.ParentName = reader.IsDBNull(9) ? null : reader.GetString(9);
+                    if (!reader.IsDBNull(5))
+                    {
+                        item.OrgType = reader.GetByte(5);
+                    }
+                    item.UnitName = reader.IsDBNull(6) ? null : reader.GetString(6);
+                    item.UnitCode = reader.IsDBNull(7) ? null : reader.GetString(7);
+                    item.Sequence = reader.GetInt32(8);
+                    item.LastUpdateUserUID = reader.GetString(9);
+                    item.LastUpdateUserName = reader.GetString(10);
+                    item.LastUpdateTime = reader.GetDateTime(11);
+                    item.ParentName = reader.IsDBNull(12) ? null : reader.GetString(12);
                 }
             }
             return item;
         }
 
-        public bool ValidDeptCode(string deptCode)
+        public bool ValidOrgCode(string orgCode)
         {
-            string sql = "select 1 from Departments where DeptCode=@DeptCode";
-            SqlParameter p = new SqlParameter("@DeptCode", deptCode);
+            string sql = "select 1 from Organizations where OrgCode=@OrgCode";
+            SqlParameter p = new SqlParameter("@OrgCode", orgCode);
             object o = base.ExecuteScalar(sql, p);
             return o == null;
         }
 
-        public PagedList<UserInfo> QueryDeptUserList(PageView view, string deptCode)
+        public PagedList<UserInfo> QueryOrgUserList(PageView view, string orgCode)
         {
-            string where = " AND DeptCode='" + deptCode + "'";
+            string where = " AND OrgCode='" + orgCode + "'";
             StoredProcedure sp = StoredProcedures.SP_PAGESELECT(where, view.PageSize, view.PageIndex
-             , "UserInfos", "[UserUID],[FullName],[Password],[DeptCode],[DeptName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]"
+             , "UserInfos", "[UserUID],[FullName],[Password],[OrgCode],[OrgName],[Sequence],[AccountState],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]"
              , "[UserUID]", "");
             var pl = new PagedList<UserInfo>();
             pl.DataList = new List<UserInfo>();
@@ -106,8 +113,8 @@ namespace xEasyApp.Core.Repositories
                     u.UserUID = dr.IsDBNull(0) ? null : dr.GetString(0);
                     u.FullName = dr.IsDBNull(1) ? null : dr.GetString(1);
                     u.Password = dr.IsDBNull(2) ? null : dr.GetString(2);
-                    u.DeptCode =  dr.IsDBNull(3) ? null : dr.GetString(3);
-                    u.DeptName = dr.IsDBNull(4) ? null : dr.GetString(4);
+                    u.OrgCode =  dr.IsDBNull(3) ? null : dr.GetString(3);
+                    u.OrgName = dr.IsDBNull(4) ? null : dr.GetString(4);
                     u.Sequence = dr.GetInt32(5);
                     u.AccountState = dr.GetByte(6);
                     u.LastUpdateUserUID = dr.IsDBNull(7) ? null : dr.GetString(7);
@@ -127,8 +134,9 @@ namespace xEasyApp.Core.Repositories
             return pl;
         }
 
-        public int DeleteDeptInfo(string id)
+        public int DeleteOrgInfo(string OrgCode)
         {
+            //TODO:删除组织信息
             throw new NotImplementedException();
         }
     }

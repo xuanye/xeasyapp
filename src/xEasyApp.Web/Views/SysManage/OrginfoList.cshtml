@@ -7,7 +7,7 @@
     <title>角色列表</title>
     @Html.Css("main", "flexigrid","tree")
     <style type="text/css">
-        .depttitle
+        .Orgtitle
         {
             color:#15428b;
             font-weight:bold; 
@@ -25,20 +25,20 @@
         <tbody>
             <tr>
                 <td style="width:170px;">
-                    <div class="toolbar"><span class="depttitle" >部门管理</span></div>
-                    <div id="depttree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
+                    <div class="toolbar"><span class="Orgtitle" >部门管理</span></div>
+                    <div id="Orgtree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
                 </td>
                 <td style="width:2px;">
                 </td>
                 <td>          
-                 <div id="deptheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="depttitle" class="depttitle">部门管理</span></div>      
-                 <table id="DepartmentList" style="display:none;"></table>      
+                 <div id="Orgheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="Orgtitle" class="Orgtitle">部门管理</span></div>      
+                 <table id="OrganizationList" style="display:none;"></table>      
                 </td>
             </tr>
         </tbody>
        </table> 
-       <input type="hidden" value="-1" id="hdDeptid" />    
-       <input type="hidden" value="" id="hdDeptName" />
+       <input type="hidden" value="-1" id="hdOrgid" />    
+       <input type="hidden" value="" id="hdOrgName" />
     </div>
    
     @Html.Js("jquery", "common",  "flexigrid","tree")   
@@ -52,14 +52,14 @@
             var option = {
                 height: gh,
                 width: mainWidth,
-                url: '@Url.Action("DeptInfoList")',
+                url: '@Url.Action("OrgInfoList")',
                 colModel: [
-                    { display: '部门代码', name: 'DeptCode', width: 60, sortable: false, align: 'left', iskey: true },
-			        { display: '部门名称', name: 'DeptName', width: 100, sortable: false, hide: false, align: 'left' },
+                    { display: '部门代码', name: 'OrgCode', width: 60, sortable: false, align: 'left', iskey: true },
+			        { display: '部门名称', name: 'OrgName', width: 100, sortable: false, hide: false, align: 'left' },
                     { display: '说明', name: 'Remark', width: 120, sortable: false, hide: false, align: 'left' },
 			        { display: '最后修改人', name: 'LastUpdateUserName', width: 80, sortable: false, hide: true, align: 'left' },
 			        { display: '最后修改时间', name: 'LastUpdateTime', width: 150, sortable: false, hide: true, align: 'left' },
-                    { display: '操作', name: 'DeptCode', width: 200, sortable: false, align: 'left', process: formatOp, toggle: false }
+                    { display: '操作', name: 'OrgCode', width: 200, sortable: false, align: 'left', process: formatOp, toggle: false }
 				],
                 buttons: [
                             { name: 'Add', displayname: "新建", title: "新建部门", bclass: 'Add', onpress: toolbarItem_onclick },
@@ -73,22 +73,22 @@
                 rowbinddata: true
             };
 
-            $("#depttree").treeview({
-                url: '@Url.Action("DeptInfoTreeList")',
+            $("#Orgtree").treeview({
+                url: '@Url.Action("OrgInfoTreeList")',
                 showcheck: false,
                 onnodeclick: TreeNode_Click,
                 theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
             }).height(maiheight - 30);
             function TreeNode_Click(data) {
                 var p = { extParam: [{ name: "parentCode", value: data.value}] };
-                $("#DepartmentList").flexOptions(p).flexReload();
-                $("#hdDeptid").val(data.value);
-                $("#hdDeptName").val(data.text);
-                $("#depttitle").text(data.text);
+                $("#OrganizationList").flexOptions(p).flexReload();
+                $("#hdOrgid").val(data.value);
+                $("#hdOrgName").val(data.text);
+                $("#Orgtitle").text(data.text);
                 //data.expand();
             } // end of TreeNode_Click
 
-            var grid = $("#DepartmentList").flexigrid(option);
+            var grid = $("#OrganizationList").flexigrid(option);
 
             function fromIsSystem(value) {
                 if (value == 'True') {
@@ -108,18 +108,18 @@
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
-                    var parentCode = $("#hdDeptid").val();
-                    var parentName = encodeURIComponent($("#hdDeptName").val());
-                    OpenModelWindow('@Url.Action("EditDept")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 340, caption: "新增部门", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+                    var parentCode = $("#hdOrgid").val();
+                    var parentName = encodeURIComponent($("#hdOrgName").val());
+                    OpenModelWindow('@Url.Action("EditOrg")?parentCode=' + parentCode + '&parentName=' + parentName, { width: 450, height: 340, caption: "新增部门", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); $("#OrganizationList").flexReload(); } });
                 }
             } // end of toolbarItem_onclick
 
 
         });                     // end of ready
-        function del(deptCode, deptName) {
-            if (confirm("你确定要删除[" + deptName + "]?")) {
+        function del(OrgCode, OrgName) {
+            if (confirm("你确定要删除[" + OrgName + "]?")) {
                 showLoadingMsg("正在删除...", { left: 300, top: 2 })
-                $.post('@Url.Action("DeleteDeptInfo","SysManage")', { id: deptCode },
+                $.post('@Url.Action("DeleteOrgInfo","SysManage")', { id: OrgCode },
                      function (data) {
                          if (data.IsSuccess) {
                              showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
@@ -134,15 +134,15 @@
                 );
             }
         }
-        function edit(deptCode) {
-            OpenModelWindow('@Url.Action("EditDept")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改部门信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#DepartmentList").flexReload(); } });
+        function edit(OrgCode) {
+            OpenModelWindow('@Url.Action("EditOrg")/' + encodeURIComponent(OrgCode), { width: 450, height: 330, caption: "修改部门信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); $("#OrganizationList").flexReload(); } });
         }
-        function viewusers(deptCode,deptName)
+        function viewusers(OrgCode,OrgName)
         {
-            OpenModelWindow('@Url.Action("DeptUserList")/?DeptCode=' + encodeURIComponent(deptCode) + '&DeptName=' + encodeURIComponent(deptName), { width: 650, height: 500, caption: deptName });
+            OpenModelWindow('@Url.Action("OrgUserList")/?OrgCode=' + encodeURIComponent(OrgCode) + '&OrgName=' + encodeURIComponent(OrgName), { width: 650, height: 500, caption: OrgName });
         }
         function flushGrid() {
-            $("#DepartmentList").flexReload(); //
+            $("#OrganizationList").flexReload(); //
         }
     </script>
 </body>

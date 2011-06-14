@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
+using xEasyApp.Core.Entities;
 
 namespace xEasyApp.Core.Repositories
 {
@@ -288,6 +289,151 @@ namespace xEasyApp.Core.Repositories
         {
             StoredProcedure sp = StoredProcedures.SP_SaveRoleInfo(ri.RoleID, ri.RoleCode, ri.RoleName, ri.Remark, ri.ParentID.HasValue ? ri.ParentID.Value : -1, ri.IsSystem, ri.LastUpdateUserUID, ri.LastUpdateUserName);
             base.SPExecuteNonQuery(sp);
+        }
+
+        public PagedList<UserInfo> QueryRoletUserList(Entities.PageView view, int roleId, string qtext)
+        {
+            string where = " AND B.RoleID=" + roleId;
+            if (string.IsNullOrEmpty(qtext))
+            {
+                where += " AND (A.UserUID like '%" + qtext + "%' or A.FullName like '%" + qtext + "%')";
+            }
+            StoredProcedure sp = StoredProcedures.SP_PAGESELECT(where, view.PageSize, view.PageIndex,
+                "UserInfos A INNER JOIN  RoleUserRelation B ON A.UserUID= B.UserUID",
+                "A.[UserUID],A.[FullName],A.[Password],A.[OrgCode],A.[OrgName],A.[IsManager],A.[IsSystem],A.[Sequence],A.[AccountState],A.[LastUpdateUserUID],A.[LastUpdateUserName],A.[LastUpdateTime]",
+                "A.[UserUID]", " Order By A.[Sequence]");
+            var pl = new PagedList<UserInfo>();
+            pl.DataList = new List<UserInfo>();
+            using (IDataReader dr = base.SPExecuteDataReader(sp))
+            {
+                while (dr.Read())
+                {
+                    UserInfo u = new UserInfo();
+                    u.UserUID = dr.IsDBNull(0) ? null : dr.GetString(0);
+                    u.FullName = dr.IsDBNull(1) ? null : dr.GetString(1);
+                    u.Password = dr.IsDBNull(2) ? null : dr.GetString(2);
+                    u.OrgCode = dr.IsDBNull(3) ? null : dr.GetString(3);
+                    u.OrgName = dr.IsDBNull(4) ? null : dr.GetString(4);
+                    u.IsManager = dr.IsDBNull(5) ? false : dr.GetBoolean(5);
+                    u.IsSystem = dr.IsDBNull(6) ? false : dr.GetBoolean(6);
+                    u.Sequence = dr.GetInt32(7);
+                    u.AccountState = dr.IsDBNull(8) ? (byte)0 : dr.GetByte(8);
+                    u.LastUpdateUserUID = dr.IsDBNull(9) ? null : dr.GetString(9);
+                    u.LastUpdateUserName = dr.IsDBNull(10) ? null : dr.GetString(10);
+                    u.LastUpdateTime = dr.GetDateTime(11);                 
+                    u.IsNew = false;
+                    pl.DataList.Add(u);
+                }
+            }
+            if (view.PageIndex == 0)
+            {
+                pl.Total = Convert.ToInt32(sp.GetParameterValue(sp.ParamsCount - 1));
+            }
+            pl.PageIndex = view.PageIndex;
+
+            return pl;
+        }
+
+        public int DeleteRoleUser(int roleid, string userids)
+        {
+            StoredProcedure sp = StoredProcedures.SP_RemoveRoleUsers(roleid, userids);
+            return base.SPExecuteNonQuery(sp);
+        }
+
+        public int AddRoleUser(int roleid, string userids, string opUserId, string opUserName)
+        {
+            StoredProcedure sp = StoredProcedures.SP_AddRoleUsers(roleid, userids, opUserId, opUserName);
+            return base.SPExecuteNonQuery(sp);
+        }
+
+        public bool CheckUserAuthorizationRight(int RoleID, string userid)
+        {
+            //TODO:添加校验的代码
+            return false;
+        }
+
+        public List<Privilege> GetUserPermissions(string userId, string parentId)
+        {
+            string sql = null;        
+            List<SqlParameter> plist = new List<SqlParameter>();
+            plist.Add(new SqlParameter("@UserUID", userId));
+            if (string.IsNullOrEmpty(parentId))
+            {
+                sql = @"SELECT A.[PrivilegeCode],A.[PrivilegeName],A.[PrivilegeType],A.[Uri],ISNULL(B.ChildCount,0) as  ChildCount FROM Privileges A 
+                        LEFT JOIn (SELECT COUNT(1) as ChildCount,ParentID FROM Privileges  Group By ParentID) B ON A.PrivilegeCode = B.ParentID 
+                        INNER JOIN RolePrivilegeRelation C on A.PrivilegeCode=C.PrivilegeCode
+                        INNER JOIN RoleUserRelation D ON C.RoleID = D.RoleID
+                        WHERE D.UserUID=@UserUID and A.ParentID IS NULL 
+                        Order By a.Sequence";
+              
+            }
+            else
+            {
+                sql = @"SELECT A.[PrivilegeCode],A.[PrivilegeName],A.[PrivilegeType],A.[Uri],ISNULL(B.ChildCount,0) as  ChildCount FROM Privileges A 
+                        LEFT JOIn (SELECT COUNT(1) as ChildCount,ParentID FROM Privileges  Group By ParentID) B ON A.PrivilegeCode = B.ParentID 
+                        INNER JOIN RolePrivilegeRelation C on A.PrivilegeCode=C.PrivilegeCode
+                        INNER JOIN RoleUserRelation D ON C.RoleID = D.RoleID
+                        WHERE D.UserUID=@UserUID and A.ParentID=@ParentID 
+                        Order By a.Sequence";
+                plist.Add(new SqlParameter("@ParentID", parentId));
+            }
+
+            List<Privilege> list = new List<Privilege>();
+            using (IDataReader reader = base.ExcuteDataReader(sql, plist.ToArray()))
+            {              
+                while (reader.Read())
+                {
+                    Privilege pvi = new Privilege();
+                    pvi.PrivilegeCode = reader.GetString(0);
+                    pvi.PrivilegeName = reader.GetString(1);
+                    pvi.PrivilegeType = reader.GetByte(2);
+                    pvi.Uri = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    pvi.HasChild = reader.GetInt32(4) > 0;
+                    list.Add(pvi);
+                }
+            }
+            return list;
+        }
+
+        public List<Privilege> GetRolePermissions(int roleid, string parentId)
+        {
+            string sql = null;
+            List<SqlParameter> plist = new List<SqlParameter>();
+            plist.Add(new SqlParameter("@RoleID", roleid));
+            if (string.IsNullOrEmpty(parentId))
+            {
+                sql = @"SELECT A.[PrivilegeCode],A.[PrivilegeName],A.[PrivilegeType],A.[Uri],ISNULL(B.ChildCount,0) as  ChildCount FROM Privileges A 
+                        LEFT JOIn (SELECT COUNT(1) as ChildCount,ParentID FROM Privileges  Group By ParentID) B ON A.PrivilegeCode = B.ParentID 
+                        INNER JOIN RolePrivilegeRelation C on A.PrivilegeCode=C.PrivilegeCode                        
+                        WHERE C.RoleID=@RoleID and A.ParentID IS NULL 
+                        Order By a.Sequence";
+
+            }
+            else
+            {
+                sql = @"SELECT A.[PrivilegeCode],A.[PrivilegeName],A.[PrivilegeType],A.[Uri],ISNULL(B.ChildCount,0) as  ChildCount FROM Privileges A 
+                        LEFT JOIn (SELECT COUNT(1) as ChildCount,ParentID FROM Privileges  Group By ParentID) B ON A.PrivilegeCode = B.ParentID 
+                        INNER JOIN RolePrivilegeRelation C on A.PrivilegeCode=C.PrivilegeCode
+                        WHERE C.RoleID=@RoleID and A.ParentID=@ParentID 
+                        Order By a.Sequence";
+                plist.Add(new SqlParameter("@ParentID", parentId));
+            }
+
+            List<Privilege> list = new List<Privilege>();
+            using (IDataReader reader = base.ExcuteDataReader(sql, plist.ToArray()))
+            {
+                while (reader.Read())
+                {
+                    Privilege pvi = new Privilege();
+                    pvi.PrivilegeCode = reader.GetString(0);
+                    pvi.PrivilegeName = reader.GetString(1);
+                    pvi.PrivilegeType = reader.GetByte(2);
+                    pvi.Uri = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    pvi.HasChild = reader.GetInt32(4) > 0;
+                    list.Add(pvi);
+                }
+            }
+            return list;
         }
     }
 }

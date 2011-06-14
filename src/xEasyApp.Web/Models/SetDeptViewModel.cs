@@ -5,7 +5,7 @@ using System.Web;
 
 namespace xEasyApp.Web.Models
 {
-    public class SetDeptViewModel
+    public class SetOrgViewModel
     {
         public string Url
         {

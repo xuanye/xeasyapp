@@ -8,6 +8,7 @@
   <js key="autocomplete" value="~/Javascripts/plugins_source/jquery.autocomplete.js"></js>
   <js key="validate" value="~/Javascripts/plugins_source/jquery.validate.js"></js>
   <js key="easydrag" value="~/Javascripts/lib/jquery.easydrag.js"></js>
+  <js key="hash" value="~/Javascripts/lib/hashtable.js"></js>
   <js key="common" value="~/Javascripts/common.js"></js>
   <js key="dailog" value="~/Javascripts/plugins_source/jquery.ifrmdailog.js"></js>
   <js key="alert" value="~/Javascripts/lib/jquery.easydrag.js"></js>

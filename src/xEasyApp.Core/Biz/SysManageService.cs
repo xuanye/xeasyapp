@@ -15,9 +15,9 @@ namespace xEasyApp.Core.Biz
     public class SysManageService : ISysManageService
     {
 
-       #region 属性
+        #region 属性
         private RoleInfoRepository _roleRepository;
-        private DepartmentRepository _deptRepository;
+        private OrganizationRepository _orgRepository;
         private UserInfoRepository _userRepository;
         private PrivilegeRepository _privilegeRepository;
 
@@ -37,23 +37,24 @@ namespace xEasyApp.Core.Biz
 
         protected RoleInfoRepository roleRepository
         {
-            get {
+            get
+            {
                 if (_roleRepository == null)
                 {
                     _roleRepository = new RoleInfoRepository();
                 }
-                return _roleRepository; 
+                return _roleRepository;
             }
         }
-        protected DepartmentRepository deptRepository
+        protected OrganizationRepository orgRepository
         {
             get
             {
-                if (_deptRepository == null)
+                if (_orgRepository == null)
                 {
-                    _deptRepository = new DepartmentRepository();
+                    _orgRepository = new OrganizationRepository();
                 }
-                return _deptRepository;
+                return _orgRepository;
             }
         }
 
@@ -83,9 +84,9 @@ namespace xEasyApp.Core.Biz
 
         #endregion
 
-       #region 角色管理
+        #region 角色管理
 
-        public bool IsInRole(string roleCode,string userCode)
+        public bool IsInRole(string roleCode, string userCode)
         {
             string userrols = UserCache.GetItem("UserRoles");
             if (!string.IsNullOrEmpty(userrols))
@@ -138,7 +139,7 @@ namespace xEasyApp.Core.Biz
                 return roleRepository.GetRolesByParentID(parentId.Value);
             }
         }
-        public List<RoleInfo> QueryRoleList(int? parentId,string userCode)
+        public List<RoleInfo> QueryRoleList(int? parentId, string userCode)
         {
             if (!parentId.HasValue)
             {
@@ -219,7 +220,7 @@ namespace xEasyApp.Core.Biz
             {
                 return 0;
             }
-            if ( ri.IsSystem)
+            if (ri.IsSystem)
             {
                 throw new BizException("系统角色不允许被删除");
             }
@@ -231,56 +232,125 @@ namespace xEasyApp.Core.Biz
         {
             return roleRepository.ValidRoleCode(roleCode);
         }
-        #endregion
 
-       #region 部门管理
-        public List<Department> QueryDepartmentList()
+        public PagedList<UserInfo> QueryRoletUserList(PageView view, int roleId, string qtext)
         {
-           return deptRepository.QueryAll();
+            return roleRepository.QueryRoletUserList(view, roleId, qtext);
         }
 
-        public Department GetDeptInfo(string deptCode)
+        public void AddRoleUser(int roleid, string userids, string opUserID, string opUserName)
         {
-            Department d= deptRepository.GetDepartment(deptCode);
-            if (d.ParentCode == AppConfig.RootDeptCode)
+			 try
             {
-                d.ParentName = AppConfig.RootDeptName;
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    roleRepository.AddRoleUser(roleid, userids,opUserID,opUserName);
+                    scope.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
+
+          
+        }
+
+        public void DeleteRoleUser(int roleid, string userids)
+        {
+			 try
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                   roleRepository.DeleteRoleUser(roleid, userids);
+                    scope.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BizException(ex.Message, ex);
+            }
+
+           
+        }
+
+       public  List<Privilege> GetRoleAuthorizationPermissions(int roleid, string userId, string parentId)
+       {
+           bool IsAdminRole = IsInRole(userId, AppConfig.SuperAdminRoleCode);
+           List<Privilege> uplist = null;
+           if (IsAdminRole)
+           {
+               if (string.IsNullOrEmpty(parentId))
+               {
+                   uplist = privilegeRepository.GetTopLevelPrivileges();
+               }
+               else
+               {
+                   uplist = privilegeRepository.GetChildPrivileges(parentId);
+               }
+           }
+           else
+           {
+               uplist = roleRepository.GetUserPermissions(userId, parentId);
+           }
+
+           List<Privilege> rplist = roleRepository.GetRolePermissions(roleid, parentId);
+           foreach (Privilege p in uplist)
+           {
+               p.IsChecked = rplist.Exists(x => x.PrivilegeCode == p.PrivilegeCode);
+           }
+           return uplist;
+       }
+        #endregion
+
+        #region 部门管理
+        public List<Organization> QueryOrganizationList()
+        {
+            return orgRepository.QueryAll();
+        }
+
+        public Organization GetOrgInfo(string orgCode)
+        {
+            Organization d = orgRepository.GetOrganization(orgCode);
+            if (d.ParentCode == AppConfig.RootOrgCode)
+            {
+                d.ParentName = AppConfig.RootOrgName;
             }
             return d;
         }
-        public Department GetRootDepartment()
+        public Organization GetRootOrganization()
         {
-            Department dept = new Department();
-            dept.DeptCode = AppConfig.RootDeptCode;
-            dept.DeptName = AppConfig.RootDeptName;
-            return dept;
+            Organization org = new Organization();
+            org.OrgCode = AppConfig.RootOrgCode;
+            org.OrgName = AppConfig.RootOrgName;
+            return org;
         }
 
-        public List<Department> GetChildDeptsByParentCode(string parentCode)
+        public List<Organization> GetChildOrgsByParentCode(string parentCode)
         {
-            return deptRepository.GetChildDeptsByParentCode(parentCode);
+            return orgRepository.GetChildOrgsByParentCode(parentCode);
         }
 
-        public void SaveDeptInfo(Department department)
+        public void SaveOrgInfo(Organization Organization)
         {
-            deptRepository.SaveDeptInfo(department);
+            orgRepository.SaveOrgInfo(Organization);
         }
 
-        public bool ValidDeptCode(string deptCode)
+        public bool ValidOrgCode(string orgCode)
         {
-            return deptRepository.ValidDeptCode(deptCode);
+            return orgRepository.ValidOrgCode(orgCode);
         }
-        public PagedList<UserInfo> QueryDeptUserList(PageView view, string deptCode)
-        { 
-            return deptRepository.QueryDeptUserList(view,deptCode);
+        public PagedList<UserInfo> QueryOrgUserList(PageView view, string orgCode)
+        {
+            return orgRepository.QueryOrgUserList(view, orgCode);
         }
-        public int DeleteDeptInfo(string id)
+        public int DeleteOrgInfo(string id)
         {
             int ret = -1;
             try
-            {              
-               ret = deptRepository.DeleteDeptInfo(id);
-              
+            {
+                ret = orgRepository.DeleteOrgInfo(id);
+
             }
             catch (Exception ex)
             {
@@ -292,11 +362,11 @@ namespace xEasyApp.Core.Biz
 
         #endregion
 
-       #region 用户管理
+        #region 用户管理
 
         public UserInfo GetUserInfo(string UserUID)
         {
-            return userRepository.Get(UserUID); 
+            return userRepository.Get(UserUID);
         }
 
         public bool ValidUserUID(string UserUID)
@@ -327,9 +397,18 @@ namespace xEasyApp.Core.Biz
             userRepository.Save(user);
         }
 
-       #endregion
-             
-       #region 权限相关
+        public List<UserInfo> GetUserListByOrgCode(string orgCode)
+        {
+            return userRepository.GetUserListByOrgCode(orgCode);
+        }
+        public List<UserInfo> QueryUserList(string userCode)
+        {
+            userCode = Utility.ClearSafeStringParma(userCode);
+            return userRepository.QueryTopUserList(userCode);
+        }
+        #endregion
+
+        #region 权限相关
 
         /// <summary>
         /// 验证权限代码是否存在
@@ -408,10 +487,10 @@ namespace xEasyApp.Core.Biz
             int ret = -1;
             try
             {
-                using(TransactionScope scope =new TransactionScope())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     ret = privilegeRepository.DeletePrivilege(privilegeCode);
-                     scope.Complete();
+                    scope.Complete();
                 }
             }
             catch (Exception ex)
@@ -424,17 +503,31 @@ namespace xEasyApp.Core.Biz
         {
             return privilegeRepository.GetPrivilege(privilegeCode);
         }
+
+        public bool CheckUserAuthorizationRight(int RoleID, string userid)
+        {
+            bool IsAdminRole = IsInRole(userid, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole) //如果是超级管理员
+            {
+                return true;
+            }
+            else
+            {
+                bool isHasRigth = roleRepository.CheckUserAuthorizationRight(RoleID, userid);
+                return isHasRigth;
+            }
+        }
         #endregion
 
-       #region 数据字典管理
+        #region 数据字典管理
         public List<DictInfo> GetChildDictInfos(string dictCode)
         {
             switch (dictCode)
-            { 
+            {
                 case Constants.PrivilegeTypeCode:
-                    return GetPrivilegeTypeDictList();               
+                    return GetPrivilegeTypeDictList();
             }
-           return dictRepository.GetChildDictInfos(dictCode);
+            return dictRepository.GetChildDictInfos(dictCode);
         }
         private List<DictInfo> GetPrivilegeTypeDictList()
         {
@@ -450,6 +543,6 @@ namespace xEasyApp.Core.Biz
             list.Add(dict2);
             return list;
         }
-       #endregion
+        #endregion
     }
 }

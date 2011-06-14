@@ -1,16 +1,196 @@
 ﻿@{
     Layout = null;
 }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>RoleUserRelationList</title>
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>角色用户列表</title>
+    @Html.Css("main", "flexigrid", "dailog","form")
+    <style type="text/css">
+        .querytext
+        {
+        	color:#ccc;
+        }
+        .querytext_onfocus
+        {
+        	color:#555;
+        }    
+        input.loading
+        {
+        	background:url("../../images/icons/indicator.gif") no-repeat right center; 
+        }
+    </style>
 </head>
-<body>
-    <div>
-        
+<body>   
+    <div class="MainContainer2" style="margin: 0px 1px">   
+       <div class="titlepanel" style="border: #99bbe8 1px solid;border-top:none;">
+            <a href="javascript:void(0);" id="btnadd" class="tbbtn"><span class="Add">新增</span></a>
+            <span class="separtor"></span>         
+            <a href="javascript:void(0);"  id="btndelete"  class="tbbtn"><span class="delete">删除</span></a>
+            <span style=" float: left;height: 18px;border-left: 1px solid #ccc;border-right: 1px solid #fff;margin: 1px;"></span> 
+            <div style="float:left;">
+                <input type="text" value="请输入账号或姓名" id="querytext" class="querytext"  style="width:180px;height:16px;float:left;" />
+              
+                <a href="javascript:void(0);" id="btnQuery"><span class="uquery" style="display:block;float:left;margin:3px 0px 0px -18px;">&nbsp;</span></a>
+            </div> 
+       </div>    
+       <div><table id="UserInfoList" style="display:none;"></table></div>   
+          
     </div>
+   
+    @Html.Js("jquery", "common", "flexigrid", "dailog")
+    <script type="text/javascript">
+        $(document).ready(function() {
+        var maiheight = document.documentElement.clientHeight;
+        var mainWidth = document.documentElement.clientWidth - 3 ; // 减去边框和左边的宽度
+        var otherpm = 85;
+        var gh = maiheight - otherpm;
+        var option = {
+            height: gh,
+            width: mainWidth,
+            url: '@Url.Action("RoleUserRelationList")',
+            colModel: [
+                    { display: '用户编号', name: 'UserUID', width: 60, sortable: false, align: 'left', iskey: true },
+			        { display: '用户姓名', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },
+			        { display: '状态', name: 'AccountState', width: 60, sortable: false, align: 'left', process: fomartIs },
+			        { display: '用户类型', name: 'IsSystem', width: 60, sortable: false, align: 'left', process: fomartIs2 },
+			        { display: '组', name: 'OrgName', width: 100, sortable: false, align: 'left' }
+				], 
+            sortname: "ServeToken",
+            sortorder: "asc",
+            title: false,
+            rp: 15,
+            showrownum:true,
+            extParam: [{ name: "RoleID", value: "@ViewData["RoleID"]"}],          
+            usepager: true,
+            useRp:false,
+            showcheckbox: true,
+            rowbinddata: true
+            };
+            var grid = $("#UserInfoList").flexigrid(option);
+
+            function fomartOp(value, id, cell) {
+                var op = [];
+                op.push("<a href=\"javascript:editUser('", value, "')\" title='编辑用户信息' class='linkbtn'><span class='edit'>编辑</span></a>&nbsp;");
+                op.push("<a href=\"javascript:deleteUser('", value, "','", cell[1], "')\" title='删除用户信息' class='linkbtn'><span class='delete'>删除</span></a>");
+                return op.join("");
+            }
+
+            function fomartIs(value) {
+                if ( value == "1") {
+                    return "停用";
+                } else {
+                    return '正常';
+                }
+            }
+            function fomartIs2(value) {
+                if (value == "1") {
+                    return "系统";
+                }             
+                else {
+                    return "普通";
+                }
+            }
+            $("#btnadd").click(function(e){
+                toolbarItem_onclick("Add",null);
+            });
+            $("#btndelete").click(function(e){
+                toolbarItem_onclick("Delete",null);
+            });
+            function toolbarItem_onclick(cmd, grid) {
+                if (cmd == "Add") {                     
+                    OpenModalDialog("@Url.Action("SetRoleUser", new { mode = 2 })", { caption: "选择角色用户", width: 430, height: 250, onclose: selectuser_callback }); 
+                }
+                else if (cmd == "Delete") {
+                    var ids = $("#UserInfoList").getCheckedRows(); 
+                    if(ids.length==0)
+                    {
+                        showErrorTip("请选择需要移除的用户", {left:300,top:1}, true, 3000);
+                        return;
+                    }
+                    if(confirm("请确定要从角色中移除这"+ids.length+"个用户吗?")) 
+                    {
+                        var userids = ids.join(",");
+                        var roleID= @ViewData["RoleID"];
+                        $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("DeleteRoleUser")',
+                                data: { "RoleID": roleID,"userids": userids},
+                                dataType: "json",
+                                success: function(data) {
+                                    if (data.IsSuccess) {                            
+                                        showLoadingMsg(data.Msg, { left: 300, top: 1 },true,3000);
+                                        $("#UserInfoList").flexReload();                              
+                                    }
+                                    else {                               
+                                        hideLoadingMsg();
+                                        showErrorTip(data.Msg, {left:300,top:1}, true, 5000);
+                                    }
+                                }
+                            }); //end if $.ajax
+                    }
+                }
+            } // end of toolbarItem_onclick             
+          
+            function selectuser_callback(users) {
+                if (users && users.length > 0) {
+                    var userids = users.join(",");
+                    var roleID=  @ViewData["RoleID"];
+                     $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("AddRoleUser")',
+                        data: { "RoleID": roleID,"userids": userids},
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.IsSuccess) {                            
+                                showLoadingMsg(data.Msg, { left: 330, top: 1 },true,3000);
+                                $("#UserInfoList").flexReload();                              
+                            }
+                            else {                               
+                                hideLoadingMsg();
+                                showErrorTip(data.Msg, {left:330,top:1}, true, 5000);
+                            }
+                        }
+                    }); //end if $.ajax
+                  
+                }
+            }
+            
+            $("#querytext").focus(function(e){
+                var v = this.value;
+                if(v=="请输入账号或姓名")
+                {
+                    this.value ="";
+                    $(this).addClass("querytext_onfocus");
+                }
+                
+            }).blur(function(e){               
+                var v = this.value;
+                if(v=="")
+                {
+                    this.value ="请输入账号或姓名";
+                    $(this).removeClass("querytext_onfocus");
+                }
+            }).keypress(function(e){
+                if(e.keyCode ==13)
+                {
+                    query();
+                }
+            });
+            $("#btnQuery").click(query);
+            function query()
+            {
+                var q =$("#querytext");
+                var qtext =q.val();
+                if(qtext && qtext !="请输入账号或姓名" ) //如果有内容
+                {
+                      var p = { extParam: [{ name: "qtext", value: qtext},{ name: "RoleID", value: "@ViewData["RoleID"]"}] };
+                      $("#UserInfoList").flexOptions(p).flexReload();
+                }
+            }          
+        });
+    </script>
 </body>
 </html>
+

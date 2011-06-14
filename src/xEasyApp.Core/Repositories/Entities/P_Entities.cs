@@ -5,8 +5,9 @@ using System.Text;
 
 namespace xEasyApp.Core.Repositories
 {
-    public partial class Department
+    public partial class Organization
     {
+        
         /// <summary>
         /// 父部门名称
         /// </summary>
@@ -41,6 +42,11 @@ namespace xEasyApp.Core.Repositories
         { get; set; }
 
         public bool HasChild
+        {
+            get;
+            set;
+        }
+        public bool IsChecked
         {
             get;
             set;

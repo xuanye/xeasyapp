@@ -4,7 +4,7 @@
   
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-09 21:53:30
+// 生成时间: 2011-06-14 22:55:31
 // =============================================
 using System;
 using System.Data;
@@ -12,6 +12,14 @@ using System.Data;
 namespace xEasyApp.Core.Repositories{
 	public partial class StoredProcedures{
 
+        public static StoredProcedure SP_AddRoleUsers(int RoleID,string UserIDs,string OpUserID,string OpUserName){
+            StoredProcedure sp=new StoredProcedure("SP_AddRoleUsers");
+            sp.AddParameter("RoleID",RoleID,DbType.Int32);
+            sp.AddParameter("UserIDs",UserIDs,DbType.AnsiString);
+            sp.AddParameter("OpUserID",OpUserID,DbType.AnsiString);
+            sp.AddParameter("OpUserName",OpUserName,DbType.String);
+            return sp;
+        }
         public static StoredProcedure SP_DeletePrivilege(string PrivilegeCode){
             StoredProcedure sp=new StoredProcedure("SP_DeletePrivilege");
             sp.AddParameter("PrivilegeCode",PrivilegeCode,DbType.AnsiString);
@@ -34,10 +42,16 @@ namespace xEasyApp.Core.Repositories{
             sp.AddParameter("Count",Count,DbType.Int32);
             return sp;
         }
-        public static StoredProcedure SP_SaveDeptInfo(string DeptCode,string DeptName,string ParentCode,string Remark,int Sequence,string LastUpdateUserUID,string LastUpdateUserName){
-            StoredProcedure sp=new StoredProcedure("SP_SaveDeptInfo");
-            sp.AddParameter("DeptCode",DeptCode,DbType.AnsiString);
-            sp.AddParameter("DeptName",DeptName,DbType.String);
+        public static StoredProcedure SP_RemoveRoleUsers(int RoleID,string UserIDs){
+            StoredProcedure sp=new StoredProcedure("SP_RemoveRoleUsers");
+            sp.AddParameter("RoleID",RoleID,DbType.Int32);
+            sp.AddParameter("UserIDs",UserIDs,DbType.AnsiString);
+            return sp;
+        }
+        public static StoredProcedure SP_SaveOrgInfo(string OrgCode,string OrgName,string ParentCode,string Remark,int Sequence,string LastUpdateUserUID,string LastUpdateUserName){
+            StoredProcedure sp=new StoredProcedure("SP_SaveOrgInfo");
+            sp.AddParameter("OrgCode",OrgCode,DbType.AnsiString);
+            sp.AddParameter("OrgName",OrgName,DbType.String);
             sp.AddParameter("ParentCode",ParentCode,DbType.AnsiString);
             sp.AddParameter("Remark",Remark,DbType.String);
             sp.AddParameter("Sequence",Sequence,DbType.Int32);

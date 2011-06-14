@@ -24,19 +24,19 @@ namespace xEasyApp.Web.Controllers
 
         private ISysManageService sysManageService;
 
-       #region 角色管理
+        #region 角色管理
         public ActionResult RoleInfoList()
         {
             return View();
         }
 
-        [AcceptVerbs( HttpVerbs.Post)]
+        [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult RoleInfoList(FormCollection form)
         {
             string colkey = form["colkey"];
             string colsinfo = form["colsinfo"];
             string strparentId = form["ParentID"];
-            int? parentId =null;
+            int? parentId = null;
             if (!string.IsNullOrEmpty(strparentId))
             {
                 parentId = Convert.ToInt32(strparentId);
@@ -49,11 +49,11 @@ namespace xEasyApp.Web.Controllers
             {
                 throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
             }
-            List<RoleInfo> list = sysManageService.QueryRoleList(parentId,base.UserId);
-            var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));           
+            List<RoleInfo> list = sysManageService.QueryRoleList(parentId, base.UserId);
+            var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
             return Json(data);
         }
-        
+
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult RoleTreeList(FormCollection form)
         {
@@ -63,7 +63,7 @@ namespace xEasyApp.Web.Controllers
             if (!string.IsNullOrEmpty(strparentId))
             {
                 parentId = Convert.ToInt32(strparentId);
-              
+
             }
             var list = sysManageService.GetRoles(parentId, base.UserId);
             foreach (var item in list)
@@ -78,7 +78,7 @@ namespace xEasyApp.Web.Controllers
             }
             return Json(nodes);
         }
-        public ActionResult EditRole(int? id,int? ParentID,string ParentName)
+        public ActionResult EditRole(int? id, int? ParentID, string ParentName)
         {
             RoleInfo ri;
             if (id.HasValue)
@@ -114,24 +114,24 @@ namespace xEasyApp.Web.Controllers
         public ContentResult ValidRoleCode(string RoleCode)
         {
             bool isValid = sysManageService.ValidRoleCode(RoleCode);
-            return Content(isValid ? "true" : "false","application/json");
+            return Content(isValid ? "true" : "false", "application/json");
         }
-        [AcceptVerbs( HttpVerbs.Post)]
-        public JsonResult SaveRoleInfo(int? id,RoleInfo ri)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SaveRoleInfo(int? id, RoleInfo ri)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
             try
             {
-                if(id.HasValue && id.Value>0)
+                if (id.HasValue && id.Value > 0)
                 {
-                     ri.IsNew =false;
-                     ri.RoleID = id.Value;
+                    ri.IsNew = false;
+                    ri.RoleID = id.Value;
                 }
                 else
                 {
                     ri.IsNew = true;
-                }               
-                
+                }
+
                 ri.LastUpdateUserUID = base.UserId;
                 ri.LastUpdateUserName = base.CurrentUser.FullName;
                 ri.LastUpdateTime = DateTime.Now;
@@ -143,20 +143,20 @@ namespace xEasyApp.Web.Controllers
             catch (BizException ex)
             {
                 msg.IsSuccess = false;
-                msg.Msg =ex.Message;
-            }     
+                msg.Msg = ex.Message;
+            }
             catch (Exception ex)
             {
                 msg.IsSuccess = false;
-                msg.Msg = "操作失败："+ex.Message;
-            }            
+                msg.Msg = "操作失败：" + ex.Message;
+            }
             return Json(msg);
         }
-        [AcceptVerbs( HttpVerbs.Post)]
+        [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult DeleteRoleInfo(int id)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
-            
+
             try
             {
                 int ret = sysManageService.DeleteRoleInfo(id);
@@ -176,31 +176,121 @@ namespace xEasyApp.Web.Controllers
                 msg.IsSuccess = false;
                 msg.Msg = "操作失败:" + ex.Message;
             }
-         
+
             return Json(msg);
         }
-        public ActionResult RoleUserRelationList(string id)
+        public ActionResult RoleUserRelationList(int RoleID)
         {
+            ViewData["RoleID"] = RoleID;
+            //TODO：验证是否能管理这个角色
             return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RoleUserRelationList(FormCollection form)
+        {
+            string colkey = form["colkey"];
+            string colsinfo = form["colsinfo"];
+            int roleId = Convert.ToInt32(form["RoleID"]);
+            //TODO：验证是否能管理这个角色
+            string qtext = form["qtext"];
+            if (string.IsNullOrEmpty(colkey))
+            {
+                throw new ArgumentNullException("colkey", "主键表示没有传递，请在前台js中配置");
+            }
+            if (string.IsNullOrEmpty(colsinfo))
+            {
+                throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
+            }
+            int pageIndex = Convert.ToInt32(form["page"]);
+            int pageSize = Convert.ToInt32(form["rp"]);
+            PageView view = new PageView();
+            view.PageIndex = pageIndex - 1;
+            view.PageSize = pageSize;
+
+            PagedList<UserInfo> pageList = sysManageService.QueryRoletUserList(view, roleId, qtext);
+            var data = JsonFlexiGridData.ConvertFromPagedList(pageList, colkey, colsinfo.Split(','));
+            return Json(data);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteRoleUser(FormCollection form)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                int roleid = Convert.ToInt32(form["RoleID"]);
+                //TODO：验证是否能管理这个角色
+                string userids = form["userids"];
+                sysManageService.DeleteRoleUser(roleid, userids);
+
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (BizException bizex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = bizex.Message;
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败：" + ex.Message;
+            }
+            return Json(msg);
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult AddRoleUser(FormCollection form)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                int roleid = Convert.ToInt32(form["RoleID"]);
+                //TODO：验证是否能管理这个角色
+                string userids = form["userids"];
+                sysManageService.AddRoleUser(roleid, userids, base.UserId, base.CurrentUser.FullName);
+
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (BizException bizex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = bizex.Message;
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败：" + ex.Message;
+            }
+            return Json(msg);
         }
         public ActionResult SetRoleUser(string id)
         {
             return View();
         }
-        public ActionResult SetRoleRight(string id)
-        {
+        public ActionResult SetRolePrivilege(int RoleID)
+        {         
+            bool ishasright =sysManageService.CheckUserAuthorizationRight(RoleID, base.UserId);
+            if (!ishasright)
+            {
+                throw new NoPermissionExecption("您无权对该角色授权");
+            }
+            ViewData["RoleID"] = RoleID;
             return View();
         }
+
+
         #endregion
 
-       #region 部门管理
-        public ActionResult DeptInfoList()
+        #region 部门管理
+        public ActionResult OrgInfoList()
         {
             return View();
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult DeptInfoList(FormCollection form)
+        public JsonResult OrgInfoList(FormCollection form)
         {
             string parentCode = form["parentCode"];
             string colkey = form["colkey"];
@@ -215,67 +305,67 @@ namespace xEasyApp.Web.Controllers
             }
             if (string.IsNullOrEmpty(parentCode) || parentCode == "-1")
             {
-              Department root =  sysManageService.GetRootDepartment();
-              parentCode = root.DeptCode;
+                Organization root = sysManageService.GetRootOrganization();
+                parentCode = root.OrgCode;
             }
-            List<Department> list = sysManageService.GetChildDeptsByParentCode(parentCode);
+            List<Organization> list = sysManageService.GetChildOrgsByParentCode(parentCode);
             var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
             return Json(data);
         }
 
-        public ActionResult EditDept(string id,string parentCode,string parentName)
+        public ActionResult EditOrg(string id, string parentCode, string parentName)
         {
-            Department dept;
+            Organization Org;
             if (!string.IsNullOrEmpty(id))
             {
-                dept = sysManageService.GetDeptInfo(id);
-                if (dept == null)
+                Org = sysManageService.GetOrgInfo(id);
+                if (Org == null)
                 {
                     throw new Exception("参数错误，不存在对应的角色");
                 }
             }
             else
             {
-                dept = new Department();
+                Org = new Organization();
                 if (parentCode == "-1")
                 {
-                    Department root = sysManageService.GetRootDepartment();
-                    dept.ParentCode = root.DeptName;
-                    dept.ParentName = root.DeptName;
+                    Organization root = sysManageService.GetRootOrganization();
+                    Org.ParentCode = root.OrgCode;
+                    Org.ParentName = root.OrgName;
                 }
                 else
                 {
-                    dept.ParentCode = parentCode;
-                    dept.ParentName = parentName;
+                    Org.ParentCode = parentCode;
+                    Org.ParentName = parentName;
                 }
             }
-            return View(dept);
-            
+            return View(Org);
+
         }
-        [AcceptVerbs( HttpVerbs.Post)]
-        public JsonResult DeptInfoTreeList(FormCollection form)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult OrgInfoTreeList(FormCollection form)
         {
             var nodes = new List<JsonTreeNode>();
             string parentId = form["id"];// ?? "0";
             if (string.IsNullOrEmpty(parentId))
-            {              
-                Department root = sysManageService.GetRootDepartment();
+            {
+                Organization root = sysManageService.GetRootOrganization();
                 JsonTreeNode node = new JsonTreeNode();
-                node.id = root.DeptCode;
-                node.text = root.DeptName;
-                node.value = root.DeptCode;  
+                node.id = root.OrgCode;
+                node.text = root.OrgName;
+                node.value = root.OrgCode;
                 node.isexpand = true;
                 node.complete = true;
-                var clist = sysManageService.GetChildDeptsByParentCode(root.DeptCode);
+                var clist = sysManageService.GetChildOrgsByParentCode(root.OrgCode);
                 if (clist != null)
                 {
                     node.hasChildren = true;
                     foreach (var item in clist)
                     {
                         JsonTreeNode cnode = new JsonTreeNode();
-                        cnode.id = item.DeptCode;
-                        cnode.text = item.DeptName;
-                        cnode.value = item.DeptCode; 
+                        cnode.id = item.OrgCode;
+                        cnode.text = item.OrgName;
+                        cnode.value = item.OrgCode;
                         node.ChildNodes.Add(cnode);
                     }
                 }
@@ -283,42 +373,47 @@ namespace xEasyApp.Web.Controllers
             }
             else
             {
-                var list = sysManageService.GetChildDeptsByParentCode(parentId);
+                var list = sysManageService.GetChildOrgsByParentCode(parentId);
                 foreach (var item in list)
                 {
                     JsonTreeNode cnode = new JsonTreeNode();
-                    cnode.id = item.DeptCode;
-                    cnode.text = item.DeptName;
-                    cnode.value = item.DeptCode;
+                    cnode.id = item.OrgCode;
+                    cnode.text = item.OrgName;
+                    cnode.value = item.OrgCode;
                     nodes.Add(cnode);
                 }
             }
             return Json(nodes);
         }
-        
+
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult SaveDeptInfo(string id,Department department)
+        public JsonResult SaveOrgInfo(string id, Organization Organization)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
             try
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    department.IsNew = true;
+                    Organization.IsNew = true;
                 }
                 else
                 {
-                    department.IsNew = false;
+                    Organization.IsNew = false;
                 }
-                
-                department.LastUpdateUserUID = base.UserId;
-                department.LastUpdateUserName = base.CurrentUser.FullName;
-                department.LastUpdateTime = DateTime.Now;
 
-                sysManageService.SaveDeptInfo(department);
+                Organization.LastUpdateUserUID = base.UserId;
+                Organization.LastUpdateUserName = base.CurrentUser.FullName;
+                Organization.LastUpdateTime = DateTime.Now;
+
+                sysManageService.SaveOrgInfo(Organization);
 
                 msg.IsSuccess = true;
                 msg.Msg = "操作成功";
+            }
+            catch (BizException bizex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = bizex.Message;
             }
             catch (Exception ex)
             {
@@ -329,14 +424,14 @@ namespace xEasyApp.Web.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult DeleteDeptInfo(string id)
+        public JsonResult DeleteOrgInfo(string id)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
             if (!string.IsNullOrEmpty(id))
             {
                 try
                 {
-                    int ret = sysManageService.DeleteDeptInfo(id);
+                    int ret = sysManageService.DeleteOrgInfo(id);
                     if (ret > 0)
                     {
                         msg.IsSuccess = true;
@@ -366,21 +461,21 @@ namespace xEasyApp.Web.Controllers
             }
             return Json(msg);
         }
-        public ContentResult ValidDeptCode(string DeptCode)
+        public ContentResult ValidOrgCode(string OrgCode)
         {
-            bool isValid = sysManageService.ValidDeptCode(DeptCode);
+            bool isValid = sysManageService.ValidOrgCode(OrgCode);
             return Content(isValid ? "true" : "false", "application/json");
         }
 
 
-        public ActionResult DeptUserList(string DeptCode,string DeptName)
+        public ActionResult OrgUserList(string OrgCode, string OrgName)
         {
-            ViewData["DeptCode"] = DeptCode;
-            ViewData["DeptName"] = DeptName;
+            ViewData["OrgCode"] = OrgCode;
+            ViewData["OrgName"] = OrgName;
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult DeptUserList(string DeptCode, FormCollection form)
+        public JsonResult OrgUserList(string OrgCode, FormCollection form)
         {
             string colkey = form["colkey"];
             string colsinfo = form["colsinfo"];
@@ -398,38 +493,38 @@ namespace xEasyApp.Web.Controllers
             view.PageIndex = pageIndex - 1;
             view.PageSize = pageSize;
 
-            PagedList<UserInfo> pageList = sysManageService.QueryDeptUserList(view, DeptCode);
+            PagedList<UserInfo> pageList = sysManageService.QueryOrgUserList(view, OrgCode);
             var data = JsonFlexiGridData.ConvertFromPagedList(pageList, colkey, colsinfo.Split(','));
             return Json(data);
         }
 
-        public JsonResult QueryDeptTree(string ExtId, FormCollection form)
+        public JsonResult QueryOrgTree(string ExtId, FormCollection form)
         {
             var nodes = new List<JsonTreeNode>();
             string parentId = form["id"];// ?? "0";
             if (string.IsNullOrEmpty(parentId))
             {
-                Department root = sysManageService.GetRootDepartment();
+                Organization root = sysManageService.GetRootOrganization();
                 JsonTreeNode node = new JsonTreeNode();
-                node.id = root.DeptCode;
-                node.text = root.DeptName;
-                node.value = root.DeptCode;
+                node.id = root.OrgCode;
+                node.text = root.OrgName;
+                node.value = root.OrgCode;
                 node.isexpand = true;
                 node.complete = true;
-                var clist = sysManageService.GetChildDeptsByParentCode(root.DeptCode);
+                var clist = sysManageService.GetChildOrgsByParentCode(root.OrgCode);
                 if (clist != null)
                 {
                     node.hasChildren = true;
                     foreach (var item in clist)
                     {
-                        if (item.DeptCode == ExtId)
+                        if (item.OrgCode == ExtId)
                         {
                             continue;
                         }
                         JsonTreeNode cnode = new JsonTreeNode();
-                        cnode.id = item.DeptCode;
-                        cnode.text = item.DeptName;
-                        cnode.value = item.DeptCode;
+                        cnode.id = item.OrgCode;
+                        cnode.text = item.OrgName;
+                        cnode.value = item.OrgCode;
                         node.ChildNodes.Add(cnode);
                     }
                 }
@@ -437,31 +532,31 @@ namespace xEasyApp.Web.Controllers
             }
             else
             {
-                var list = sysManageService.GetChildDeptsByParentCode(parentId);
+                var list = sysManageService.GetChildOrgsByParentCode(parentId);
                 foreach (var item in list)
                 {
-                    if (item.DeptCode == ExtId)
+                    if (item.OrgCode == ExtId)
                     {
                         continue;
                     }
                     JsonTreeNode cnode = new JsonTreeNode();
-                    cnode.id = item.DeptCode;
-                    cnode.text = item.DeptName;
-                    cnode.value = item.DeptCode;
+                    cnode.id = item.OrgCode;
+                    cnode.text = item.OrgName;
+                    cnode.value = item.OrgCode;
                     nodes.Add(cnode);
                 }
             }
             return Json(nodes);
         }
-       #endregion
+        #endregion
 
-       #region 用户管理
+        #region 用户管理
         public ActionResult UserList()
         {
             return View();
         }
 
-        public ActionResult EditUser(string id,string deptCode,string deptName)
+        public ActionResult EditUser(string id, string OrgCode, string OrgName)
         {
             UserInfo u = null;
             if (!string.IsNullOrEmpty(id))
@@ -475,13 +570,13 @@ namespace xEasyApp.Web.Controllers
             else
             {
                 u = new UserInfo();
-                u.DeptCode = deptCode;
-                u.DeptName = deptName;
-                if (u.DeptCode == AppConfig.RootDeptCode)
+                u.OrgCode = OrgCode;
+                u.OrgName = OrgName;
+                if (u.OrgCode == AppConfig.RootOrgCode)
                 {
-                    u.DeptName = AppConfig.RootDeptName;
+                    u.OrgName = AppConfig.RootOrgName;
                 }
-               
+
             }
             return View(u);
         }
@@ -558,16 +653,83 @@ namespace xEasyApp.Web.Controllers
             return Json(msg);
         }
 
-        public ActionResult SetDept(int mode,string extid)
+        public ActionResult SetOrg(int mode, string extid)
         {
-            SetDeptViewModel model = new SetDeptViewModel();
+            SetOrgViewModel model = new SetOrgViewModel();
             model.IsMuliSelect = mode == 1;
-            model.Url = Url.Action("QueryDeptTree", new{ ExtId=extid });
+            model.Url = Url.Action("QueryOrgTree", new { ExtId = extid });
             return View(model);
         }
-       #endregion
 
-       #region 权限管理
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult QueryAllUserTree(FormCollection form)
+        {
+            var nodes = new List<JsonTreeNode>();
+            string parentId = form["id"];// ?? "0";
+            if (string.IsNullOrEmpty(parentId))
+            {
+                Organization root = sysManageService.GetRootOrganization();
+                JsonTreeNode node = new JsonTreeNode();
+                node.id = root.OrgCode;
+                node.text = root.OrgName;
+                node.classes = "group";
+                node.value = "1";
+                node.isexpand = true;
+                node.complete = true;
+                GetChild(root.OrgCode, node.ChildNodes);
+                node.hasChildren = true;
+                nodes.Add(node);
+            }
+            else
+            {
+                GetChild(parentId, nodes);
+            }
+            return Json(nodes);
+        }
+        private void GetChild(string OrgCode, List<JsonTreeNode> parentNodes)
+        {
+            var glist = sysManageService.GetChildOrgsByParentCode(OrgCode);
+            if (glist != null)
+            {
+                foreach (var item in glist)
+                {
+                    JsonTreeNode gnode = new JsonTreeNode();
+                    gnode.id = item.OrgCode;
+                    gnode.text = item.OrgName;
+                    gnode.value = "1";
+                    gnode.hasChildren = true;
+
+                    gnode.classes = "group";
+                    parentNodes.Add(gnode);
+                }
+            }
+            var ulist = sysManageService.GetUserListByOrgCode(OrgCode);
+            if (ulist != null)
+            {
+                foreach (var user in ulist)
+                {
+                    JsonTreeNode unode = new JsonTreeNode();
+                    unode.id = user.UserUID;
+                    unode.text = user.FullName;
+                    unode.value = "2";
+                    unode.showcheck = true;
+                    unode.hasChildren = false;
+                    unode.classes = "user";
+                    parentNodes.Add(unode);
+                }
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult QueryUser(FormCollection form)
+        {
+            string userCode = form["userCode"];
+            List<UserInfo> list = sysManageService.QueryUserList(userCode);
+            return Json(list);
+        }
+        #endregion
+
+        #region 权限管理
         public ActionResult PrivilegeList()
         {
             return View();
@@ -588,9 +750,9 @@ namespace xEasyApp.Web.Controllers
             }
             if (parentCode == "-1")
             {
-                parentCode = null ;
+                parentCode = null;
             }
-            List<Privilege> list = sysManageService.QueryPrivilegeListByParentCode(parentCode);        
+            List<Privilege> list = sysManageService.QueryPrivilegeListByParentCode(parentCode);
             var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
             return Json(data);
         }
@@ -599,10 +761,10 @@ namespace xEasyApp.Web.Controllers
         {
             var nodes = new List<JsonTreeNode>();
             string parentId = form["id"];// ?? "0";
-    
+
             List<Privilege> list = sysManageService.GetChildPrivileges(parentId);
             if (list != null)
-            {               
+            {
                 foreach (var item in list)
                 {
                     JsonTreeNode node = new JsonTreeNode();
@@ -612,7 +774,7 @@ namespace xEasyApp.Web.Controllers
                     node.hasChildren = item.HasChild;
                     nodes.Add(node);
                 }
-                if (parentId == null && nodes.Count>0 && nodes[0].hasChildren) //如果是根
+                if (parentId == null && nodes.Count > 0 && nodes[0].hasChildren) //如果是根
                 {
                     List<Privilege> clist = sysManageService.GetChildPrivileges(nodes[0].id);
                     nodes[0].complete = true;
@@ -630,7 +792,7 @@ namespace xEasyApp.Web.Controllers
                         }
                     }
                 }
-            }           
+            }
             return Json(nodes);
         }
 
@@ -641,7 +803,7 @@ namespace xEasyApp.Web.Controllers
         /// <param name="parentCode">The parent code.</param>
         /// <param name="parentName">Name of the parent.</param>
         /// <returns></returns>
-        public ActionResult EditPrivilege(string id,string parentCode,string parentName)
+        public ActionResult EditPrivilege(string id, string parentCode, string parentName)
         {
             Privilege p = null;
             if (string.IsNullOrEmpty(id))
@@ -708,7 +870,7 @@ namespace xEasyApp.Web.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult SavePrivilegeInfo(string id,Privilege p)
+        public JsonResult SavePrivilegeInfo(string id, Privilege p)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
             try
@@ -721,6 +883,7 @@ namespace xEasyApp.Web.Controllers
                 {
                     p.IsNew = false;
                 }
+
                 //在根下新建权限
                 if (p.PrivilegeCode == "")
                 {
@@ -753,6 +916,48 @@ namespace xEasyApp.Web.Controllers
             bool isValid = sysManageService.ValidPrivilegeCode(PrivilegeCode);
             return Content(isValid ? "true" : "false", "application/json");
         }
-       #endregion
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult GetRolePrivileges(int RoleID, FormCollection form)
+        {
+            List<JsonTreeNode> treelist = new List<JsonTreeNode>();
+
+            string parentId = form["id"];
+
+
+            List<Privilege> list = sysManageService.GetRoleAuthorizationPermissions(RoleID, base.UserId, parentId);
+            foreach (Privilege p in list)
+            {
+                JsonTreeNode node = new JsonTreeNode();
+                node.hasChildren = p.HasChild;
+                node.id = p.PrivilegeCode;
+                node.text = p.PrivilegeName;
+                node.value = p.IsChecked ? "true" : "false";
+                node.showcheck = true;
+                node.checkstate = p.IsChecked ? (byte)1 : (byte)0;
+                if (string.IsNullOrEmpty(parentId) && node.hasChildren && treelist.Count == 0) //如果是第一层就再获取一层
+                {
+                    List<Privilege> clist = sysManageService.GetRoleAuthorizationPermissions(RoleID, base.UserId, node.id);
+                    foreach (Privilege cp in clist)
+                    {
+                        JsonTreeNode cnode = new JsonTreeNode();
+                        cnode.hasChildren = cp.HasChild;
+                        cnode.id = cp.PrivilegeCode;
+                        cnode.text = cp.PrivilegeName;
+                        cnode.value = cp.IsChecked ? "true" : "false";
+                        cnode.showcheck = true;
+                        cnode.checkstate = cp.IsChecked ? (byte)1 : (byte)0;
+                        node.ChildNodes.Add(cnode);
+                    }
+                    node.complete = true;
+                    node.isexpand = true;
+                }
+
+                treelist.Add(node);
+            }
+            return Json(treelist);
+
+        }
+        #endregion
     }
 }

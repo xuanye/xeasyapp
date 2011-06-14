@@ -110,7 +110,11 @@ span.setGroup
 	padding-left: 20px;
 	background: url(../../images/icons/group.gif) no-repeat 1px;
 }
-
+span.user
+{
+	padding-left: 20px;
+	background: url(../../images/icons/user.png) no-repeat 1px;
+}
 span.query
 {
 	padding-left: 20px;
@@ -190,6 +194,36 @@ div.toolbar
   	border-left:none;
   	vertical-align:middle;
   	padding:2px 3px;
+}
+div.titlepanel
+{
+	background: url(images/flexigrid/tbg.gif) repeat-x 50% top;
+  	height:21px;
+  	border-bottom: #99bbe8 1px solid;     
+  	vertical-align:middle;
+  	padding:2px 3px;
+    width:auto;
+}
+div.titlepanel a.tbbtn
+{
+ float:left;
+ display:block;
+ padding:1px;	
+}
+div.titlepanel a.tbbtn span
+{
+	display:block;
+	margin:2px;
+}
+div.titlepanel a.tbbtn:hover
+{	
+	padding:0px;	
+	border: #466094 1px solid; 
+    background-color: #EDF1D5;
+}
+div.titlepanel .separtor
+{
+	float: left;height: 18px;border-left: 1px solid #ccc;border-right: 1px solid #fff;margin: 1px;
 }
 table.tree_grid_panel_table
 {

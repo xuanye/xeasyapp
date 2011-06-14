@@ -130,6 +130,7 @@
     <Content Include="Javascripts\jquery-1.4.2.js" />
     <Content Include="Javascripts\jquery-1.4.2.min.js" />
     <Content Include="Javascripts\lib\blackbird.js" />
+    <Content Include="Javascripts\lib\hashtable.js" />
     <Content Include="Javascripts\lib\jquery.easydrag.js" />
     <Content Include="Javascripts\plugins_source\jquery.alert.js" />
     <Content Include="Javascripts\plugins_source\jquery.autocomplete.js" />
@@ -311,19 +312,19 @@
     <Content Include="Views\SysManage\SetRoleUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\SysManage\SetRoleRight.cshtml" />
+    <Content Include="Views\SysManage\SetRolePrivilege.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SysManage\RoleUserRelationList.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\SysManage\DeptInfoList.cshtml" />
+    <Content Include="Views\SysManage\OrginfoList.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\SysManage\EditDept.cshtml" />
+    <Content Include="Views\SysManage\EditOrg.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\SysManage\DeptUserList.cshtml" />
+    <Content Include="Views\SysManage\OrgUserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SysManage\UserList.cshtml" />

@@ -27,10 +27,10 @@
                         <label>上层部门：</label>
                   </td>
                   <td>
-                        @Html.Hidden("DeptCode", Model.DeptCode)
-                        @Html.Hidden("DeptName", Model.DeptName)
-                        <span id="lbDeptName"> @Html.DisplayTextFor(x => x.DeptName) </span>
-                        <a href="javascript:void(0);" id="selectdept" style="margin-left:5px;" class="linkbtn"><span class="setGroup">移动</span></a>
+                        @Html.Hidden("OrgCode", Model.OrgCode)
+                        @Html.Hidden("OrgName", Model.OrgName)
+                        <span id="lbOrgName"> @Html.DisplayTextFor(x => x.OrgName) </span>
+                        <a href="javascript:void(0);" id="selectOrg" style="margin-left:5px;" class="linkbtn"><span class="setGroup">移动</span></a>
                   </td>
                 
                 </tr>
@@ -162,16 +162,16 @@
                 return this.optional(element) || /^[^$\<\>]+$/.test(value);
             }, "不能包含以下符号: $<>");
 
-            $("#selectdept").click(function(e){
-                 OpenModalDialog("@Url.Action("setdept")?mode=2", { caption: "选择用户组", width: 240, height: 300, onclose: selectgroup_callback });
+            $("#selectOrg").click(function(e){
+                 OpenModalDialog("@Url.Action("setOrg")?mode=2", { caption: "选择用户组", width: 240, height: 300, onclose: selectgroup_callback });
             });
             
             function selectgroup_callback(group) {
                 //debugger;
                 if (group && group.length > 0) {                   
-                    $("#DeptCode").val(group[0].value);
-                    $("#DeptName").val(group[0].text);
-                    $("#lbDeptName").text(group[0].text);
+                    $("#OrgCode").val(group[0].value);
+                    $("#OrgName").val(group[0].text);
+                    $("#lbOrgName").text(group[0].text);
                 }
             }           
         });

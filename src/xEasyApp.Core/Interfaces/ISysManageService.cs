@@ -9,7 +9,7 @@ namespace xEasyApp.Core.Interfaces
 {
     public interface ISysManageService
     {
-       #region 角色相关
+        #region 角色相关
         List<RoleInfo> GetRoles(int? parentId, string userCode);
 
         List<RoleInfo> QueryRoleList(int? parentId, string userCode);
@@ -22,27 +22,34 @@ namespace xEasyApp.Core.Interfaces
 
         bool ValidRoleCode(string RoleCode);
 
-        #endregion 
+        PagedList<UserInfo> QueryRoletUserList(PageView view, int roleId, string qtext);
 
-       #region 部门相关
-        List<Department> QueryDepartmentList();
+        void AddRoleUser(int roleid, string userids,string opUserID,string opUserName);
 
-        Department GetDeptInfo(string deptCode);
+        void DeleteRoleUser(int roleid, string userids);
 
-        Department GetRootDepartment();
+        List<Privilege> GetRoleAuthorizationPermissions(int roleid, string userId, string parentId);
+        #endregion
 
-        List<Department> GetChildDeptsByParentCode(string parentCode);
+        #region 部门相关
+        List<Organization> QueryOrganizationList();
 
-        void SaveDeptInfo(Department department);
+        Organization GetOrgInfo(string OrgCode);
 
-        bool ValidDeptCode(string deptCode);
+        Organization GetRootOrganization();
+        
+        List<Organization> GetChildOrgsByParentCode(string parentCode);
 
-        PagedList<UserInfo> QueryDeptUserList(Entities.PageView view, string DeptCode);
-        int DeleteDeptInfo(string id);
+        void SaveOrgInfo(Organization Organization);
 
-       #endregion
+        bool ValidOrgCode(string OrgCode);
 
-       #region 用户相关
+        PagedList<UserInfo> QueryOrgUserList(Entities.PageView view, string OrgCode);
+        int DeleteOrgInfo(string id);
+
+        #endregion
+
+        #region 用户相关
         UserInfo GetUserInfo(string UserUID);
 
         bool ValidUserUID(string UserUID);
@@ -50,9 +57,13 @@ namespace xEasyApp.Core.Interfaces
         int DeleteUserInfo(string id);
 
         void SaveUserInfo(UserInfo user);
+
+        List<UserInfo> GetUserListByOrgCode(string OrgCode);
+
+        List<UserInfo> QueryUserList(string userCode);
         #endregion
 
-       #region 权限相关
+        #region 权限相关
 
         /// <summary>
         /// 验证权限代码是否存在
@@ -104,9 +115,17 @@ namespace xEasyApp.Core.Interfaces
         /// <param name="privilegeCode">The privilege code.</param>
         /// <returns></returns>
         Privilege GetPrivilege(string privilegeCode);
+
+        /// <summary>
+        /// 判断某用户是否可以对某角色授权
+        /// </summary>
+        /// <param name="RoleID"></param>
+        /// <param name="useId"></param>
+        /// <returns></returns>
+        bool CheckUserAuthorizationRight(int RoleID, string useId);
        #endregion
 
-       #region 数据字典相关
+        #region 数据字典相关
         /// <summary>
         /// 根据数据字典想获取
         /// </summary>
@@ -114,6 +133,8 @@ namespace xEasyApp.Core.Interfaces
         /// <returns></returns>
         List<DictInfo> GetChildDictInfos(string dictCode);
 
-       #endregion
+        #endregion
+
+     
     }
 }

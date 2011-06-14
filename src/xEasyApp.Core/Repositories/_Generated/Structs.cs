@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-09 20:20:11
+// 生成时间: 2011-06-14 22:55:31
 // =============================================
 using System;
 using System.Collections.Generic;
@@ -701,38 +701,38 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
-        /// Table: Departments
-        /// Primary Key: DeptCode
-		/// Departments
+        /// Table: Organizations
+        /// Primary Key: OrgCode
+		/// Organizations
         /// </summary>
-        public partial class Department:BaseEntity {  
+        public partial class Organization:BaseEntity {  
             
-			private string _DeptCode;
+			private string _OrgCode;
 			/// <summary>
-			///  部门标识
+			///  组织标识
 			/// </summary>
-            public string DeptCode{
+            public string OrgCode{
                 get{
-					return _DeptCode;
+					return _OrgCode;
 				}
 				set
 				{
-					_DeptCode= value;
-					OnPropertyChanged("DeptCode");
+					_OrgCode= value;
+					OnPropertyChanged("OrgCode");
 				}
             }
-			private string _DeptName;
+			private string _OrgName;
 			/// <summary>
-			///  部门名称
+			///  组织名称
 			/// </summary>
-            public string DeptName{
+            public string OrgName{
                 get{
-					return _DeptName;
+					return _OrgName;
 				}
 				set
 				{
-					_DeptName= value;
-					OnPropertyChanged("DeptName");
+					_OrgName= value;
+					OnPropertyChanged("OrgName");
 				}
             }
 			private string _ParentCode;
@@ -789,6 +789,48 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_Sequence= value;
 					OnPropertyChanged("Sequence");
+				}
+            }
+			private byte? _OrgType;
+			/// <summary>
+			///  组织类型
+			/// </summary>
+            public byte? OrgType{
+                get{
+					return _OrgType;
+				}
+				set
+				{
+					_OrgType= value;
+					OnPropertyChanged("OrgType");
+				}
+            }
+			private string _UnitName;
+			/// <summary>
+			///  单位标识
+			/// </summary>
+            public string UnitName{
+                get{
+					return _UnitName;
+				}
+				set
+				{
+					_UnitName= value;
+					OnPropertyChanged("UnitName");
+				}
+            }
+			private string _UnitCode;
+			/// <summary>
+			///  单位名称
+			/// </summary>
+            public string UnitCode{
+                get{
+					return _UnitCode;
+				}
+				set
+				{
+					_UnitCode= value;
+					OnPropertyChanged("UnitCode");
 				}
             }
 			private string _LastUpdateUserUID;
@@ -885,32 +927,32 @@ namespace xEasyApp.Core.Repositories {
 					OnPropertyChanged("Password");
 				}
             }
-			private string _DeptCode;
+			private string _OrgCode;
 			/// <summary>
 			///  所属部门
 			/// </summary>
-            public string DeptCode{
+            public string OrgCode{
                 get{
-					return _DeptCode;
+					return _OrgCode;
 				}
 				set
 				{
-					_DeptCode= value;
-					OnPropertyChanged("DeptCode");
+					_OrgCode= value;
+					OnPropertyChanged("OrgCode");
 				}
             }
-			private string _DeptName;
+			private string _OrgName;
 			/// <summary>
 			///  部门名称
 			/// </summary>
-            public string DeptName{
+            public string OrgName{
                 get{
-					return _DeptName;
+					return _OrgName;
 				}
 				set
 				{
-					_DeptName= value;
-					OnPropertyChanged("DeptName");
+					_OrgName= value;
+					OnPropertyChanged("OrgName");
 				}
             }
 			private bool _IsManager;
