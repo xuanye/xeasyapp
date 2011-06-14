@@ -24,7 +24,7 @@
             var option = {
                 height: gh,
                 width: mainWidth,
-                url: '@Url.Action("DeptUserList",new { DeptCode=ViewData["DeptCode"] })',
+                url: '@Url.Action("OrgUserList",new { OrgCode=ViewData["OrgCode"] })',
                 colModel: [
                     { display: '用户标识', name: 'UserUID', width: 100, sortable: false, align: 'left', iskey: true },
 			        { display: '用户名称', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },

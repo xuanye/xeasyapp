@@ -19,10 +19,10 @@ namespace xEasyApp.Core.Configurations
             }
         }
 
-        public static string RootDeptCode
+        public static string RootOrgCode
         {
             get {
-                string code = Get("RootDeptCode");
+                string code = Get("RootOrgCode");
                 if (string.IsNullOrEmpty(code))
                 {
                     return "-1";
@@ -31,11 +31,11 @@ namespace xEasyApp.Core.Configurations
             }
         }
 
-        public static string RootDeptName
+        public static string RootOrgName
         {
             get
             {
-                string name = Get("RootDeptName");
+                string name = Get("RootOrgName");
                 if (string.IsNullOrEmpty(name))
                 {
                     return "xEasyApp";

@@ -39,5 +39,48 @@ namespace xEasyApp.Core.Repositories
             return list;
             
         }
+        public List<UserInfo> QueryTopUserList(string qtext)
+        {
+            string sql = "SELECT [UserUID],[FullName],[IsManager],[IsSystem] FROM [UserInfos] WHERE UserUID like '%"+qtext+"%' or FullName like '%"+qtext+"%' order by Sequence";
+          
+            List<UserInfo> list = new List<UserInfo>();
+            using (IDataReader reader = base.ExcuteDataReader(sql))
+            {
+                while (reader.Read())
+                {
+                    UserInfo user = new UserInfo();
+                    user.UserUID = reader.GetString(0);
+                    user.FullName = reader.GetString(1);
+                    user.IsManager = reader.IsDBNull(2) ? false : reader.GetBoolean(2);
+                    user.IsSystem = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
+                    user.IsNew = false;
+
+                    list.Add(user);
+                }
+            }
+            return list;
+        }
+        public List<UserInfo> GetUserListByOrgCode(string orgCode)
+        {
+            string sql = "SELECT [UserUID],[FullName],[IsManager],[IsSystem] FROM [UserInfos] WHERE OrgCode=@OrgCode Order By Sequence";
+            SqlParameter sp = new SqlParameter("@OrgCode", orgCode);
+            List<UserInfo> list = new List<UserInfo>();
+            using (IDataReader reader = base.ExcuteDataReader(sql, sp))
+            {
+                while (reader.Read())
+                {
+                    UserInfo user = new UserInfo();
+                    user.UserUID = reader.GetString(0);
+                    user.FullName = reader.GetString(1);
+
+                    user.IsManager =reader.IsDBNull(2)?false: reader.GetBoolean(2);
+                    user.IsSystem = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
+                    user.IsNew = false;
+
+                    list.Add(user);
+                }
+            }
+            return list;
+        }
     }
 }

@@ -32,28 +32,28 @@ namespace xEasyApp.Core.Repositories
             }
         }
 
-        string IUser.DeptId
+        string IUser.OrgCode
         {
             get
             {
-                return this.DeptCode;
+                return this.OrgCode;
             }
             set
             {
-                this.DeptCode = value;
+                this.OrgCode = value;
                 
             }
         }
 
-        string IUser.DeptName
+        string IUser.OrgName
         {
             get
             {
-                return this.DeptName;
+                return this.OrgName;
             }
             set
             {
-                this.DeptName = value;
+                this.OrgName = value;
             }
         }
        

@@ -1,16 +1,320 @@
 ﻿@{
     Layout = null;
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>SetRoleUser</title>
-</head>
-<body>
-    <div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head">
+    <title>选择用户</title>
+    @Html.Css("main", "form", "tree")
+    
+    @Html.Js("jquery","common","tree","hash")
+    <script type="text/javascript">
+        var userHash =new Hash();
+        $(document).ready(function() {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth;
+            var selectNodeIds = "";
+            if (parent && parent.getSelectNodeId) {
+                selectNodeIds = parent.getSelectNodeId();
+            }
+            $("#usertree").treeview(
+                      {
+                          url: '@Url.Action("QueryAllUserTree")',
+                          showcheck: true,
+                          cascadecheck: false,
+                          parsedata:CheckNodesState,
+                          onnodeclick: TreeNode_Click,
+                          oncheckboxclick:TreeNode_CheckedChange,
+                          theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                      }
+             );
+            function CheckNodesState(data) {
+                if (!selectNodeIds) {
+                    return;
+                }
+                for (var i = 0, j = data.length; i < j; i++) {
+                    var index = selectNodeIds.indexOf("," + data[i].value + ",");
+                    if (index > -1) {
+                        data[i].checkstate = 1;
+                    }
+                }
+            }
+       
+            function TreeNode_Click(data) {
+                data.expand();                  
+            }     
+           
+            function TreeNode_CheckedChange(node,checkstate)
+            {                   
+                if(node.value =="2") //选中了用户
+                {
+                    if(checkstate==1) //选中
+                    {
+                       additem(node.id,node.text);
+                    }
+                    else if(checkstate==0)//取消选中
+                    {
+                       remove(node.id);
+                    }
+                }
+               
+            }
+            function additem(usercode,usertext)
+            {
+                var usul = $("#uslist>ul");
+                if(usul.length==0)
+                {
+                    usul = $("<ul></ul>").appendTo($("#uslist"));
+                }          
+                if(!userHash.hasItem(usercode))
+                {                         
+                   userHash.setItem(usercode,usertext);
+                   //操作dom;
+                   usul.append(StrFormatNoEncode("<li id='li_{0}'><div class=\"usercontainer\" style=\"margin:1px 3px 1px 6px;\"><em class=\"user\">{1}</em><a href=\"javascript:void(0);\"  onclick=\"javascript:removeUser(this,'{0}');\" style=\"margin:-left:5px;float:right;\"><span class='sdelete' style=\"display:block;\">&nbsp;</span></a></div></li>",[usercode,usertext]));
+                   resettitle()
+                }
+            }
+            function remove(usercode)
+            {
+                if(userHash.hasItem(usercode))
+                {
+                  userHash.removeItem(usercode)
+                  //操作dom;
+                  $("#li_"+usercode).remove();
+                  resettitle()
+                }
+            }
+            $("#usertree").height(maiheight - 68);    
+            $("#uslist").height(maiheight - 68); 
+            $("#userlist").height(maiheight - 68);             
+                     
         
-    </div>
+            function Ok() {
+                var users =[];
+                for(var a in userHash.items)
+                {
+                   users.push(a);
+                }
+                CloseModalDialog(null, true, users);
+            }                
+           
+            function Cancel() {
+                CloseModalDialog(null, false);
+            }
+            $("#btnOk").click(Ok);
+            $("#btnCancel").click(Cancel);
+            $("#querytext").focus(function(e){
+                var v = this.value;
+                if(v=="请输入账号或姓名")
+                {
+                    this.value ="";
+                    $(this).addClass("querytext_onfocus");
+                }
+                
+            }).blur(function(e){               
+                var v = this.value;
+                if(v=="")
+                {
+                    this.value ="请输入账号或姓名";
+                    $(this).removeClass("querytext_onfocus");
+                }
+            }).keypress(function(e){
+                if(e.keyCode ==13)
+                {
+                    query();
+                }
+            });
+            $("#btnQuery").click(query);
+            function query()
+            {
+                var q =$("#querytext");
+                var qtext =q.val();
+                if(qtext && qtext !="请输入账号或姓名" ) //如果有内容
+                {
+                    q.addClass("loading");
+                    //发起查询请求
+                    $.ajax({
+                        type: "POST",
+                    url: '@Url.Action("QueryUser")',
+                    data: { userCode: qtext },
+                    dataType: "json",
+                    success: function(data) {
+                            var html=[];
+                            html.push("<ul>");                            
+                            if (data) {                            
+                                for(var i=0,l=data.length;i<l;i++)
+                                {
+                                    html.push("<li id='qli_", data[i].UserUID, "' title='", data[i].FullName, "' ", userHash.hasItem(data[i].UserUID) ? "class='checked'" : "", "><div class=\"usercontainer\" style=\"margin:1px 3px 1px 6px;\"><em class=\"user\" style='float:left;'>", data[i].FullName, "</em><span class='qusercheck'></span><div style='clear:both;'></div></div></li>");
+                                }
+                            } 
+                            html.push("</ul>");
+                            $("#userlist").html(html.join("")).show();
+                            $("#userlist li").each(function(i){
+                                $(this).hover(function(e){ $(this).addClass("hover");},function(e){$(this).removeClass("hover");})
+                                .click(function(e){
+                                    var me =$(this);
+                                    var id = this.id.substr(4);
+                                    var text =me.attr("title");
+                                    if(me.hasClass("checked"))
+                                    {
+                                        remove(id);
+                                        me.removeClass("checked");
+                                    }
+                                    else
+                                    {
+                                        additem(id,text);
+                                        me.addClass("checked");
+                                    }
+                                });
+                            });
+                            $("#usertree").hide();
+                            $("#btnClearQuery").show();
+                            $("#btnQuery").hide();
+                            $("#querytext").removeClass("loading");
+                        }
+                    });      //end if $.ajax
+                }
+            }
+            $("#btnClearQuery").click(function(e){
+                $("#querytext").val("");
+                $("#userlist").hide();
+                $("#usertree").show();
+                $("#btnQuery").show();
+                $(this).hide();
+            });
+            $("#btntrash").click(function(e){    
+                var usul = $("#uslist>ul");
+                if(usul.length>0)
+                {
+                    usul.remove();
+                } 
+                $("#usertree").unCheckAll();
+                var checkli=$("#userlist li.checked");
+                if(checkli.length>0)
+                {
+                    checkli.each(function(e){
+                        $(this).removeClass("checked");
+                    });
+                }
+                //清空
+                userHash.clear();
+                resettitle();       
+            });
+           
+        }); // end of ready
+        function resettitle()
+        {
+           $("#ustitle").text(StrFormatNoEncode("已选择了 {0} 个用户",[userHash.length]));
+        }
+        function removeUser(obj,usercode)
+        {
+            if(userHash.hasItem(usercode))
+            {
+              userHash.removeItem(usercode);
+              //操作dom;
+              $("#li_"+usercode).remove();
+              var qu =$("#qli_"+usercode);
+              if( qu.length>0)
+              {
+                qu.removeClass("checked");
+              }              
+              //取消树的选中状态
+              $("#usertree").setItemsCheckState(usercode,false,false);
+              resettitle();
+            }
+        }
+    </script>
+    <style type="text/css">
+        .ctree
+        {
+         overflow:hidden;
+         border:solid 1px #99bbe8;	    
+         margin:2px 0px 2px 2px; 
+         background-color:#fff;
+         width:200px;
+         float:left;
+        }
+        .container
+        {
+             overflow:auto;
+             border:solid 1px #99bbe8;	       
+             background-color:#fff;
+             margin:2px -203px 2px 206px;          
+        }
+          body 
+         {
+     	    overflow:hidden;     	    
+         }
+         .user .bbit-tree-node-icon
+         {
+            background:url("../../images/icons/user.png") no-repeat ; 
+         }   
+        
+        .querytext
+        {
+        	color:#ccc;
+        }
+        .querytext_onfocus
+        {
+        	color:#555;
+        }    
+        ul,li
+        {
+        	margin:0;        
+        	padding:0;	
+        	list-style:none;
+        }   
+        li
+        {
+        	line-height:150%;
+        } 
+        div.usercontainer
+        {
+        	padding:0px 0px 0px 20px;
+        	background:url("../../images/icons/user.png") no-repeat; 
+        }
+        input.loading
+        {
+        	background:url("../../images/icons/indicator.gif") no-repeat right center; 
+        }
+        li .qusercheck
+        {
+        	display:block;
+        	float:right;
+        	height:16px;
+        	width:16px;
+        }
+        li.hover
+        {
+        	background-color:#eee;
+        	cursor:pointer;
+        }
+        li.checked .qusercheck
+        {
+        	background:url("../../images/icons/qcheck.gif") no-repeat center center; 
+        }
+    </style>
+</head>
+
+<body style="background:#dfe8f6">
+    <div id="treecontainer"  class="ctree">
+         <div id="querypanel" class="titlepanel">
+            <input type="text" id="querytext" class="querytext" value="请输入账号或姓名" style="height:18px;width:90%;padding:1px;float:left;"/>
+            <a href="javascript:void(0);" id="btnClearQuery" style="display:none"><span class="qdelete" style="display:block;float:left;margin:3px 0px 0px -18px;height:16px;"></span></a>
+            <a href="javascript:void(0);" id="btnQuery"><span class="uquery" style="display:block;float:left;margin:3px 0px 0px -18px;">&nbsp;</span></a>
+         </div>
+         <div id="usertree" style="overflow:auto;"></div>
+         <div id="userlist" style="display:none;"></div>
+    </div> 
+    <div id="ucontainer"  class="container">
+        <div class="titlepanel">
+            <span id="ustitle">已选择了 0 个用户</span><a href="javascript:void(0)" id="btntrash" class="linkbtn" style="float:right;margin-right:5px"><span class="trash">清空</span></a>
+        </div>
+        <div id="uslist"></div>
+    </div> 
+    <div style="position:absolute;left:32%;">      
+        <a id="btnOk" class="button" href="javascript:void(0);"><span>确 定</span></a>       
+        <a id="btnCancel" class="button" href="javascript:void(0);"><span>取 消</span></a>
+    </div>    
 </body>
 </html>

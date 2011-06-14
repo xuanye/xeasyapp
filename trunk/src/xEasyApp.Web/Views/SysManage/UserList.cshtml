@@ -27,19 +27,19 @@
             <tr>
                 <td style="width:170px;">
                     <div class="toolbar"><span class="title" >部门列表</span></div>
-                    <div id="depttree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
+                    <div id="Orgtree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
                 </td>
                 <td style="width:2px;">
                 </td>
                 <td>          
-                 <div id="deptheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="depttitle" class="title">用户管理</span></div>      
+                 <div id="Orgheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="Orgtitle" class="title">用户管理</span></div>      
                  <table id="UserInfoList" style="display:none;"></table>      
                 </td>
             </tr>
         </tbody>
        </table> 
-       <input type="hidden" value="-1" id="hdDeptid" />    
-       <input type="hidden" value="" id="hdDeptName" />
+       <input type="hidden" value="-1" id="hdOrgid" />    
+       <input type="hidden" value="" id="hdOrgName" />
     </div>
    
     @Html.Js("jquery", "common",  "flexigrid","tree")   
@@ -53,7 +53,7 @@
             var option = {
                 height: gh,
                 width: mainWidth,
-                url: '@Url.Action("DeptUserList")',
+                url: '@Url.Action("OrgUserList")',
                 colModel: [
                     { display: '用户标识', name: 'UserUID', width: 100, sortable: false, align: 'left', iskey: true },
 			        { display: '用户名称', name: 'FullName', width: 100, sortable: false, hide: false, align: 'left' },
@@ -87,18 +87,18 @@
                 return value;
             }
 
-            $("#depttree").treeview({
-                url: '@Url.Action("DeptInfoTreeList")',
+            $("#Orgtree").treeview({
+                url: '@Url.Action("OrgInfoTreeList")',
                 showcheck: false,
                 onnodeclick: TreeNode_Click,
                 theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
             }).height(maiheight - 30);
             function TreeNode_Click(data) {
-                var p = { extParam: [{ name: "deptCode", value: data.value}] };
+                var p = { extParam: [{ name: "OrgCode", value: data.value}] };
                 $("#UserInfoList").flexOptions(p).flexReload();
-                $("#hdDeptid").val(data.value);
-                $("#hdDeptName").val(data.text);
-                $("#depttitle").text(data.text);
+                $("#hdOrgid").val(data.value);
+                $("#hdOrgName").val(data.text);
+                $("#Orgtitle").text(data.text);
                 //data.expand();
             } // end of TreeNode_Click
 
@@ -111,9 +111,9 @@
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
-                    var deptCode = $("#hdDeptid").val();
-                    var deptName = encodeURIComponent($("#hdDeptName").val());
-                    OpenModelWindow('@Url.Action("EditUser")?deptCode=' + deptCode + '&deptName=' + deptName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
+                    var OrgCode = $("#hdOrgid").val();
+                    var OrgName = encodeURIComponent($("#hdOrgName").val());
+                    OpenModelWindow('@Url.Action("EditUser")?OrgCode=' + OrgCode + '&OrgName=' + OrgName, { width: 450, height: 340, caption: "新增用户", onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
                 }
             } // end of toolbarItem_onclick
 
@@ -122,7 +122,7 @@
         function del(userCode, userName) {
             if (confirm("你确定要删除[" + userName + "]?")) {
                 showLoadingMsg("正在删除...", { left: 300, top: 2 })
-                $.post('@Url.Action("DeleteUserInfo","SysManage")', { id: deptCode },
+                $.post('@Url.Action("DeleteUserInfo","SysManage")', { id: OrgCode },
                      function (data) {
                          if (data.IsSuccess) {
                              showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
@@ -137,8 +137,8 @@
                 );
             }
         }
-        function edit(deptCode) {
-            OpenModelWindow('@Url.Action("EditUser")/' + encodeURIComponent(deptCode), { width: 450, height: 330, caption: "修改用户信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
+        function edit(OrgCode) {
+            OpenModelWindow('@Url.Action("EditUser")/' + encodeURIComponent(OrgCode), { width: 450, height: 330, caption: "修改用户信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); flushGrid(); } });
         }
       
         function flushGrid() {

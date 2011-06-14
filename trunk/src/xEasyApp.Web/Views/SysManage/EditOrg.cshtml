@@ -2,7 +2,7 @@
     Layout = null;
 }
 
-@model  xEasyApp.Core.Repositories.Department
+@model  xEasyApp.Core.Repositories.Organization
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -17,7 +17,7 @@
 <body>
     <div style="padding:5px;">
        
-            @using (Html.BeginForm("SaveDeptInfo", "SysManage", new { id = Model.DeptCode }, FormMethod.Post, new { id = "fmEdit" }))
+            @using (Html.BeginForm("SaveOrgInfo", "SysManage", new { id = Model.OrgCode }, FormMethod.Post, new { id = "fmEdit" }))
             {
         
         <div class="mainpanel">
@@ -37,13 +37,13 @@
                         <label>部门代码：</label>
                     </td>
                     <td>
-                        @if (string.IsNullOrEmpty(Model.DeptCode))
+                        @if (string.IsNullOrEmpty(Model.OrgCode))
                         {                        
-                            @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;" })
+                            @Html.TextBox("OrgCode", Model.OrgCode, new { style = "width:90%;" })
                         }
                         else
                         { 
-                           @Html.TextBox("DeptCode", Model.DeptCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
+                           @Html.TextBox("OrgCode", Model.OrgCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
                         } 
                         <span class="xeasy-formItemMust">*</span>
                     </td> 
@@ -53,7 +53,7 @@
                         <label>部门名称：</label>
                   </td>
                   <td>
-                        @Html.TextBox("DeptName", Model.DeptName, new { style = "width:90%;" })
+                        @Html.TextBox("OrgName", Model.OrgName, new { style = "width:90%;" })
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 
@@ -120,16 +120,16 @@
                  },
                  rules:
                  {
-                     DeptCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.DeptCode))
+                     OrgCode: { required: true, safe: true @if(string.IsNullOrEmpty(Model.OrgCode))
                       {                        
-                        @:,remote:"@Url.Action("ValidDeptCode")"
+                        @:,remote:"@Url.Action("ValidOrgCode")"
                       } 
-                      },DeptName: { required: true, safe: true },
+                      },OrgName: { required: true, safe: true },
                       Sequence:{required:true,digits:true}
                  },
                  messages: {
-                     DeptCode: { required: "部门代码不能为空",remote:"部门代码必须唯一" },
-                     DeptName: { required: "部门名称不能为空" }
+                     OrgCode: { required: "部门代码不能为空",remote:"部门代码必须唯一" },
+                     OrgName: { required: "部门名称不能为空" }
                  },
                  errorElement: "div",
 			     errorClass: "cusErrorPanel",

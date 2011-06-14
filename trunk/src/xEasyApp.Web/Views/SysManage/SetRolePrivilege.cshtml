@@ -1,0 +1,118 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>授权</title>
+    @Html.Css("main","form","tree")
+    
+    <style type="text/css">
+        .ctree
+        {
+         overflow:hidden;
+         border:solid 1px #99bbe8;	    
+         margin:2px 0px 2px 2px; 
+         background-color:#fff;       
+       
+        }      
+          body 
+         {
+         	padding:0px;
+     	    overflow:hidden;     	    
+     	    background-color:#DFE8F6;
+         }
+         .titlepanel
+         {
+         	color:#15428b;
+         	font-weight:bold;
+         	padding-left:16px;
+         }
+    </style>
+</head>
+<body>
+    <div id="treecontainer"  class="ctree">
+         <div id="querypanel" class="titlepanel">
+           请展开权限树进行授权
+         </div>
+         <div id="usertree" style="overflow:auto;"></div>       
+    </div>    
+     <div style="position:absolute;left:32%;">      
+        <a id="btnOk" class="button" href="javascript:void(0);"><span>确 定</span></a>       
+        <a id="btnCancel" class="button" href="javascript:void(0);"><span>取 消</span></a>
+    </div>    
+    <div>
+        <input id="hdaddids" type="hidden" value="" />
+        <input id="hdminusids" type="hidden" value="" />
+    </div>
+    @Html.Js("jquery","common","tree")
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth;
+            $("#usertree").height(maiheight - 68).width(mainWidth - 8);
+
+            function Ok() {
+                var treedata = $("#usertree").getTreeData();
+                var addids = [];
+                var minusids = [];
+                deepcheck(treedata, addids, minusids);
+                var roleid =@ViewData["RoleID"];
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SetRolePrivilege")',
+                    data: { RoleID: roleid,AddIDS:addids.join(","),MinusIDS:minusids.join(",") },
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.IsSuccess) {
+                           CloseModalDialog(null, true); 
+                        }
+                        else { 
+                           showErrorTip(data.Msg, { left: 50, top: 1 }, true, 5000);
+                        }
+                    }
+                });      //end if $.ajax
+                //
+            }
+            function deepcheck(data, ar, mr) {
+                for (var i = 0, l = data.length; i < l; i++) {
+                    if (data[i].checkstate > 0 && data[i].value == "false") {  //如果现在已经被选中原来不是被选中的
+                        ar.push(data[i].id);
+                    }
+                    if (data[i].checkstate == 0 && data[i].value == "true") {  //如果现在没有选中 原来是被选中的
+                        mr.push(data[i].id);
+                    }
+                    if (data[i].ChildNodes != null && data[i].ChildNodes.length > 0) {
+                        deepcheck(data[i].ChildNodes, ar, mr);
+                    }
+                }
+            }
+            function Cancel() {
+                CloseModalDialog(null, false);
+            }
+            $("#btnOk").click(Ok);
+            $("#btnCancel").click(Cancel);
+
+            $("#usertree").treeview(
+                      {
+                          url: '@Url.Action("GetRolePrivileges")?RoleID=@ViewData["RoleID"]',
+                          showcheck: true,
+                          cascadecheck: true,
+                          onnodeclick: TreeNode_Click,                        
+                          theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                      }
+             );
+
+
+            function TreeNode_Click(data) {
+                data.expand();
+            }
+
+        });       
+                     
+    </script>
+</body>
+</html>
+

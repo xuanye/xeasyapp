@@ -39,14 +39,17 @@ author:xuanye.wan@gmail.com
                 showcheck: false, //是否显示选择            
                 oncheckboxclick: false, //当checkstate状态变化时所触发的事件，但是不会触发因级联选择而引起的变化
                 onnodeclick: false,
+                parsedata: false,
                 cascadecheck: true,
                 data: null,
+                preloadcomplete: false,
                 clicktoggle: true, //点击节点展开和收缩子节点
                 theme: "bbit-tree-arrows" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
             };
 
         $.extend(dfop, settings);
         var treenodes = dfop.data;
+        var _tempnodesId = {};
         var me = $(this);
         var id = me.attr("id");
         if (id == null || id == "") {
@@ -80,7 +83,9 @@ author:xuanye.wan@gmail.com
             }
             else {
                 asnyloadc(null, false, function(data) {
+                    dfop.preloadcomplete && dfop.preloadcomplete();
                     if (data && data.length > 0) {
+                        dfop.parsedata && dfop.parsedata(data);
                         treenodes = data;
                         dfop.data = data;
                         var l = data.length;
@@ -96,6 +101,7 @@ author:xuanye.wan@gmail.com
         }
         //endregion
         function buildnode(nd, ht, deep, path, isend) {
+            nd.isend = isend;
             var nid = nd.id.replace(/[^\w]/gi, "_");
             ht.push("<li class='bbit-tree-node'>");
             ht.push("<div id='", id, "_", nid, "' tpath='", path, "' unselectable='on' title='", nd.text, "'");
@@ -113,12 +119,13 @@ author:xuanye.wan@gmail.com
             //span indent
             ht.push("<span class='bbit-tree-node-indent'>");
             if (deep == 1) {
-                ht.push("<img class='bbit-tree-icon' src='",dfop.emptyiconpath,"'/>");
+                ht.push("<img class='bbit-tree-icon' src='", dfop.emptyiconpath, "'/>");
             }
             else if (deep > 1) {
-                ht.push("<img class='bbit-tree-icon' src='",dfop.emptyiconpath,"'/>");
+                ht.push("<img class='bbit-tree-icon' src='", dfop.emptyiconpath, "'/>");
                 for (var j = 1; j < deep; j++) {
-                    ht.push("<img class='bbit-tree-elbow-line' src='",dfop.emptyiconpath,"'/>");
+                    ht.push("<img class='bbit-tree-elbow-line' src='", dfop.emptyiconpath, "'/>");
+
                 }
             }
             ht.push("</span>");
@@ -135,8 +142,8 @@ author:xuanye.wan@gmail.com
             else {
                 cs.push(isend ? "bbit-tree-elbow-end" : "bbit-tree-elbow");
             }
-            ht.push("<img class='bbit-tree-ec-icon ", cs.join(" "), "' src='",dfop.emptyiconpath,"'/>");
-            ht.push("<img class='bbit-tree-node-icon' src='",dfop.emptyiconpath,"'/>");
+            ht.push("<img class='bbit-tree-ec-icon ", cs.join(" "), "' src='", dfop.emptyiconpath, "'/>");
+            ht.push("<img class='bbit-tree-node-icon' src='", dfop.emptyiconpath, "'/>");
             //checkbox
             if (dfop.showcheck && nd.showcheck) {
                 if (nd.checkstate == null || nd.checkstate == undefined) {
@@ -182,6 +189,42 @@ author:xuanye.wan@gmail.com
             }
             return t;
         }
+        function checkItembyId(id, state, type) {
+            if (_tempnodesId[id]) {
+                if (type == 1) {
+                    //遍历
+                    cascade(check, _tempnodesId[id], state);
+                    //上溯
+                    bubble(check, _tempnodesId[id], state);
+                }
+                else {
+                    check(_tempnodesId[id], state, 1);
+                }
+            }
+            else {
+                if (treenodes != null && treenodes.length > 0) {
+                    for (var i = 0, j = treenodes.length; i < j; i++) {
+                        cascade(dycheck, treenodes[i], [id, state, type]);
+                    }
+                }
+                // cascade(check, item, s);
+            }
+        }
+        function dycheck(item, idAndState, type) {
+            _tempnodesId[item.id] = item.path;
+            if (item.id == idAndState[0]) { //完成匹配
+                if (idAndState[2] == 1) {
+                    //遍历
+                    cascade(check, item, idAndState[1]);
+                    //上溯
+                    bubble(check, item, idAndState[1]);
+                }
+                else {
+                    check(item, idAndState[1], 1);
+                }
+                return false;
+            }
+        }
         function check(item, state, type) {
             var pstate = item.checkstate;
             if (type == 1) {
@@ -215,7 +258,7 @@ author:xuanye.wan@gmail.com
         }
         //遍历子节点
         function cascade(fn, item, args) {
-            if (fn(item, args, 1) != false) {
+            if (fn(item, args, 1) != false) { // istrue ==break终止遍历
                 if (item.ChildNodes != null && item.ChildNodes.length > 0) {
                     var cs = item.ChildNodes;
                     for (var i = 0, len = cs.length; i < len; i++) {
@@ -253,6 +296,7 @@ author:xuanye.wan@gmail.com
                         else {
                             $(this).addClass("bbit-tree-node-loading");
                             asnyloadc(item, true, function(data) {
+                                dfop.parsedata && dfop.parsedata(data);
                                 item.complete = true;
                                 item.ChildNodes = data;
                                 asnybuild(data, deep, path, ul, item);
@@ -320,6 +364,14 @@ author:xuanye.wan@gmail.com
                 img.click();
             }
         }
+        function togglebyId(itemId) {
+            var nid = itemId.replace(/[^\w]/gi, "_");
+            var img = $("#" + id + "_" + nid + " img.bbit-tree-ec-icon");
+            if (img.length > 0) {
+                img.click();
+            }
+        }
+
         function asnybuild(nodes, deep, path, ul, pnode) {
             var l = nodes.length;
             if (l > 0) {
@@ -332,13 +384,22 @@ author:xuanye.wan@gmail.com
                 ht = null;
                 InitEvent(ul);
             }
+            //isend?" bbit-tree-node-ct-end":""
             ul.addClass("bbit-tree-node-ct").css({ "z-index": 0, position: "static", visibility: "visible", top: "auto", left: "auto", display: "" });
             ul.prev().removeClass("bbit-tree-node-loading");
         }
         function asnyloadc(pnode, isAsync, callback) {
             if (dfop.url) {
-                if (pnode && pnode != null)
+                param;
+                if (pnode && pnode != null) {
                     var param = builparam(pnode);
+                }
+                else {
+                    param = [];
+                }
+                if (dfop.extParam) {
+                    for (var pi = 0; pi < dfop.extParam.length; pi++) param[param.length] = dfop.extParam[pi];
+                }
                 $.ajax({
                     type: dfop.method,
                     url: dfop.url,
@@ -346,7 +407,10 @@ author:xuanye.wan@gmail.com
                     async: isAsync,
                     dataType: dfop.datatype,
                     success: callback,
-                    error: function(e) { alert("error occur!"); }
+                    error: function(e) {
+                        //debugger;
+                        alert("error occur:" + e.responseText);
+                    }
                 });
             }
         }
@@ -388,6 +452,7 @@ author:xuanye.wan@gmail.com
                 var item = getItem(path);
                 if (item) {
                     asnyloadc(item, true, function(data) {
+                        dfop.parsedata && dfop.parsedata(data);
                         item.complete = true;
                         item.ChildNodes = data;
                         item.isexpand = true;
@@ -448,7 +513,7 @@ author:xuanye.wan@gmail.com
             getCurrentItem: function() {
                 return dfop.citem;
             },
-            reflash: function(itemOrItemId) {
+            refresh: function(itemOrItemId) {
                 var id;
                 if (typeof (itemOrItemId) == "string") {
                     id = itemOrItemId;
@@ -457,6 +522,44 @@ author:xuanye.wan@gmail.com
                     id = itemOrItemId.id;
                 }
                 reflash(id);
+            },
+            checkAll: function() {
+                if (treenodes != null && treenodes.length > 0) {
+                    for (var i = 0, j = treenodes.length; i < j; i++) {
+                        cascade(check, treenodes[i], 1);
+                    }
+                }
+            },
+            unCheckAll: function() {
+                if (treenodes != null && treenodes.length > 0) {
+                    for (var i = 0, j = treenodes.length; i < j; i++) {
+                        cascade(check, treenodes[i], 0);
+                    }
+                }
+            },
+            setItemsCheckState: function(itemIds, ischecked, cascadecheck) {
+                if (itemIds != null) {
+                    var arrIds = itemIds.split(",");
+                    if (arrIds.length > 0) {
+                        var iscascadecheck = dfop.cascadecheck;
+                        if (cascadecheck != null && typeof (cascadecheck) != "undefined") {
+                            iscascadecheck = cascadecheck;
+                        }
+                        var s = ischecked ? 1 : 0;
+                        for (var i = 0, j = arrIds.length; i < j; i++) {
+                            checkItembyId(arrIds[i], s, iscascadecheck ? 1 : 0);
+                        }
+
+                    }
+                }
+            },
+            toggle: function(itemId) {
+                if (itemId) {
+                    togglebyId(itemId);
+                }
+            },
+            getTreeData: function() {
+                return dfop.data;
             }
         };
         return me;
@@ -475,16 +578,47 @@ author:xuanye.wan@gmail.com
         }
         return null;
     };
+    //获取当前项
     $.fn.getTCT = function() {
         if (this[0].t) {
             return this[0].t.getCurrentItem();
         }
         return null;
     };
-    $.fn.reflash = function(ItemOrItemId) {
+    //刷新指定节点
+    $.fn.refresh = function(ItemOrItemId) {
         if (this[0].t) {
-            return this[0].t.reflash(ItemOrItemId);
+            return this[0].t.refresh(ItemOrItemId);
         }
     };
-
+    //设置全选
+    $.fn.checkAll = function() {
+        if (this[0].t) {
+            return this[0].t.checkAll();
+        }
+    };
+    //设置全不选
+    $.fn.unCheckAll = function() {
+        if (this[0].t) {
+            return this[0].t.unCheckAll();
+        }
+    };
+    //设置节点的选中状态，参数说明：节点的ID,是否选中，是否启用级联
+    $.fn.setItemsCheckState = function(itemIds, ischecked, cascadecheck) {
+        if (this[0].t) {
+            return this[0].t.setItemsCheckState(itemIds, ischecked, cascadecheck);
+        }
+    };
+    //展开/收起某节点
+    $.fn.toggleItem = function(itemId) {
+        if (this[0].t) {
+            return this[0].t.toggle(itemId);
+        }
+    };
+    //获取树的整个数据
+    $.fn.getTreeData = function() {
+        if (this[0].t) {
+            return this[0].t.getTreeData();
+        }
+    }
 })(jQuery);

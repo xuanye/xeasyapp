@@ -26,12 +26,12 @@ namespace xEasyApp.Core.Entities
         /// 所属机构代码,一般为部门Code
         /// </summary>
         /// <value>The org code.</value>
-        string DeptId { get; set; }
+        string OrgCode { get; set; }
         /// <summary>
         /// 所属机构名称,一般为部门名称
         /// </summary>
         /// <value>The name of the org.</value>
-        string DeptName { get; set; }  
+        string OrgName { get; set; }  
 
         /// <summary>
         /// 扩展信息
@@ -54,13 +54,13 @@ namespace xEasyApp.Core.Entities
             set;
         }
 
-        public string DeptId
+        public string OrgCode
         {
             get;
             set;
         }
 
-        public string DeptName
+        public string OrgName
         {
             get;
             set;
