@@ -123,6 +123,31 @@ namespace xEasyApp.Core.Interfaces
         /// <param name="useId"></param>
         /// <returns></returns>
         bool CheckUserAuthorizationRight(int RoleID, string useId);
+
+        /// <summary>
+        /// 设置角色权限
+        /// </summary>
+        /// <param name="roleid">The roleid.</param>
+        /// <param name="addids">The addids.</param>
+        /// <param name="minusids">The minusids.</param>
+        /// <param name="userid">The userid.</param>
+        void SetRolePrivilege(int roleid, string addids, string minusids, string userid, string username);
+
+        /// <summary>
+        /// 获取用户的权限树
+        /// </summary>
+        /// <param name="usercode">用户标识</param>
+        /// <param name="parentId">父ID</param>
+        /// <returns></returns>
+        List<Privilege> GetUserPrivilegesByParentID(string usercode, string parentId);
+
+        /// <summary>
+        /// 获取权限的角色
+        /// </summary>
+        /// <param name="usercode">The usercode.</param>
+        /// <param name="pcode">The pcode.</param>
+        /// <returns></returns>
+        List<RoleInfo> QueryUserPrivilegeRoles(string usercode, string pcode);
        #endregion
 
         #region 数据字典相关
@@ -135,6 +160,12 @@ namespace xEasyApp.Core.Interfaces
 
         #endregion
 
-     
+
+
+
+
+
+
+       
     }
 }

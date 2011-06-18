@@ -6,5 +6,7 @@
     <Menu id="4.2" text="部门管理" url="/SysManage/OrgInfoList" desc="部门管理" isexpand="false"></Menu>
     <Menu id="4.3" text="用户管理" url="/SysManage/UserList" desc="用户管理" isexpand="false"></Menu>
     <Menu id="4.4" text="权限管理" url="/SysManage/PrivilegeList" desc="权限管理" isexpand="false"></Menu>
+    <Menu id="4.5" text="授权管理" url="/SysManage/QueryAuthorization" desc="授权管理" isexpand="false"></Menu>
+    <Menu id="4.6" text="字典管理" url="/SysManage/DictinfoList" desc="字典管理" isexpand="false"></Menu>
   </Menu>
 </MenuData>

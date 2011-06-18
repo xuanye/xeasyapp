@@ -16,12 +16,7 @@ namespace xEasyApp.Core.BaseClass
     /// Controller 基类，包装一些同样的方法和属性
     /// </summary>
     public class MyControllerBase : Controller
-    {
-        public MyControllerBase()
-        {
-            _service = ObjectFactory.GetInstance<IUserService>();
-        }
-        private readonly IUserService _service;
+    {       
 
         /// <summary>
         /// 获取当前登录用户标识
@@ -31,24 +26,7 @@ namespace xEasyApp.Core.BaseClass
         {
             get
             {
-                xEasyAppConfig config = xEasyAppConfig.Instance();
-                //如果是调试模式则获取配置的测试账号
-                if (config.RuntimeInfo.Mode == RunMode.Debug)
-                {
-                    return config.RuntimeInfo.UserId;
-                }
-                if (User.Identity.IsAuthenticated)
-                {
-                    string fuid = User.Identity.Name;
-                    return fuid.IndexOf("\\") > 0 ? fuid.Split('\\')[1] : fuid;
-                }
-                string ssoUid = _service.GetSSOUserUid();
-                if (!string.IsNullOrEmpty(ssoUid))
-                {
-                    FormsAuthentication.SetAuthCookie(ssoUid, false);
-                    return ssoUid;
-                }
-                throw new UnauthorizedAccessException("登录超时!");
+                return MyContext.Identity;
             }
         }
 
@@ -60,18 +38,7 @@ namespace xEasyApp.Core.BaseClass
         {
             get
             {
-                IUser user = null;               
-                
-                if (Session["CurrentUser"] != null)
-                {
-                    user = Session["CurrentUser"] as IUser;
-                }
-                if (user == null)
-                {
-                    user = _service.GetUserInfo(UserId);
-                    Session.Add("CurrentUser", user);
-                }
-                return user;
+               return MyContext.CurrentUser;
             }
         }
 
@@ -84,19 +51,7 @@ namespace xEasyApp.Core.BaseClass
         /// </returns>
         protected virtual bool HasRight(string rightCode)
         {
-            if (string.IsNullOrEmpty(rightCode))
-            {
-                return false;
-            }
-
-            string hasRightCacheKey = "HasRight_" + rightCode;
-            if (UserCache.ContainKey(hasRightCacheKey))
-            {
-                return UserCache.GetItem(hasRightCacheKey) == "true";
-            }
-            bool hasRight = _service.HasRight(UserId, rightCode);
-            UserCache.AddItem(hasRightCacheKey, hasRight?"true":"false");
-            return hasRight;
+            return MyContext.HasRight(rightCode);
         }       
 
         /// <summary>
@@ -108,18 +63,7 @@ namespace xEasyApp.Core.BaseClass
         /// </returns>
         protected virtual bool IsInRole(string roleCode)
         {
-            if (string.IsNullOrEmpty(roleCode))
-            {
-                return false;
-            }
-            string isInRoleCacheKey = "IsInRole_" + roleCode;
-            if (UserCache.ContainKey(isInRoleCacheKey))
-            {
-                return UserCache.GetItem(isInRoleCacheKey) == "true";
-            }
-            bool isInRole = _service.IsInRole(UserId, roleCode);
-            UserCache.AddItem(isInRoleCacheKey, isInRole?"true":"false");
-            return isInRole;
+            return MyContext.IsInRole(roleCode);
         }
     }
 }

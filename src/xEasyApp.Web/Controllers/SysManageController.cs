@@ -279,7 +279,42 @@ namespace xEasyApp.Web.Controllers
             ViewData["RoleID"] = RoleID;
             return View();
         }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SetRolePrivilege(FormCollection form)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+          
+            try
+            {
 
+                int roleid = Convert.ToInt32(form["RoleID"]);
+                string addids = form["AddIDS"];
+                string minusids = form["MinusIDS"];
+                if (string.IsNullOrEmpty(addids) && string.IsNullOrEmpty(minusids))
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = "没有要操作的项";
+                }
+                else
+                {
+                    sysManageService.SetRolePrivilege(roleid, addids, minusids,base.UserId,base.CurrentUser.FullName);
+                    msg.IsSuccess = true;
+                    msg.Msg = "操作成功";
+                }
+             
+            }
+            catch (BizException bizex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = bizex.Message;
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败：" + ex.Message;
+            }
+            return Json(msg);
+        }
 
         #endregion
 
@@ -332,11 +367,13 @@ namespace xEasyApp.Web.Controllers
                     Organization root = sysManageService.GetRootOrganization();
                     Org.ParentCode = root.OrgCode;
                     Org.ParentName = root.OrgName;
+                    Org.OrgType = 0;
                 }
                 else
                 {
                     Org.ParentCode = parentCode;
                     Org.ParentName = parentName;
+                    Org.OrgType = 1;
                 }
             }
             return View(Org);
@@ -354,9 +391,13 @@ namespace xEasyApp.Web.Controllers
                 node.id = root.OrgCode;
                 node.text = root.OrgName;
                 node.value = root.OrgCode;
+            
                 node.isexpand = true;
                 node.complete = true;
-                var clist = sysManageService.GetChildOrgsByParentCode(root.OrgCode);
+
+                string rootOrgCode = root.OrgCode;
+                var clist = sysManageService.GetChildOrgsByParentCode(rootOrgCode);
+
                 if (clist != null)
                 {
                     node.hasChildren = true;
@@ -366,6 +407,7 @@ namespace xEasyApp.Web.Controllers
                         cnode.id = item.OrgCode;
                         cnode.text = item.OrgName;
                         cnode.value = item.OrgCode;
+                        cnode.hasChildren = item.HasChild;
                         node.ChildNodes.Add(cnode);
                     }
                 }
@@ -380,6 +422,7 @@ namespace xEasyApp.Web.Controllers
                     cnode.id = item.OrgCode;
                     cnode.text = item.OrgName;
                     cnode.value = item.OrgCode;
+                    cnode.hasChildren = item.HasChild;
                     nodes.Add(cnode);
                 }
             }
@@ -958,6 +1001,64 @@ namespace xEasyApp.Web.Controllers
             return Json(treelist);
 
         }
+
+        public ActionResult QueryAuthorization()
+        {
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult QueryUserPrivilegeTree(FormCollection form)
+        {
+            List<JsonTreeNode> treelist = new List<JsonTreeNode>();
+            string usercode = form["UserCode"];
+            string parentId =  form["id"]??"";
+
+
+            List<Privilege> list = sysManageService.GetUserPrivilegesByParentID(usercode, parentId);
+            foreach (Privilege pri in list)
+            {
+
+                JsonTreeNode node = new JsonTreeNode();
+                node.hasChildren = pri.HasChild;
+                node.id = pri.PrivilegeCode;
+                node.text = pri.PrivilegeName;
+                node.value = pri.PrivilegeCode;
+                if (parentId == "" && node.hasChildren)
+                {
+                    List<Privilege> clist = sysManageService.GetUserPrivilegesByParentID(usercode, node.id);
+                    foreach (Privilege cpri in clist)
+                    {
+                        JsonTreeNode cnode = new JsonTreeNode();
+                        cnode.hasChildren = cpri.HasChild;
+                        cnode.id = cpri.PrivilegeCode;
+                        cnode.text = cpri.PrivilegeName;
+                        cnode.value = cpri.PrivilegeCode;
+                        node.ChildNodes.Add(cnode);
+                    }
+                    node.isexpand = true;
+                    node.complete = true;
+                }
+                treelist.Add(node);
+            }
+            return Json(treelist);
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult QueryPrivilegeRoles(FormCollection form)
+        {
+            string pcode = form["pCode"];// 权限标识
+            string usercode = form["userCode"];// 权限标识
+
+            List<RoleInfo> list = sysManageService.QueryUserPrivilegeRoles(usercode, pcode);
+            List<string[]> rlist = new List<string[]>();
+            foreach (RoleInfo role in list)
+            {
+                rlist.Add(new string[] { role.RoleID.ToString(), role.RoleCode, role.RoleName, role.IsSystem ? "1" : "0" });
+            }
+            return Json(rlist);
+        }
         #endregion
+
+        
     }
 }

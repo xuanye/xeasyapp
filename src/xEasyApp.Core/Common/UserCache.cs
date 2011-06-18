@@ -18,17 +18,7 @@ namespace xEasyApp.Core.Common
         private static object _lockobject = new object();
         private static string GetUserId()
         {
-            xEasyAppConfig config =xEasyAppConfig.Instance();
-            if (config.RuntimeInfo.Mode == RunMode.Debug)
-            {
-                return config.RuntimeInfo.UserId;
-            }
-            string uid = HttpContext.Current.User.Identity.Name;
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new UnauthorizedAccessException();
-            }
-            return uid;
+            return MyContext.Identity;
         }
         /// <summary>
         /// Adds the item.
@@ -37,8 +27,47 @@ namespace xEasyApp.Core.Common
         /// <param name="value">The value.</param>
         public static void AddItem(string key, string value)
         {
-            
-            string uid =GetUserId();
+
+            string uid = GetUserId();
+            AddItem(uid, key, value);
+        }
+        private static bool ContainUser(string userId)
+        {
+            return _cacheDict.ContainsKey(userId);
+        }
+
+
+        /// <summary>
+        /// 判断是否用用
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public static bool ContainKey(string key)
+        {
+            string uid = GetUserId();
+            return ContainKey(uid, key);
+        }
+        public static string GetItem(string key)
+        {
+            string uid = GetUserId();
+            return GetItem(uid, key);
+        }
+        public static void RemoveItem(string key)
+        {
+            string uid = GetUserId();
+            RemoveItem(uid, key);
+        }
+
+
+        /// <summary>
+        /// Adds the item.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        public static void AddItem(string userId, string key, string value)
+        {
+
+            string uid = userId;
             lock (_lockobject)
             {
                 if (ContainUser(uid))
@@ -60,34 +89,27 @@ namespace xEasyApp.Core.Common
                 }
             }
         }
-        private static bool ContainUser(string userId)
-        {
-           return  _cacheDict.ContainsKey(userId);
-        }
-
 
         /// <summary>
         /// 判断是否用用
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public static bool ContainKey(string key)
+        public static bool ContainKey(string userId, string key)
         {
-            string uid = GetUserId();
+            string uid = userId;
             if (ContainUser(uid))
             {
                 return _cacheDict[uid].ContainsKey(key);
             }
             return false;
-
-          
         }
-        public static string GetItem(string key)
+        public static string GetItem(string userId, string key)
         {
-            string uid = GetUserId();
+            string uid = userId;
             lock (_lockobject)
             {
-                if (ContainKey(key))
+                if (ContainKey(uid, key))
                 {
                     return _cacheDict[uid][key];
                 }
@@ -97,19 +119,20 @@ namespace xEasyApp.Core.Common
                 }
             }
         }
-        public static void RemoveItem(string key)
+        public static void RemoveItem(string userId, string key)
         {
-            string uid = GetUserId();
+            string uid = userId;
             lock (_lockobject)
             {
 
-                if (ContainKey(key))
+                if (ContainKey(uid, key))
                 {
                     _cacheDict[uid].Remove(key);
                 }
 
             }
         }
+
         /// <summary>
         /// 清空某个用户的缓存
         /// </summary>

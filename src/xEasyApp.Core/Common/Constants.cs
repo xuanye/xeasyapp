@@ -11,5 +11,7 @@ namespace xEasyApp.Core.Common
         /// 权限类型对应的数据字典Code
         /// </summary>
         public const string PrivilegeTypeCode = "PrivilegeType";
+
+        public const string OrgTypeCode = "OrgType";
     }
 }

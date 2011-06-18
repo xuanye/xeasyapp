@@ -348,7 +348,12 @@ namespace xEasyApp.Core.Repositories
 
         public bool CheckUserAuthorizationRight(int RoleID, string userid)
         {
-            //TODO:添加校验的代码
+            StoredProcedure sp = StoredProcedures.SP_RoleCheckUserRight(RoleID, userid);
+            object o = base.SPExecuteScalar(sp);
+            if (o != null)
+            {
+                return Convert.ToInt32(o) > 0;
+            }
             return false;
         }
 
@@ -431,6 +436,39 @@ namespace xEasyApp.Core.Repositories
                     pvi.Uri = reader.IsDBNull(3) ? null : reader.GetString(3);
                     pvi.HasChild = reader.GetInt32(4) > 0;
                     list.Add(pvi);
+                }
+            }
+            return list;
+        }
+
+        public void SetRolePrivilege(int roleid, string addids, string minusids,string userid,string username)
+        {
+            StoredProcedure sp = StoredProcedures.SP_SetRoleRolePrivilege(roleid, addids, minusids,userid,username);
+            base.SPExecuteNonQuery(sp);
+        }
+
+
+
+        public List<RoleInfo> QueryUserPrivilegeRoles(string usercode, string pcode)
+        {
+            string sql = @"select Distinct A.RoleID,A.RoleCode,A.RoleName,A.IsSystem from RoleInfos A
+                            INNER JOIN RolePrivilegeRelation  B On A.RoleID=B.RoleID
+                            INNER JOIN RoleUserRelation C On A.RoleID=C.RoleID
+                            Where C.UserUID=@UserID and B.PrivilegeCode=@PrivilegeCode ";
+            SqlParameter[] arrp = new SqlParameter[2];
+            arrp[0] = new SqlParameter("@UserID", usercode);
+            arrp[1] = new SqlParameter("@PrivilegeCode", pcode);
+            List<RoleInfo> list = new List<RoleInfo>();
+            using (IDataReader reader = base.ExcuteDataReader(sql, arrp))
+            {
+                while (reader.Read())
+                {
+                    RoleInfo r = new RoleInfo();
+                    r.RoleID = reader.GetInt32(0);
+                    r.RoleCode = reader.GetString(1);
+                    r.RoleName = reader.GetString(2);
+                    r.IsSystem = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
+                    list.Add(r);
                 }
             }
             return list;

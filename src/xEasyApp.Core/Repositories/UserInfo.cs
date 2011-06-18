@@ -56,7 +56,25 @@ namespace xEasyApp.Core.Repositories
                 this.OrgName = value;
             }
         }
-       
+        string IUser.UnitCode
+        {
+            get {
+                return this.UnitCode;
+            }
+            set {
+                this.UnitCode = value;
+            }
+        }
+        string IUser.UnitName
+        {
+            get {
+                return this.UnitName;
+            }
+            set {
+                this.UnitName = value;
+            }
+        }
+        
         private Dictionary<string, string> _UserExtendProperties;
         Dictionary<string, string> IUser.ExtendProperties
         {
@@ -68,7 +86,23 @@ namespace xEasyApp.Core.Repositories
                 return _UserExtendProperties;
             }
         }
-
-       
+        /// <summary>
+        /// 所属单位Code
+        /// </summary>
+        /// <value>The unit code.</value>
+        public string UnitCode
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 所属单位的名称
+        /// </summary>
+        /// <value>The name of the unit.</value>
+        public string UnitName
+        {
+            get;
+            set;
+        }
     }
 }
