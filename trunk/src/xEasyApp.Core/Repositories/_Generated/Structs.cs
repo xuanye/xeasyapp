@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-14 22:55:31
+// 生成时间: 2011-06-18 09:33:24
 // =============================================
 using System;
 using System.Collections.Generic;
@@ -377,100 +377,6 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
-        /// Table: RolePrivilegeRelation
-        /// Primary Key: PrivilegeCode
-		/// RolePrivilegeRelation
-        /// </summary>
-        public partial class RolePrivilegeRelation:BaseEntity {  
-            
-			private int _RoleID;
-			/// <summary>
-			///  角色ID
-			/// </summary>
-            public int RoleID{
-                get{
-					return _RoleID;
-				}
-				set
-				{
-					_RoleID= value;
-					OnPropertyChanged("RoleID");
-				}
-            }
-			private string _PrivilegeCode;
-			/// <summary>
-			///  权限标识
-			/// </summary>
-            public string PrivilegeCode{
-                get{
-					return _PrivilegeCode;
-				}
-				set
-				{
-					_PrivilegeCode= value;
-					OnPropertyChanged("PrivilegeCode");
-				}
-            }
-			private byte _AuthorizedType;
-			/// <summary>
-			///  授权级别
-			/// </summary>
-            public byte AuthorizedType{
-                get{
-					return _AuthorizedType;
-				}
-				set
-				{
-					_AuthorizedType= value;
-					OnPropertyChanged("AuthorizedType");
-				}
-            }
-			private string _LastUpdateUserUID;
-			/// <summary>
-			///  最后一次更新用户标识
-			/// </summary>
-            public string LastUpdateUserUID{
-                get{
-					return _LastUpdateUserUID;
-				}
-				set
-				{
-					_LastUpdateUserUID= value;
-					OnPropertyChanged("LastUpdateUserUID");
-				}
-            }
-			private string _LastUpdateUserName;
-			/// <summary>
-			///  最后一次更新用户姓名
-			/// </summary>
-            public string LastUpdateUserName{
-                get{
-					return _LastUpdateUserName;
-				}
-				set
-				{
-					_LastUpdateUserName= value;
-					OnPropertyChanged("LastUpdateUserName");
-				}
-            }
-			private DateTime _LastUpdateTime;
-			/// <summary>
-			///  最后一次更新时间
-			/// </summary>
-            public DateTime LastUpdateTime{
-                get{
-					return _LastUpdateTime;
-				}
-				set
-				{
-					_LastUpdateTime= value;
-					OnPropertyChanged("LastUpdateTime");
-				}
-            }
-  		      
-        }
-        
-        /// <summary>
         /// Table: RoleUserRelation
         /// Primary Key: RoleID
 		/// RoleUserRelation
@@ -701,6 +607,86 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
+        /// Table: RolePrivilegeRelation
+        /// Primary Key: PrivilegeCode
+		/// RolePrivilegeRelation
+        /// </summary>
+        public partial class RolePrivilegeRelation:BaseEntity {  
+            
+			private int _RoleID;
+			/// <summary>
+			///  角色ID
+			/// </summary>
+            public int RoleID{
+                get{
+					return _RoleID;
+				}
+				set
+				{
+					_RoleID= value;
+					OnPropertyChanged("RoleID");
+				}
+            }
+			private string _PrivilegeCode;
+			/// <summary>
+			///  权限标识
+			/// </summary>
+            public string PrivilegeCode{
+                get{
+					return _PrivilegeCode;
+				}
+				set
+				{
+					_PrivilegeCode= value;
+					OnPropertyChanged("PrivilegeCode");
+				}
+            }
+			private string _LastUpdateUserUID;
+			/// <summary>
+			///  最后一次更新用户标识
+			/// </summary>
+            public string LastUpdateUserUID{
+                get{
+					return _LastUpdateUserUID;
+				}
+				set
+				{
+					_LastUpdateUserUID= value;
+					OnPropertyChanged("LastUpdateUserUID");
+				}
+            }
+			private string _LastUpdateUserName;
+			/// <summary>
+			///  最后一次更新用户姓名
+			/// </summary>
+            public string LastUpdateUserName{
+                get{
+					return _LastUpdateUserName;
+				}
+				set
+				{
+					_LastUpdateUserName= value;
+					OnPropertyChanged("LastUpdateUserName");
+				}
+            }
+			private DateTime _LastUpdateTime;
+			/// <summary>
+			///  最后一次更新时间
+			/// </summary>
+            public DateTime LastUpdateTime{
+                get{
+					return _LastUpdateTime;
+				}
+				set
+				{
+					_LastUpdateTime= value;
+					OnPropertyChanged("LastUpdateTime");
+				}
+            }
+  		      
+        }
+        
+        /// <summary>
         /// Table: Organizations
         /// Primary Key: OrgCode
 		/// Organizations
@@ -791,11 +777,11 @@ namespace xEasyApp.Core.Repositories {
 					OnPropertyChanged("Sequence");
 				}
             }
-			private byte? _OrgType;
+			private byte _OrgType;
 			/// <summary>
 			///  组织类型
 			/// </summary>
-            public byte? OrgType{
+            public byte OrgType{
                 get{
 					return _OrgType;
 				}

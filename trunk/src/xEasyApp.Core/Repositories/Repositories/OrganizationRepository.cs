@@ -13,7 +13,10 @@ namespace xEasyApp.Core.Repositories
 
         public List<Organization> GetChildOrgsByParentCode(string parentCode)
         {
-            string sql = "SELECT [OrgCode],[OrgName],[ParentCode],[Path],[Remark],[Sequence],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [Organizations] where ParentCode=@ParentCode Order by [Sequence]";
+            string sql = @"SELECT A.[OrgCode],A.[OrgName],ISNULL(B.ChildCount,0) as ChildCount 
+                             FROM [Organizations] A
+                             LEFT JOIN (SELECT COUNT(1) as ChildCount ,ParentCode From [Organizations] Group By ParentCode) B ON A.OrgCode=b.ParentCode
+                             where A.ParentCode=@ParentCode Order by A.[Sequence]";
             SqlParameter p = new SqlParameter("@ParentCode", parentCode);
             List<Organization> list = new List<Organization>();
             using (IDataReader reader = base.ExcuteDataReader(sql, p))
@@ -23,19 +26,8 @@ namespace xEasyApp.Core.Repositories
                     Organization item = new Organization();
                     item.OrgCode = reader.GetString(0);
                     item.OrgName = reader.GetString(1);
-                    if (!reader.IsDBNull(2))
-                    {
-                        item.ParentCode = reader.GetString(2);
-                    }
-                    item.Path = reader.GetString(3);
-                    if (!reader.IsDBNull(4))
-                    {
-                        item.Remark = reader.GetString(4);
-                    }
-                    item.Sequence = reader.GetInt32(5);
-                    item.LastUpdateUserUID = reader.GetString(6);
-                    item.LastUpdateUserName = reader.GetString(7);
-                    item.LastUpdateTime = reader.GetDateTime(8);
+                    item.HasChild = reader.GetInt32(2) > 0;
+                    item.IsNew = false;
                     list.Add(item);
                 }
             }
@@ -44,7 +36,7 @@ namespace xEasyApp.Core.Repositories
 
         public void SaveOrgInfo(Organization d)
         {
-            StoredProcedure sp = StoredProcedures.SP_SaveOrgInfo(d.OrgCode, d.OrgName, d.ParentCode, d.Remark, d.Sequence, d.LastUpdateUserUID, d.LastUpdateUserName);
+            StoredProcedure sp = StoredProcedures.SP_SaveOrgInfo(d.OrgCode, d.OrgName, d.ParentCode, d.Remark,d.OrgType,d.Sequence, d.LastUpdateUserUID, d.LastUpdateUserName);
             base.SPExecuteNonQuery(sp);
         }
 

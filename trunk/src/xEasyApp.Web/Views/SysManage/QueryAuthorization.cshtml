@@ -1,0 +1,346 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head">
+    <title>授权管理</title>
+    @Html.Css("main","form","tree") 
+    @Html.Js("jquery","common","tree","hash")     
+    <script type="text/javascript">
+        var userHash = new Hash();
+        $(document).ready(function () {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth;
+            var selectNodeIds = "";
+            if (parent && parent.getSelectNodeId) {
+                selectNodeIds = parent.getSelectNodeId();
+            }
+            $("#ustree").treeview(
+                      {
+                          url: '@Url.Action("QueryAllUserTree")',
+                          showcheck: false,
+                          cascadecheck: false,
+                          onnodeclick: TreeNode_Click,
+                          theme: "bbit-tree-arrows" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                      }
+             );
+
+
+            function TreeNode_Click(data) {
+
+                if (data.value == "1") {
+                    data.expand();
+                }
+                else {
+                    LoadP(data.id, data.text);
+                }
+            }
+            function p_node_click(data) {
+                var userCode = $("#hdCurrentUserCode").val();
+                if (userCode != "") {
+                    $("#loadingPSource").show();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("QueryPrivilegeRoles")',
+                        data: { "userCode": userCode, "pCode": data.id },
+                        dataType: "json",
+                        success: function (rolelist) {
+                            if (rolelist && rolelist.length > 0) {
+                                var html = [];
+                                html.push("<ul>");
+                                for (var i = 0, l = rolelist.length; i < l; i++) {
+                                    html.push("<li id='role_", rolelist[i][0], "'><span class='", rolelist[i][3] == "1" ? "systemrole" : "normalrole", "'>", rolelist[i][2], "</span><a href=\"javascript:void(0);\" title='修改角色授权' onclick=\"javascript:authorization('", rolelist[i][0], "','", rolelist[i][2], "')\"><span style=\"float:right\" class='authorization'>&nbsp;</span></a><a href=\"javascript:void(0);\" title='修改角色用户' onclick=\"javascript:viewUsers('", rolelist[i][0], "','", rolelist[i][2], "')\"><span style=\"float:right\" class='user'>&nbsp;</span></a></li>");
+                                }
+                                html.push("</ul>");
+                                $("#psourcelist").html(html.join(""));
+                                $("#psourcelist li").each(function (i) {
+                                    $(this).hover(function (e) { $(this).addClass("hover"); }, function (e) { $(this).removeClass("hover"); })
+                                });
+                                $("#loadingPSource").hide();
+                            }
+                            else {
+                                $("#psourcelist").html("");
+                            }
+                        }
+                    });      //end if $.ajax
+                }
+            }
+            function ptree_preloadcomplete() {
+                $("#loadingpermission").hide();
+            }
+            $("#usertree").height(maiheight - 32);
+            $("#uslist").height(maiheight - 32);
+            $("#userlist").height(maiheight - 32);
+            $("#psourcelist").height(maiheight - 32);
+
+            function LoadP(userId, userName) {
+                $("#hdCurrentUserCode").val(userId);
+                $("#psourcelist").html("");
+                $("#ustitle").text(userName + " 用户所拥有的权限树");
+                $("#uslist").empty(); //清空权限树
+                var usptree = $("<div id='usptree' style='padding:5px;'></div>");
+                $("#uslist").append(usptree);
+                $("#loadingpermission").show();
+                usptree.treeview(
+                    {
+                        url: '@Url.Action("QueryUserPrivilegeTree")',
+                        showcheck: false,
+                        cascadecheck: false,
+                        onnodeclick: p_node_click,
+                        preloadcomplete: ptree_preloadcomplete,
+                        extParam: [{ name: "UserCode", value: userId}],
+                        theme: "bbit-tree-arrows" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                    });
+
+            }
+
+            function Ok() {
+                var users = [];
+                for (var a in userHash.items) {
+                    users.push(a);
+                }
+                CloseModalDialog(null, true, users);
+            }
+
+            function Cancel() {
+                CloseModalDialog(null, false);
+            }
+            $("#querytext").focus(function (e) {
+                var v = this.value;
+                if (v == "请输入账号或姓名") {
+                    this.value = "";
+                    $(this).addClass("querytext_onfocus");
+                }
+
+            }).blur(function (e) {
+                var v = this.value;
+                if (v == "") {
+                    this.value = "请输入账号或姓名";
+                    $(this).removeClass("querytext_onfocus");
+                }
+            }).keypress(function (e) {
+                if (e.keyCode == 13) {
+                    query();
+                }
+            });
+            $("#btnQuery").click(query);
+            function query() {
+                var q = $("#querytext");
+                var qtext = q.val();
+                if (qtext && qtext != "请输入账号或姓名") //如果有内容
+                {
+                    q.addClass("loading");
+                    //发起查询请求
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("QueryUser")',
+                        data: { userCode: qtext },
+                        dataType: "json",
+                        success: function (data) {
+                            var html = [];
+                            html.push("<ul>");
+                            if (data) {
+                                for (var i = 0, l = data.length; i < l; i++) {
+                                    html.push("<li id='qli_", data[i].UserUID, "' title='", data[i].FullName, "' ", userHash.hasItem(data[i].UserUID) ? "class='checked'" : "", "><div class=\"usercontainer\" style=\"margin:1px 3px 1px 6px;\"><em class=\"user\" style='float:left;'>", data[i].FullName, "</em><span class='qusercheck'></span><div style='clear:both;'></div></div></li>");
+                                }
+                            }
+                            html.push("</ul>");
+                            $("#userlist").html(html.join("")).show();
+                            $("#userlist li").each(function (i) {
+                                $(this).hover(function (e) { $(this).addClass("hover"); }, function (e) { $(this).removeClass("hover"); })
+                                .click(function (e) {
+                                    var me = $(this);
+                                    var id = this.id.substr(4);
+                                    var text = me.attr("title");
+                                    if (!me.hasClass("checked")) {
+                                        $("#userlist li.checked").removeClass("checked");
+                                        me.addClass("checked");
+                                        LoadP(id, text);
+                                    }
+                                });
+                            });
+                            $("#usertree").hide();
+                            $("#btnClearQuery").show();
+                            $("#btnQuery").hide();
+                            $("#querytext").removeClass("loading");
+                        }
+                    });      //end if $.ajax
+                }
+            }
+            $("#btnClearQuery").click(function (e) {
+                $("#querytext").val("");
+                $("#userlist").hide();
+                $("#usertree").show();
+                $("#btnQuery").show();
+                $(this).hide();
+            });
+
+        });                           // end of ready
+
+        function viewUsers(roleid, roleName) {
+            var url = "@Url.Action("RoleUserRelationList")?RoleID=" + roleid;
+            OpenModelWindow(url, { caption: roleName + " 下的成员", width: 500, height: 400 });
+        }
+        function authorization(roleid, roleName) {
+            var url = "@Url.Action("SetRolePrivilege")?RoleID=" +roleid;
+            OpenModelWindow(url, { caption: "对角色[" + roleName + "]授权", width: 300, height: 400, type: 2, onclose: function () {
+                showLoadingMsg("操作成功！,请刷新页面", { left: 400, top: 1 }, true, 3000);
+            }
+            });
+        }
+    </script>
+    <style type="text/css">
+        .ctree
+        {
+         overflow:hidden;
+         border:solid 1px #99bbe8;	    
+         margin:0px 0px 2px 2px; 
+         background-color:#fff;
+         width:200px;
+         float:left;
+        }
+        .container
+        {
+             overflow:auto;
+             border:solid 1px #99bbe8;	       
+             background-color:#fff;
+             margin:0px -203px 2px 206px;            
+        }
+        .rightpanel
+        {
+        	 overflow:auto;
+             border:solid 1px #99bbe8;	       
+             background-color:#fff;
+             width:380px;
+             float:right;
+             margin:0px 0px 0px 2px;
+        }
+          body 
+         {
+     	    overflow:hidden;     	    
+         }
+         .user .bbit-tree-node-icon
+         {
+            background:url("../../images/icons/user.png") no-repeat ; 
+         }   
+        
+        .querytext
+        {
+        	color:#ccc;
+        }
+        .querytext_onfocus
+        {
+        	color:#555;
+        }    
+        ul,li
+        {
+        	margin:0;        
+        	padding:0;	
+        	list-style:none;
+        }   
+        li
+        {
+        	line-height:150%;
+        } 
+        div.usercontainer
+        {
+        	padding:0px 0px 0px 20px;
+        	background:url("../../images/icons/user.png") no-repeat; 
+        }
+        input.loading
+        {
+        	background:url("../../images/icons/indicator.gif") no-repeat right center; 
+        }
+        li .qusercheck
+        {
+        	display:block;
+        	float:right;
+        	height:16px;
+        	width:16px;
+        }
+        li.hover
+        {
+        	background-color:#eee;
+        	cursor:pointer;
+        }
+        li.checked .qusercheck
+        {
+        	background:url("../../images/icons/qcheck.gif") no-repeat center center; 
+        }
+        .Mainpanel
+        {
+        	margin:2px;
+        }
+         .titlepanel
+         {
+         	color:#15428b;
+         	font-weight:bold;
+         	padding-left:16px;
+         }  
+       .bbit-tree-selected
+       {          
+            background-image:url("../.../images/icons/qcheck.gif");	
+            background-position: right center;
+            background-repeat:no-repeat;
+       }
+       .psourcelist ul
+       {
+       	 padding:3px;
+       }
+        span.systemrole
+        {
+        	padding-left:18px;
+        	background:url("../../images/icons/sysrole.png") no-repeat left center;
+        	float:left;
+        }
+        span.normalrole
+        {
+        	padding-left:18px;
+        	background:url("../../images/icons/normalrole.png") no-repeat left center ;
+        	float:left;
+        }
+        .loadingicon
+        {
+        	float:right;
+        	padding-left:16px;
+        	background:url("../../images/icons/indicator.gif") no-repeat left center ;
+        	display:none;
+        }
+    </style>
+</head>
+
+<body style="background:#dfe8f6">
+<div class="Mainpanel">
+    <input type="hidden" id="hdCurrentUserCode" value="" />
+    <div id="treecontainer"  class="ctree">
+         <div id="querypanel" class="titlepanel">
+            <input type="text" id="querytext" class="querytext" value="请输入账号或姓名" style="height:18px;width:90%;padding:1px;float:left;"/>
+            <a href="javascript:void(0);" id="btnClearQuery" style="display:none"><span class="qdelete" style="display:block;float:left;margin:3px 0px 0px -18px;height:16px;"></span></a>
+            <a href="javascript:void(0);" id="btnQuery"><span class="uquery" style="display:block;float:left;margin:3px 0px 0px -18px;">&nbsp;</span></a>
+         </div>
+         <div id="usertree" style="overflow:auto;">
+            <div id="ustree" style="padding:2px;"></div>
+         </div>
+         <div id="userlist" style="display:none;"></div>
+    </div> 
+    <div id="rightpanel" class="rightpanel">
+        <div class="titlepanel">
+            <span id="titlePSource" style="margin:3px 0px 0px 0px">权限来源</span>
+            <span id="loadingPSource" class="loadingicon">&nbsp;</span>
+        </div>
+           <div id="psourcelist" class="psourcelist"></div>
+    </div>
+    <div id="ucontainer"  class="container">
+        <div class="titlepanel">
+            <span id="ustitle" style="padding:3px 0px 0px 0px">请选择用户</span>
+            <span id="loadingpermission" class="loadingicon">&nbsp;</span>
+        </div>
+        <div id="uslist">
+          
+        </div>
+    </div>
+</div>
+</body>
+</html>

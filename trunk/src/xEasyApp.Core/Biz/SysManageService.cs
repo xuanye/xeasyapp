@@ -88,7 +88,7 @@ namespace xEasyApp.Core.Biz
 
         public bool IsInRole(string roleCode, string userCode)
         {
-            string userrols = UserCache.GetItem("UserRoles");
+            string userrols = UserCache.GetItem(userCode,"UserRoles");
             if (!string.IsNullOrEmpty(userrols))
             {
                 return userrols.IndexOf("," + roleCode + ",") >= 0;
@@ -96,7 +96,7 @@ namespace xEasyApp.Core.Biz
             else
             {
                 List<string> roles = userRepository.GetUserRoleCodes(userCode);
-                UserCache.AddItem("UserRoles", "," + string.Join(",", roles.ToArray()) + ",");
+                UserCache.AddItem(userCode,"UserRoles", "," + string.Join(",", roles.ToArray()) + ",");
                 return roles.Contains(roleCode);
             }
         }
@@ -320,9 +320,19 @@ namespace xEasyApp.Core.Biz
         }
         public Organization GetRootOrganization()
         {
-            Organization org = new Organization();
-            org.OrgCode = AppConfig.RootOrgCode;
-            org.OrgName = AppConfig.RootOrgName;
+            bool Isadmin = MyContext.IsInRole(AppConfig.SuperAdminRoleCode);
+            Organization org = null;
+            if (Isadmin)
+            {
+                org = new Organization();
+                org.OrgCode = AppConfig.RootOrgCode;
+                org.OrgName = AppConfig.RootOrgName;
+              
+            }
+            else
+            {
+                org = GetOrgInfo(MyContext.CurrentUser.UnitCode);  
+            }
             return org;
         }
 
@@ -430,7 +440,22 @@ namespace xEasyApp.Core.Biz
         /// </returns>
         public bool HasRight(string userUid, string privilegeCode)
         {
-            return false;
+            bool IsAdminRole = IsInRole(userUid, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole) //如果是管理员角色
+            {
+                return true;
+            }
+            string hasright = UserCache.GetItem(userUid, "HasRight_" + privilegeCode);
+            if (hasright == null)
+            {
+                bool hr = userRepository.CheckUserRight(userUid, privilegeCode);
+                UserCache.AddItem("HasRight_" + privilegeCode, hr ? "true" : "false");
+                return hr;
+            }
+            else
+            {
+                return hasright.ToLower() == "true";
+            }
         }
 
         /// <summary>
@@ -517,6 +542,66 @@ namespace xEasyApp.Core.Biz
                 return isHasRigth;
             }
         }
+
+        public void SetRolePrivilege(int roleid, string addids, string minusids,string userid,string username)
+        { 
+            bool hasright = CheckUserAuthorizationRight(roleid,userid);
+            if (!hasright)
+            {
+                throw new BizException("你没有对角色授权的权利");
+            }
+            else
+            {
+                try
+                {
+                    roleRepository.SetRolePrivilege(roleid, addids, minusids,userid,username);
+                }
+                catch (Exception ex)
+                {
+                    throw new BizException(ex.Message, ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取用户的权限树
+        /// </summary>
+        /// <param name="usercode">用户标识</param>
+        /// <param name="parentId">父ID</param>
+        /// <returns></returns>
+        public List<Privilege> GetUserPrivilegesByParentID(string usercode, string parentId)
+        {
+            bool IsAdminRole = IsInRole(usercode, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole) //如果是超级管理员
+            {
+               return GetChildPrivileges(parentId);
+            }
+            else
+            {
+                return roleRepository.GetUserPermissions(usercode, parentId);
+               
+            }
+        }
+        public List<RoleInfo> QueryUserPrivilegeRoles(string usercode, string pcode)
+        {
+            List<RoleInfo> rlist = roleRepository.QueryUserPrivilegeRoles(usercode, pcode);
+            bool IsAdminRole = IsInRole(usercode, AppConfig.SuperAdminRoleCode);
+            if (IsAdminRole)
+            {
+                bool hasadmin = rlist.Exists(x => x.RoleCode == AppConfig.SuperAdminRoleCode);
+                if (!hasadmin)
+                {
+                    RoleInfo adminrole = new RoleInfo();
+                    adminrole.RoleID =   AppConfig.SuperAdminRoleID;
+                    adminrole.RoleCode = AppConfig.SuperAdminRoleCode;
+                    adminrole.RoleName = "超级管理员";
+                    adminrole.IsSystem = true;
+                    rlist.Insert(0, adminrole);
+                }
+            }
+            return rlist;
+            
+        }
         #endregion
 
         #region 数据字典管理
@@ -526,8 +611,28 @@ namespace xEasyApp.Core.Biz
             {
                 case Constants.PrivilegeTypeCode:
                     return GetPrivilegeTypeDictList();
+                case Constants.OrgTypeCode:
+                    return GetOrgTypeDictList();
             }
             return dictRepository.GetChildDictInfos(dictCode);
+        }
+        private List<DictInfo> GetOrgTypeDictList()
+        {
+            List<DictInfo> list = new List<DictInfo>();
+            DictInfo dict1 = new DictInfo();
+            dict1.DictCode = "0";
+            dict1.DictName = "单位";
+
+            DictInfo dict2 = new DictInfo();
+            dict2.DictCode = "1";
+            dict2.DictName = "部门";
+            DictInfo dict3 = new DictInfo();
+            dict3.DictCode = "2";
+            dict3.DictName = "组";
+            list.Add(dict1);
+            list.Add(dict2);
+            list.Add(dict3);
+            return list;
         }
         private List<DictInfo> GetPrivilegeTypeDictList()
         {

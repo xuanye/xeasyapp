@@ -55,6 +55,7 @@
     <Compile Include="Biz\SysManageService.cs" />
     <Compile Include="Biz\UserService.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\MyContext.cs" />
     <Compile Include="Common\StringKeyValueCache.cs" />
     <Compile Include="Common\UserCache.cs" />
     <Compile Include="Common\Utility.cs" />
@@ -98,9 +99,10 @@
       <DependentUpon>Repositories.tt</DependentUpon>
     </Compile>
     <Compile Include="Repositories\_Generated\StoredProcedures.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>StoredProcedures.tt</DependentUpon>
+      <SubType>Code</SubType>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Repositories\_Generated\Structs.cs">
       <AutoGen>True</AutoGen>

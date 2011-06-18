@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-14 22:55:31
+// 生成时间: 2011-06-17 21:03:30
 // =============================================
 using System;
 using System.Data;
@@ -531,137 +531,6 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
-        /// Table: RolePrivilegeRelation
-        /// Primary Key: PrivilegeCode
-        /// </summary>
-        public partial class RolePrivilegeRelationRepository:BaseRepository 
-		{			
-			public void Save(RolePrivilegeRelation item)
-			{
-				if(item.IsNew)
-				{
-					Insert(item);
-				}
-				else
-				{
-					Update(item);
-				}
-			}	
-		    public RolePrivilegeRelation Get(string key)
-			{
-				string sql = "SELECT [RoleID],[PrivilegeCode],[AuthorizedType],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
-				RolePrivilegeRelation item =null;
-				using(IDataReader reader = base.ExcuteDataReader(sql,p))
-				{
-					if(reader.Read())
-					{
-						item =new RolePrivilegeRelation();
-						item.RoleID = reader.GetInt32(0);
-							item.PrivilegeCode = reader.GetString(1);
-							item.AuthorizedType = reader.GetByte(2);
-							item.LastUpdateUserUID = reader.GetString(3);
-							item.LastUpdateUserName = reader.GetString(4);
-							item.LastUpdateTime = reader.GetDateTime(5);
-							
-					}
-				}
-				return item;
-			}
-			public int Delete(string key)
-			{
-				string sql ="DELETE FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
-				return base.ExecuteNonQuery(sql,p);	
-			}
-			public void Insert(RolePrivilegeRelation item)
-			{
-				string sql="INSERT INTO [RolePrivilegeRelation] ([RoleID],[PrivilegeCode],[AuthorizedType],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@RoleID,@PrivilegeCode,@AuthorizedType,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
-				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
-				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
-				SPParams.Add(new SqlParameter("@AuthorizedType",item.AuthorizedType));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
-				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
-				base.ExecuteNonQuery(sql, SPParams.ToArray());
-			}
-            public void Update(RolePrivilegeRelation item)
-			{
-				if(item.ChangedPropertyCount>0)
-				{
-					StringBuilder sqlbuilder = new StringBuilder();
-					sqlbuilder.Append("UPDATE [RolePrivilegeRelation] SET ");
-					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("AuthorizedType","[AuthorizedType]");
-					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
-					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
-					cols.Add("LastUpdateTime","[LastUpdateTime]");
-					int i = 0;
-					//UPDATE COLUMNS
-					foreach (string p in item.ChangedPropertyList)
-					{ 
-						if(!cols.ContainsKey(p))
-						{
-							continue;
-						}
-						if (i > 0)
-						{
-							sqlbuilder.Append(",");
-						}
-						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
-						i++;
-					}
-					//WHERE;
-					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
-
-					List<SqlParameter> SPParams = new List<SqlParameter>();
-					 SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
- SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
- 	
-					if(item.IsChanged("AuthorizedType"))
-					{
-						SPParams.Add(new SqlParameter("@AuthorizedType",item.AuthorizedType));	
-					} 	
-					if(item.IsChanged("LastUpdateUserUID"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
-					} 	
-					if(item.IsChanged("LastUpdateUserName"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
-					} 	
-					if(item.IsChanged("LastUpdateTime"))
-					{
-						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
-					}
-					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
-				}
-			}
-			public List<RolePrivilegeRelation> QueryAll()
-			{
-				string sql ="SELECT [RoleID],[PrivilegeCode],[AuthorizedType],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation]";
-				List<RolePrivilegeRelation>  list =new List<RolePrivilegeRelation>();
-				using(IDataReader reader = base.ExcuteDataReader(sql))
-				{
-					while(reader.Read())
-					{
-						RolePrivilegeRelation item =new RolePrivilegeRelation();
-						item.RoleID = reader.GetInt32(0);
-							item.PrivilegeCode = reader.GetString(1);
-							item.AuthorizedType = reader.GetByte(2);
-							item.LastUpdateUserUID = reader.GetString(3);
-							item.LastUpdateUserName = reader.GetString(4);
-							item.LastUpdateTime = reader.GetDateTime(5);
-													list.Add(item);
-					}
-				}
-				return list;
-			}
-
-        }
-        
-        /// <summary>
         /// Table: RoleUserRelation
         /// Primary Key: RoleID
         /// </summary>
@@ -1177,6 +1046,129 @@ namespace xEasyApp.Core.Repositories {
 						 item.LastUpdateUserUID = reader.GetString(9);
 							item.LastUpdateUserName = reader.GetString(10);
 							item.LastUpdateTime = reader.GetDateTime(11);
+													list.Add(item);
+					}
+				}
+				return list;
+			}
+
+        }
+        
+        /// <summary>
+        /// Table: RolePrivilegeRelation
+        /// Primary Key: PrivilegeCode
+        /// </summary>
+        public partial class RolePrivilegeRelationRepository:BaseRepository 
+		{			
+			public void Save(RolePrivilegeRelation item)
+			{
+				if(item.IsNew)
+				{
+					Insert(item);
+				}
+				else
+				{
+					Update(item);
+				}
+			}	
+		    public RolePrivilegeRelation Get(string key)
+			{
+				string sql = "SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				RolePrivilegeRelation item =null;
+				using(IDataReader reader = base.ExcuteDataReader(sql,p))
+				{
+					if(reader.Read())
+					{
+						item =new RolePrivilegeRelation();
+						item.RoleID = reader.GetInt32(0);
+							item.PrivilegeCode = reader.GetString(1);
+							item.LastUpdateUserUID = reader.GetString(2);
+							item.LastUpdateUserName = reader.GetString(3);
+							item.LastUpdateTime = reader.GetDateTime(4);
+							
+					}
+				}
+				return item;
+			}
+			public int Delete(string key)
+			{
+				string sql ="DELETE FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				return base.ExecuteNonQuery(sql,p);	
+			}
+			public void Insert(RolePrivilegeRelation item)
+			{
+				string sql="INSERT INTO [RolePrivilegeRelation] ([RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@RoleID,@PrivilegeCode,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
+				List<SqlParameter> SPParams = new List<SqlParameter>();
+				SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
+				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+				base.ExecuteNonQuery(sql, SPParams.ToArray());
+			}
+            public void Update(RolePrivilegeRelation item)
+			{
+				if(item.ChangedPropertyCount>0)
+				{
+					StringBuilder sqlbuilder = new StringBuilder();
+					sqlbuilder.Append("UPDATE [RolePrivilegeRelation] SET ");
+					Dictionary<string,string> cols =new Dictionary<string,string>();
+					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
+					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
+					cols.Add("LastUpdateTime","[LastUpdateTime]");
+					int i = 0;
+					//UPDATE COLUMNS
+					foreach (string p in item.ChangedPropertyList)
+					{ 
+						if(!cols.ContainsKey(p))
+						{
+							continue;
+						}
+						if (i > 0)
+						{
+							sqlbuilder.Append(",");
+						}
+						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
+						i++;
+					}
+					//WHERE;
+					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
+
+					List<SqlParameter> SPParams = new List<SqlParameter>();
+					 SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
+ SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+ 	
+					if(item.IsChanged("LastUpdateUserUID"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+					} 	
+					if(item.IsChanged("LastUpdateUserName"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+					} 	
+					if(item.IsChanged("LastUpdateTime"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+					}
+					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
+				}
+			}
+			public List<RolePrivilegeRelation> QueryAll()
+			{
+				string sql ="SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation]";
+				List<RolePrivilegeRelation>  list =new List<RolePrivilegeRelation>();
+				using(IDataReader reader = base.ExcuteDataReader(sql))
+				{
+					while(reader.Read())
+					{
+						RolePrivilegeRelation item =new RolePrivilegeRelation();
+						item.RoleID = reader.GetInt32(0);
+							item.PrivilegeCode = reader.GetString(1);
+							item.LastUpdateUserUID = reader.GetString(2);
+							item.LastUpdateUserName = reader.GetString(3);
+							item.LastUpdateTime = reader.GetDateTime(4);
 													list.Add(item);
 					}
 				}

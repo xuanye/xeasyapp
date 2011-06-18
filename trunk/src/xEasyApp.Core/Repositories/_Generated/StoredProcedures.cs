@@ -4,7 +4,7 @@
   
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-14 22:55:31
+// 生成时间: 2011-06-18 09:32:09
 // =============================================
 using System;
 using System.Data;
@@ -48,12 +48,19 @@ namespace xEasyApp.Core.Repositories{
             sp.AddParameter("UserIDs",UserIDs,DbType.AnsiString);
             return sp;
         }
-        public static StoredProcedure SP_SaveOrgInfo(string OrgCode,string OrgName,string ParentCode,string Remark,int Sequence,string LastUpdateUserUID,string LastUpdateUserName){
+        public static StoredProcedure SP_RoleCheckUserRight(int RoleID,string UserID){
+            StoredProcedure sp=new StoredProcedure("SP_RoleCheckUserRight");
+            sp.AddParameter("RoleID",RoleID,DbType.Int32);
+            sp.AddParameter("UserID",UserID,DbType.AnsiString);
+            return sp;
+        }
+        public static StoredProcedure SP_SaveOrgInfo(string OrgCode,string OrgName,string ParentCode,string Remark,byte OrgType,int Sequence,string LastUpdateUserUID,string LastUpdateUserName){
             StoredProcedure sp=new StoredProcedure("SP_SaveOrgInfo");
             sp.AddParameter("OrgCode",OrgCode,DbType.AnsiString);
             sp.AddParameter("OrgName",OrgName,DbType.String);
             sp.AddParameter("ParentCode",ParentCode,DbType.AnsiString);
             sp.AddParameter("Remark",Remark,DbType.String);
+            sp.AddParameter("OrgType",OrgType,DbType.Byte);
             sp.AddParameter("Sequence",Sequence,DbType.Int32);
             sp.AddParameter("LastUpdateUserUID",LastUpdateUserUID,DbType.AnsiString);
             sp.AddParameter("LastUpdateUserName",LastUpdateUserName,DbType.String);
@@ -82,6 +89,15 @@ namespace xEasyApp.Core.Repositories{
             sp.AddParameter("IsSystem",IsSystem,DbType.Boolean);
             sp.AddParameter("LastUpdateUserUID",LastUpdateUserUID,DbType.AnsiString);
             sp.AddParameter("LastUpdateUserName",LastUpdateUserName,DbType.String);
+            return sp;
+        }
+        public static StoredProcedure SP_SetRoleRolePrivilege(int RoleID,string AddIDs,string MinusIDs,string UserID,string UserName){
+            StoredProcedure sp=new StoredProcedure("SP_SetRoleRolePrivilege");
+            sp.AddParameter("RoleID",RoleID,DbType.Int32);
+            sp.AddParameter("AddIDs",AddIDs,DbType.AnsiString);
+            sp.AddParameter("MinusIDs",MinusIDs,DbType.AnsiString);
+            sp.AddParameter("UserID",UserID,DbType.AnsiString);
+            sp.AddParameter("UserName",UserName,DbType.String);
             return sp;
         }
 	

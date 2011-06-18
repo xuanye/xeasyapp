@@ -31,8 +31,20 @@ namespace xEasyApp.Core.Entities
         /// 所属机构名称,一般为部门名称
         /// </summary>
         /// <value>The name of the org.</value>
-        string OrgName { get; set; }  
+        string OrgName { get; set; }
 
+        /// <summary>
+        /// 所属单位Code
+        /// </summary>
+        /// <value>The unit code.</value>
+        string UnitCode { get; set; }
+
+        /// <summary>
+        /// 所属单位的名称
+        /// </summary>
+        /// <value>The name of the unit.</value>
+        string UnitName { get; set; }
+        
         /// <summary>
         /// 扩展信息
         /// </summary>
@@ -40,42 +52,5 @@ namespace xEasyApp.Core.Entities
         Dictionary<string, string> ExtendProperties { get; }
 
     }
-    public class BaseUser : IUser
-    {
-        public string UserUId
-        {
-            get;
-            set;
-        }
-
-        public string FullName
-        {
-            get;
-            set;
-        }
-
-        public string OrgCode
-        {
-            get;
-            set;
-        }
-
-        public string OrgName
-        {
-            get;
-            set;
-        }
-
-        private Dictionary<string, string> _ExtendProperties;
-        public Dictionary<string, string> ExtendProperties
-        {
-            get {
-                if (_ExtendProperties == null)
-                {
-                    _ExtendProperties = new Dictionary<string, string>();
-                }
-                return _ExtendProperties;
-            }
-        }      
-    }
+  
 }

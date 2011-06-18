@@ -44,7 +44,17 @@ namespace xEasyApp.Core.Configurations
             }
         }
 
-
+        public static int SuperAdminRoleID
+        {
+            get {
+                string id = Get("SuperAdminRoleID");
+                if (string.IsNullOrEmpty(id))
+                {
+                    return 1;
+                }
+                return Convert.ToInt32(id);
+            }
+        }
         public static string SuperAdminRoleCode
         {
             get

@@ -82,5 +82,53 @@ namespace xEasyApp.Core.Repositories
             }
             return list;
         }
+        public bool CheckUserRight(string userUid, string privilegeCode)
+        {
+            string sql = @"SELECT 1 FROM RoleUserRelation A
+                        INNER JOIN RolePrivilegeRelation  B ON A.RoleID=B.RoleID
+                        Where B.PrivilegeCode=@PrivilegeCode and A.UserUID=@UserCode";
+            SqlParameter[] pas = new SqlParameter[2];
+            pas[0] = new SqlParameter("@PrivilegeCode", privilegeCode);
+            pas[1] = new SqlParameter("@UserCode", userUid);
+            object o = base.ExecuteScalar(sql, pas);
+            return o != null;
+        }
+
+        public UserInfo GetUserInfo(string UserId)
+        {
+            string sql = @"SELECT A.[UserUID],A.[FullName],A.[Password],
+            A.[OrgCode],A.[OrgName],A.[IsManager],A.[IsSystem],
+            A.[Sequence],A.[AccountState],A.[LastUpdateUserUID],
+            A.[LastUpdateUserName],A.[LastUpdateTime],B.UnitCode,B.UnitName
+            FROM [UserInfos] A INNER JOIN Organizations B ON A.OrgCode=B.OrgCode
+            WHERE A.[UserUID]=@UserUID";
+            SqlParameter p = new SqlParameter("@UserUID", UserId);
+            UserInfo item = null;
+            using (IDataReader reader = base.ExcuteDataReader(sql, p))
+            {
+                if (reader.Read())
+                {
+                    item = new UserInfo();
+                    item.UserUID = reader.GetString(0);
+                    item.FullName = reader.GetString(1);
+                    item.Password = reader.GetString(2);
+                    item.OrgCode = reader.GetString(3);
+                    if (!reader.IsDBNull(4))
+                    {
+                        item.OrgName = reader.GetString(4);
+                    }
+                    item.IsManager = reader.GetBoolean(5);
+                    item.IsSystem = reader.GetBoolean(6);
+                    item.Sequence = reader.GetInt32(7);
+                    item.AccountState = reader.GetByte(8);
+                    item.LastUpdateUserUID = reader.GetString(9);
+                    item.LastUpdateUserName = reader.GetString(10);
+                    item.LastUpdateTime = reader.GetDateTime(11);
+                    item.UnitCode = reader.IsDBNull(12) ? null : reader.GetString(12);
+                    item.UnitName = reader.IsDBNull(13) ? null : reader.GetString(13);
+                }
+            }
+            return item;
+        }
     }
 }

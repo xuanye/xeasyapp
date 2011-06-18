@@ -34,7 +34,7 @@
                 </tr>
                 <tr>
                     <td style="width:70px;">
-                        <label>部门代码：</label>
+                        <label>组织代码：</label>
                     </td>
                     <td>
                         @if (string.IsNullOrEmpty(Model.OrgCode))
@@ -50,10 +50,20 @@
                 </tr>
                 <tr>
                   <td style="width:70px;">
-                        <label>部门名称：</label>
+                        <label>组织名称：</label>
                   </td>
                   <td>
                         @Html.TextBox("OrgName", Model.OrgName, new { style = "width:90%;" })
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>
+                
+                </tr>
+                 <tr>
+                  <td style="width:70px;">
+                        <label>组织类型：</label>
+                  </td>
+                  <td>
+                        @Html.DictDropdownList("OrgType", xEasyApp.Core.Common.Constants.OrgTypeCode, xEasyApp.Core.DictValueType.DictCode, Model.OrgType, new { style="width:100px"})
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 

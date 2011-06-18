@@ -17,6 +17,16 @@ namespace xEasyApp.Core.Repositories
             get;
             set;
         }
+
+        /// <summary>
+        /// 是否有子节点
+        /// </summary>
+        /// <value><c>true</c> if this instance has child; otherwise, <c>false</c>.</value>
+        public bool HasChild
+        {
+            get;
+            set;
+        }
     }
 
     public partial class RoleInfo
