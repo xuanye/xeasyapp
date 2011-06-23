@@ -158,14 +158,45 @@ namespace xEasyApp.Core.Interfaces
         /// <returns></returns>
         List<DictInfo> GetChildDictInfos(string dictCode);
 
-        #endregion
+        /// <summary>
+        /// 根据父节点获取子数据字典列表 用于Grid
+        /// </summary>
+        /// <param name="parentId">父ID.</param>
+        /// <returns></returns>
+        List<DictInfo> QueryDictInfoList(int parentId);
+        /// <summary>
+        /// 根据父节点获取子数据字典项 用于Tree
+        /// </summary>
+        /// <param name="parentId">父ID.</param>
+        /// <returns></returns>
+        List<DictInfo> GetDictInfoTree(int parentId);
+
+        /// <summary>
+        /// 根据主键获取数据字典
+        /// </summary>
+        /// <param name="dictId">The dict id.</param>
+        /// <returns></returns>
+        DictInfo GetDictInfo(int dictId);
+
+        /// <summary>
+        /// 根据主键删除数据字典
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns></returns>
+        int DeleteDictInfo(int id);
+
+        /// <summary>
+        /// 保存数据字典信息
+        /// </summary>
+        /// <param name="di">The di.</param>
+        void SaveDictInfo(DictInfo di);
+       #endregion
 
 
 
 
 
 
-
-       
+      
     }
 }

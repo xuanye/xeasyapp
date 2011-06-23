@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-18 09:33:24
+// 生成时间: 2011-06-19 14:10:12
 // =============================================
 using System;
 using System.Collections.Generic;
@@ -113,128 +113,6 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_Sequence= value;
 					OnPropertyChanged("Sequence");
-				}
-            }
-  		      
-        }
-        
-        /// <summary>
-        /// Table: DictInfos
-        /// Primary Key: DictID
-		/// DictInfos
-        /// </summary>
-        public partial class DictInfo:BaseEntity {  
-            
-			private int _DictID;
-			/// <summary>
-			///  数据字典目录ID
-			/// </summary>
-            public int DictID{
-                get{
-					return _DictID;
-				}
-				set
-				{
-					_DictID= value;
-					OnPropertyChanged("DictID");
-				}
-            }
-			private string _DictName;
-			/// <summary>
-			///  目录名称
-			/// </summary>
-            public string DictName{
-                get{
-					return _DictName;
-				}
-				set
-				{
-					_DictName= value;
-					OnPropertyChanged("DictName");
-				}
-            }
-			private string _DictCode;
-			/// <summary>
-			///  目录代码
-			/// </summary>
-            public string DictCode{
-                get{
-					return _DictCode;
-				}
-				set
-				{
-					_DictCode= value;
-					OnPropertyChanged("DictCode");
-				}
-            }
-			private byte _DictType;
-			/// <summary>
-			///  数据类型
-			/// </summary>
-            public byte DictType{
-                get{
-					return _DictType;
-				}
-				set
-				{
-					_DictType= value;
-					OnPropertyChanged("DictType");
-				}
-            }
-			private int? _ParentID;
-			/// <summary>
-			///  父ID
-			/// </summary>
-            public int? ParentID{
-                get{
-					return _ParentID;
-				}
-				set
-				{
-					_ParentID= value;
-					OnPropertyChanged("ParentID");
-				}
-            }
-			private int? _Sequence;
-			/// <summary>
-			///  排序字段
-			/// </summary>
-            public int? Sequence{
-                get{
-					return _Sequence;
-				}
-				set
-				{
-					_Sequence= value;
-					OnPropertyChanged("Sequence");
-				}
-            }
-			private string _SQLCMD;
-			/// <summary>
-			///  获取数据项的Sql
-			/// </summary>
-            public string SQLCMD{
-                get{
-					return _SQLCMD;
-				}
-				set
-				{
-					_SQLCMD= value;
-					OnPropertyChanged("SQLCMD");
-				}
-            }
-			private string _Remark;
-			/// <summary>
-			///  备注
-			/// </summary>
-            public string Remark{
-                get{
-					return _Remark;
-				}
-				set
-				{
-					_Remark= value;
-					OnPropertyChanged("Remark");
 				}
             }
   		      
@@ -859,6 +737,114 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_LastUpdateTime= value;
 					OnPropertyChanged("LastUpdateTime");
+				}
+            }
+  		      
+        }
+        
+        /// <summary>
+        /// Table: DictInfos
+        /// Primary Key: DictID
+		/// DictInfos
+        /// </summary>
+        public partial class DictInfo:BaseEntity {  
+            
+			private int _DictID;
+			/// <summary>
+			///  数据字典目录ID
+			/// </summary>
+            public int DictID{
+                get{
+					return _DictID;
+				}
+				set
+				{
+					_DictID= value;
+					OnPropertyChanged("DictID");
+				}
+            }
+			private string _DictName;
+			/// <summary>
+			///  目录名称
+			/// </summary>
+            public string DictName{
+                get{
+					return _DictName;
+				}
+				set
+				{
+					_DictName= value;
+					OnPropertyChanged("DictName");
+				}
+            }
+			private string _DictCode;
+			/// <summary>
+			///  目录代码
+			/// </summary>
+            public string DictCode{
+                get{
+					return _DictCode;
+				}
+				set
+				{
+					_DictCode= value;
+					OnPropertyChanged("DictCode");
+				}
+            }
+			private bool _IsSystem;
+			/// <summary>
+			///  是否系统字典
+			/// </summary>
+            public bool IsSystem{
+                get{
+					return _IsSystem;
+				}
+				set
+				{
+					_IsSystem= value;
+					OnPropertyChanged("IsSystem");
+				}
+            }
+			private int? _ParentID;
+			/// <summary>
+			///  父ID
+			/// </summary>
+            public int? ParentID{
+                get{
+					return _ParentID;
+				}
+				set
+				{
+					_ParentID= value;
+					OnPropertyChanged("ParentID");
+				}
+            }
+			private int? _Sequence;
+			/// <summary>
+			///  排序字段
+			/// </summary>
+            public int? Sequence{
+                get{
+					return _Sequence;
+				}
+				set
+				{
+					_Sequence= value;
+					OnPropertyChanged("Sequence");
+				}
+            }
+			private string _Remark;
+			/// <summary>
+			///  备注
+			/// </summary>
+            public string Remark{
+                get{
+					return _Remark;
+				}
+				set
+				{
+					_Remark= value;
+					OnPropertyChanged("Remark");
 				}
             }
   		      

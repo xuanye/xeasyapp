@@ -648,6 +648,63 @@ namespace xEasyApp.Core.Biz
             list.Add(dict2);
             return list;
         }
+
+
+        /// <summary>
+        /// 根据父节点获取子数据字典列表 用于Grid
+        /// </summary>
+        /// <param name="parentId">父ID.</param>
+        /// <returns></returns>
+        public List<DictInfo> QueryDictInfoList(int parentId)
+        {
+            return dictRepository.QueryDictInfoList(parentId);
+        }
+        /// <summary>
+        /// 根据父节点获取子数据字典项 用于Tree
+        /// </summary>
+        /// <param name="parentId">父ID.</param>
+        /// <returns></returns>
+        public List<DictInfo> GetDictInfoTree(int parentId)
+        {
+            return dictRepository.GetDictInfoTree(parentId);
+        }
+
+        /// <summary>
+        /// 根据主键获取数据字典
+        /// </summary>
+        /// <param name="dictId">The dict id.</param>
+        /// <returns></returns>
+        public DictInfo GetDictInfo(int dictId)
+        {
+            return dictRepository.GetDictInfo(dictId);
+        }
+
+        /// <summary>
+        /// 根据主键删除数据字典
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns></returns>
+        public int DeleteDictInfo(int id)
+        { 
+            //校验是否能删除
+            bool checkret= dictRepository.CheckDictIsSystemOrHasChild(id);
+            if (checkret)
+            {
+                throw new BizException("数据字典为系统字典或者包含子项不能被删除");
+            }
+            else
+            {
+                return dictRepository.Delete(id);
+            }
+        }
+        /// <summary>
+        /// 保存数据字典信息
+        /// </summary>
+        /// <param name="di">The di.</param>
+        public void SaveDictInfo(DictInfo di)
+        {
+            dictRepository.Save(di);
+        }
         #endregion
     }
 }
