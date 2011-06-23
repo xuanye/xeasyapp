@@ -1,46 +1,45 @@
 ﻿@{
     Layout = null;
-
 }
-@model  xEasyApp.Core.Repositories.RoleInfo
+@model  xEasyApp.Core.Repositories.DictInfo
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <title>角色管理</title>
+    <title>字典管理</title>
     @Html.Css("main","form")
 </head>
 <body>
     <div style="padding:5px;">
        
-            @using (Html.BeginForm("SaveRoleInfo", "SysManage", new { id = Model.RoleID }, FormMethod.Post, new { id = "fmEdit" }))
+            @using (Html.BeginForm("SaveDictInfo", "SysManage", new { id = Model.DictID }, FormMethod.Post, new { id = "fmEdit" }))
             {
         
         <div class="mainpanel">
             <table id="xeasy-form-table" width="100%" cellspacing="4"  cellpadding="1">
                 <tr>
                     <td style="width:70px;">
-                        <label>角色标识：</label>
+                        <label>字典代码：</label>
                     </td>
                     <td>                      
                        
-                        @if (Model.RoleID==0)
+                        @if (Model.DictID == 0)
                         {                        
-                            @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;" })
+                            @Html.TextBox("DictCode", Model.DictCode, new { style = "width:90%;" })
                         }
                         else
                         { 
-                           @Html.TextBox("RoleCode", Model.RoleCode, new { style = "width:90%;",ReadOnly="ReadOnly" })
+                           @Html.TextBox("DictCode", Model.DictCode, new { style = "width:90%;", ReadOnly = "ReadOnly" })
                         }                      
                         <span class="xeasy-formItemMust">*</span>
                     </td> 
                 </tr>
                 <tr>
                   <td style="width:70px;">
-                        <label>角色名称：</label>
+                        <label>字典名称：</label>
                   </td>
                   <td>
-                        @Html.TextBox("RoleName", Model.RoleName, new { style = "width:90%;" })
+                        @Html.TextBox("DictName", Model.DictName, new { style = "width:90%;" })
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 
@@ -50,7 +49,7 @@
                         <label>父角色：</label>
                   </td>
                   <td>
-                        @Html.Hidden("ParentID", Model.ParentID, new { style = "width:90%;"})
+                        @Html.Hidden("ParentID", Model.ParentID, new { style = "width:90%;" })
                         <span id="lbParentName">
                              @Html.DisplayTextFor(x => x.ParentName) 
                         </span>
@@ -59,12 +58,19 @@
                 </tr>
                  <tr>
                   <td style="width:70px;">
-                        <label>角色说明：</label>
+                        <label>字典说明：</label>
                   </td>
                   <td>
                         @Html.TextArea("Remark", Model.Remark, new { style = "width:90%;" })                       
                   </td>
-                
+                 <tr>
+                  <td style="width:70px;">
+                        <label>排序：</label>
+                  </td>
+                  <td>
+                        @Html.TextBox("Sequence", Model.Sequence, new { style = "width:80px;"})
+                        <span class="xeasy-formItemMust">*</span>
+                  </td>           
                 </tr>
             </table>
            
@@ -109,15 +115,14 @@
                  },
                  rules:
                  {
-                     RoleCode: { required: true, safe: true @if(Model.RoleID==0)
-                      {                        
-                        @:,remote:"@Url.Action("ValidRoleCode")"
-                      } 
-                      },RoleName: { required: true, safe: true }
+                     DictCode: { required: true, safe: true },
+                     DictName: { required: true, safe: true },
+                     Sequence:{ required: true, digits: true }
                  },
                  messages: {
-                     RoleCode: { required: "角色代码不能为空",remote:"角色代码必须唯一" },
-                     RoleName: { required: "角色名称不能为空" }
+                     RoleCode: { required: "角色代码不能为空",},
+                     RoleName: { required: "角色名称不能为空" },
+                     Sequence:{ required: "排序号不能为空", digits: "排序号必须是个数字" }
                  },
                  errorElement: "div",
 			     errorClass: "cusErrorPanel",

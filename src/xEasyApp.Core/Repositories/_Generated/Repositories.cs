@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-17 21:03:30
+// 生成时间: 2011-06-19 14:10:11
 // =============================================
 using System;
 using System.Data;
@@ -181,184 +181,6 @@ namespace xEasyApp.Core.Repositories {
 						 if(!reader.IsDBNull(6))
 						 {
 							item.Sequence = reader.GetInt32(6);
-						 }
-						 						list.Add(item);
-					}
-				}
-				return list;
-			}
-
-        }
-        
-        /// <summary>
-        /// Table: DictInfos
-        /// Primary Key: DictID
-        /// </summary>
-        public partial class DictInfoRepository:BaseRepository 
-		{			
-			public void Save(DictInfo item)
-			{
-				if(item.IsNew)
-				{
-					Insert(item);
-				}
-				else
-				{
-					Update(item);
-				}
-			}	
-		    public DictInfo Get(int key)
-			{
-				string sql = "SELECT [DictID],[DictName],[DictCode],[DictType],[ParentID],[Sequence],[SQLCMD],[Remark] FROM [DictInfos] WHERE [DictID]=@DictID";
-				SqlParameter p =new SqlParameter("@DictID",key);
-				DictInfo item =null;
-				using(IDataReader reader = base.ExcuteDataReader(sql,p))
-				{
-					if(reader.Read())
-					{
-						item =new DictInfo();
-						item.DictID = reader.GetInt32(0);
-							item.DictName = reader.GetString(1);
-							item.DictCode = reader.GetString(2);
-							item.DictType = reader.GetByte(3);
-							if(!reader.IsDBNull(4))
-						 {
-							item.ParentID = reader.GetInt32(4);
-						 }
-						 if(!reader.IsDBNull(5))
-						 {
-							item.Sequence = reader.GetInt32(5);
-						 }
-						 if(!reader.IsDBNull(6))
-						 {
-							item.SQLCMD = reader.GetString(6);
-						 }
-						 if(!reader.IsDBNull(7))
-						 {
-							item.Remark = reader.GetString(7);
-						 }
-						 
-					}
-				}
-				return item;
-			}
-			public int Delete(int key)
-			{
-				string sql ="DELETE FROM [DictInfos] WHERE [DictID]=@DictID";
-				SqlParameter p =new SqlParameter("@DictID",key);
-				return base.ExecuteNonQuery(sql,p);	
-			}
-			public void Insert(DictInfo item)
-			{
-				string sql="INSERT INTO [DictInfos] ([DictName],[DictCode],[DictType],[ParentID],[Sequence],[SQLCMD],[Remark]) VALUES (@DictName,@DictCode,@DictType,@ParentID,@Sequence,@SQLCMD,@Remark)";
-				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@DictName",item.DictName));	
-				SPParams.Add(new SqlParameter("@DictCode",item.DictCode));	
-				SPParams.Add(new SqlParameter("@DictType",item.DictType));	
-				SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
-				SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
-				SPParams.Add(new SqlParameter("@SQLCMD",item.SQLCMD));	
-				SPParams.Add(new SqlParameter("@Remark",item.Remark));	
-				sql +=";SELECT Scope_Identity()";
-				object o = base.ExecuteScalar(sql, SPParams.ToArray());
-				if(o!=null){
-					item.DictID =Convert.ToInt32(o);
-				}
-			}
-            public void Update(DictInfo item)
-			{
-				if(item.ChangedPropertyCount>0)
-				{
-					StringBuilder sqlbuilder = new StringBuilder();
-					sqlbuilder.Append("UPDATE [DictInfos] SET ");
-					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("DictName","[DictName]");
-					cols.Add("DictCode","[DictCode]");
-					cols.Add("DictType","[DictType]");
-					cols.Add("ParentID","[ParentID]");
-					cols.Add("Sequence","[Sequence]");
-					cols.Add("SQLCMD","[SQLCMD]");
-					cols.Add("Remark","[Remark]");
-					int i = 0;
-					//UPDATE COLUMNS
-					foreach (string p in item.ChangedPropertyList)
-					{ 
-						if(!cols.ContainsKey(p))
-						{
-							continue;
-						}
-						if (i > 0)
-						{
-							sqlbuilder.Append(",");
-						}
-						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
-						i++;
-					}
-					//WHERE;
-					sqlbuilder.Append(" WHERE [DictID]=@DictID");
-
-					List<SqlParameter> SPParams = new List<SqlParameter>();
-					 SPParams.Add(new SqlParameter("@DictID",item.DictID));	
- 	
-					if(item.IsChanged("DictName"))
-					{
-						SPParams.Add(new SqlParameter("@DictName",item.DictName));	
-					} 	
-					if(item.IsChanged("DictCode"))
-					{
-						SPParams.Add(new SqlParameter("@DictCode",item.DictCode));	
-					} 	
-					if(item.IsChanged("DictType"))
-					{
-						SPParams.Add(new SqlParameter("@DictType",item.DictType));	
-					} 	
-					if(item.IsChanged("ParentID"))
-					{
-						SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
-					} 	
-					if(item.IsChanged("Sequence"))
-					{
-						SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
-					} 	
-					if(item.IsChanged("SQLCMD"))
-					{
-						SPParams.Add(new SqlParameter("@SQLCMD",item.SQLCMD));	
-					} 	
-					if(item.IsChanged("Remark"))
-					{
-						SPParams.Add(new SqlParameter("@Remark",item.Remark));	
-					}
-					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
-				}
-			}
-			public List<DictInfo> QueryAll()
-			{
-				string sql ="SELECT [DictID],[DictName],[DictCode],[DictType],[ParentID],[Sequence],[SQLCMD],[Remark] FROM [DictInfos]";
-				List<DictInfo>  list =new List<DictInfo>();
-				using(IDataReader reader = base.ExcuteDataReader(sql))
-				{
-					while(reader.Read())
-					{
-						DictInfo item =new DictInfo();
-						item.DictID = reader.GetInt32(0);
-							item.DictName = reader.GetString(1);
-							item.DictCode = reader.GetString(2);
-							item.DictType = reader.GetByte(3);
-							if(!reader.IsDBNull(4))
-						 {
-							item.ParentID = reader.GetInt32(4);
-						 }
-						 if(!reader.IsDBNull(5))
-						 {
-							item.Sequence = reader.GetInt32(5);
-						 }
-						 if(!reader.IsDBNull(6))
-						 {
-							item.SQLCMD = reader.GetString(6);
-						 }
-						 if(!reader.IsDBNull(7))
-						 {
-							item.Remark = reader.GetString(7);
 						 }
 						 						list.Add(item);
 					}
@@ -842,6 +664,129 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
+        /// Table: RolePrivilegeRelation
+        /// Primary Key: PrivilegeCode
+        /// </summary>
+        public partial class RolePrivilegeRelationRepository:BaseRepository 
+		{			
+			public void Save(RolePrivilegeRelation item)
+			{
+				if(item.IsNew)
+				{
+					Insert(item);
+				}
+				else
+				{
+					Update(item);
+				}
+			}	
+		    public RolePrivilegeRelation Get(string key)
+			{
+				string sql = "SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				RolePrivilegeRelation item =null;
+				using(IDataReader reader = base.ExcuteDataReader(sql,p))
+				{
+					if(reader.Read())
+					{
+						item =new RolePrivilegeRelation();
+						item.RoleID = reader.GetInt32(0);
+							item.PrivilegeCode = reader.GetString(1);
+							item.LastUpdateUserUID = reader.GetString(2);
+							item.LastUpdateUserName = reader.GetString(3);
+							item.LastUpdateTime = reader.GetDateTime(4);
+							
+					}
+				}
+				return item;
+			}
+			public int Delete(string key)
+			{
+				string sql ="DELETE FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
+				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				return base.ExecuteNonQuery(sql,p);	
+			}
+			public void Insert(RolePrivilegeRelation item)
+			{
+				string sql="INSERT INTO [RolePrivilegeRelation] ([RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@RoleID,@PrivilegeCode,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
+				List<SqlParameter> SPParams = new List<SqlParameter>();
+				SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
+				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+				base.ExecuteNonQuery(sql, SPParams.ToArray());
+			}
+            public void Update(RolePrivilegeRelation item)
+			{
+				if(item.ChangedPropertyCount>0)
+				{
+					StringBuilder sqlbuilder = new StringBuilder();
+					sqlbuilder.Append("UPDATE [RolePrivilegeRelation] SET ");
+					Dictionary<string,string> cols =new Dictionary<string,string>();
+					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
+					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
+					cols.Add("LastUpdateTime","[LastUpdateTime]");
+					int i = 0;
+					//UPDATE COLUMNS
+					foreach (string p in item.ChangedPropertyList)
+					{ 
+						if(!cols.ContainsKey(p))
+						{
+							continue;
+						}
+						if (i > 0)
+						{
+							sqlbuilder.Append(",");
+						}
+						sqlbuilder.AppendFormat("{0}=@{1}", cols[p], p);
+						i++;
+					}
+					//WHERE;
+					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
+
+					List<SqlParameter> SPParams = new List<SqlParameter>();
+					 SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
+ SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+ 	
+					if(item.IsChanged("LastUpdateUserUID"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+					} 	
+					if(item.IsChanged("LastUpdateUserName"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+					} 	
+					if(item.IsChanged("LastUpdateTime"))
+					{
+						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+					}
+					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
+				}
+			}
+			public List<RolePrivilegeRelation> QueryAll()
+			{
+				string sql ="SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation]";
+				List<RolePrivilegeRelation>  list =new List<RolePrivilegeRelation>();
+				using(IDataReader reader = base.ExcuteDataReader(sql))
+				{
+					while(reader.Read())
+					{
+						RolePrivilegeRelation item =new RolePrivilegeRelation();
+						item.RoleID = reader.GetInt32(0);
+							item.PrivilegeCode = reader.GetString(1);
+							item.LastUpdateUserUID = reader.GetString(2);
+							item.LastUpdateUserName = reader.GetString(3);
+							item.LastUpdateTime = reader.GetDateTime(4);
+													list.Add(item);
+					}
+				}
+				return list;
+			}
+
+        }
+        
+        /// <summary>
         /// Table: Organizations
         /// Primary Key: OrgCode
         /// </summary>
@@ -880,11 +825,8 @@ namespace xEasyApp.Core.Repositories {
 							item.Remark = reader.GetString(4);
 						 }
 						 item.Sequence = reader.GetInt32(5);
-							if(!reader.IsDBNull(6))
-						 {
 							item.OrgType = reader.GetByte(6);
-						 }
-						 if(!reader.IsDBNull(7))
+							if(!reader.IsDBNull(7))
 						 {
 							item.UnitName = reader.GetString(7);
 						 }
@@ -1031,11 +973,8 @@ namespace xEasyApp.Core.Repositories {
 							item.Remark = reader.GetString(4);
 						 }
 						 item.Sequence = reader.GetInt32(5);
-							if(!reader.IsDBNull(6))
-						 {
 							item.OrgType = reader.GetByte(6);
-						 }
-						 if(!reader.IsDBNull(7))
+							if(!reader.IsDBNull(7))
 						 {
 							item.UnitName = reader.GetString(7);
 						 }
@@ -1055,12 +994,12 @@ namespace xEasyApp.Core.Repositories {
         }
         
         /// <summary>
-        /// Table: RolePrivilegeRelation
-        /// Primary Key: PrivilegeCode
+        /// Table: DictInfos
+        /// Primary Key: DictID
         /// </summary>
-        public partial class RolePrivilegeRelationRepository:BaseRepository 
+        public partial class DictInfoRepository:BaseRepository 
 		{			
-			public void Save(RolePrivilegeRelation item)
+			public void Save(DictInfo item)
 			{
 				if(item.IsNew)
 				{
@@ -1071,53 +1010,72 @@ namespace xEasyApp.Core.Repositories {
 					Update(item);
 				}
 			}	
-		    public RolePrivilegeRelation Get(string key)
+		    public DictInfo Get(int key)
 			{
-				string sql = "SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
-				RolePrivilegeRelation item =null;
+				string sql = "SELECT [DictID],[DictName],[DictCode],[IsSystem],[ParentID],[Sequence],[Remark] FROM [DictInfos] WHERE [DictID]=@DictID";
+				SqlParameter p =new SqlParameter("@DictID",key);
+				DictInfo item =null;
 				using(IDataReader reader = base.ExcuteDataReader(sql,p))
 				{
 					if(reader.Read())
 					{
-						item =new RolePrivilegeRelation();
-						item.RoleID = reader.GetInt32(0);
-							item.PrivilegeCode = reader.GetString(1);
-							item.LastUpdateUserUID = reader.GetString(2);
-							item.LastUpdateUserName = reader.GetString(3);
-							item.LastUpdateTime = reader.GetDateTime(4);
-							
+						item =new DictInfo();
+						item.DictID = reader.GetInt32(0);
+							item.DictName = reader.GetString(1);
+							item.DictCode = reader.GetString(2);
+							item.IsSystem = reader.GetBoolean(3);
+							if(!reader.IsDBNull(4))
+						 {
+							item.ParentID = reader.GetInt32(4);
+						 }
+						 if(!reader.IsDBNull(5))
+						 {
+							item.Sequence = reader.GetInt32(5);
+						 }
+						 if(!reader.IsDBNull(6))
+						 {
+							item.Remark = reader.GetString(6);
+						 }
+						 
 					}
 				}
 				return item;
 			}
-			public int Delete(string key)
+			public int Delete(int key)
 			{
-				string sql ="DELETE FROM [RolePrivilegeRelation] WHERE [PrivilegeCode]=@PrivilegeCode";
-				SqlParameter p =new SqlParameter("@PrivilegeCode",key);
+				string sql ="DELETE FROM [DictInfos] WHERE [DictID]=@DictID";
+				SqlParameter p =new SqlParameter("@DictID",key);
 				return base.ExecuteNonQuery(sql,p);	
 			}
-			public void Insert(RolePrivilegeRelation item)
+			public void Insert(DictInfo item)
 			{
-				string sql="INSERT INTO [RolePrivilegeRelation] ([RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime]) VALUES (@RoleID,@PrivilegeCode,@LastUpdateUserUID,@LastUpdateUserName,@LastUpdateTime)";
+				string sql="INSERT INTO [DictInfos] ([DictName],[DictCode],[IsSystem],[ParentID],[Sequence],[Remark]) VALUES (@DictName,@DictCode,@IsSystem,@ParentID,@Sequence,@Remark)";
 				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
-				SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
-				SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
-				SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
-				base.ExecuteNonQuery(sql, SPParams.ToArray());
+				SPParams.Add(new SqlParameter("@DictName",item.DictName));	
+				SPParams.Add(new SqlParameter("@DictCode",item.DictCode));	
+				SPParams.Add(new SqlParameter("@IsSystem",item.IsSystem));	
+				SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
+				SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
+				SPParams.Add(new SqlParameter("@Remark",item.Remark));	
+				sql +=";SELECT Scope_Identity()";
+				object o = base.ExecuteScalar(sql, SPParams.ToArray());
+				if(o!=null){
+					item.DictID =Convert.ToInt32(o);
+				}
 			}
-            public void Update(RolePrivilegeRelation item)
+            public void Update(DictInfo item)
 			{
 				if(item.ChangedPropertyCount>0)
 				{
 					StringBuilder sqlbuilder = new StringBuilder();
-					sqlbuilder.Append("UPDATE [RolePrivilegeRelation] SET ");
+					sqlbuilder.Append("UPDATE [DictInfos] SET ");
 					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("LastUpdateUserUID","[LastUpdateUserUID]");
-					cols.Add("LastUpdateUserName","[LastUpdateUserName]");
-					cols.Add("LastUpdateTime","[LastUpdateTime]");
+					cols.Add("DictName","[DictName]");
+					cols.Add("DictCode","[DictCode]");
+					cols.Add("IsSystem","[IsSystem]");
+					cols.Add("ParentID","[ParentID]");
+					cols.Add("Sequence","[Sequence]");
+					cols.Add("Remark","[Remark]");
 					int i = 0;
 					//UPDATE COLUMNS
 					foreach (string p in item.ChangedPropertyList)
@@ -1134,42 +1092,64 @@ namespace xEasyApp.Core.Repositories {
 						i++;
 					}
 					//WHERE;
-					sqlbuilder.Append(" WHERE [PrivilegeCode]=@PrivilegeCode");
+					sqlbuilder.Append(" WHERE [DictID]=@DictID");
 
 					List<SqlParameter> SPParams = new List<SqlParameter>();
-					 SPParams.Add(new SqlParameter("@RoleID",item.RoleID));	
- SPParams.Add(new SqlParameter("@PrivilegeCode",item.PrivilegeCode));	
+					 SPParams.Add(new SqlParameter("@DictID",item.DictID));	
  	
-					if(item.IsChanged("LastUpdateUserUID"))
+					if(item.IsChanged("DictName"))
 					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserUID",item.LastUpdateUserUID));	
+						SPParams.Add(new SqlParameter("@DictName",item.DictName));	
 					} 	
-					if(item.IsChanged("LastUpdateUserName"))
+					if(item.IsChanged("DictCode"))
 					{
-						SPParams.Add(new SqlParameter("@LastUpdateUserName",item.LastUpdateUserName));	
+						SPParams.Add(new SqlParameter("@DictCode",item.DictCode));	
 					} 	
-					if(item.IsChanged("LastUpdateTime"))
+					if(item.IsChanged("IsSystem"))
 					{
-						SPParams.Add(new SqlParameter("@LastUpdateTime",item.LastUpdateTime));	
+						SPParams.Add(new SqlParameter("@IsSystem",item.IsSystem));	
+					} 	
+					if(item.IsChanged("ParentID"))
+					{
+						SPParams.Add(new SqlParameter("@ParentID",item.ParentID));	
+					} 	
+					if(item.IsChanged("Sequence"))
+					{
+						SPParams.Add(new SqlParameter("@Sequence",item.Sequence));	
+					} 	
+					if(item.IsChanged("Remark"))
+					{
+						SPParams.Add(new SqlParameter("@Remark",item.Remark));	
 					}
 					base.ExecuteNonQuery(sqlbuilder.ToString(), SPParams.ToArray());
 				}
 			}
-			public List<RolePrivilegeRelation> QueryAll()
+			public List<DictInfo> QueryAll()
 			{
-				string sql ="SELECT [RoleID],[PrivilegeCode],[LastUpdateUserUID],[LastUpdateUserName],[LastUpdateTime] FROM [RolePrivilegeRelation]";
-				List<RolePrivilegeRelation>  list =new List<RolePrivilegeRelation>();
+				string sql ="SELECT [DictID],[DictName],[DictCode],[IsSystem],[ParentID],[Sequence],[Remark] FROM [DictInfos]";
+				List<DictInfo>  list =new List<DictInfo>();
 				using(IDataReader reader = base.ExcuteDataReader(sql))
 				{
 					while(reader.Read())
 					{
-						RolePrivilegeRelation item =new RolePrivilegeRelation();
-						item.RoleID = reader.GetInt32(0);
-							item.PrivilegeCode = reader.GetString(1);
-							item.LastUpdateUserUID = reader.GetString(2);
-							item.LastUpdateUserName = reader.GetString(3);
-							item.LastUpdateTime = reader.GetDateTime(4);
-													list.Add(item);
+						DictInfo item =new DictInfo();
+						item.DictID = reader.GetInt32(0);
+							item.DictName = reader.GetString(1);
+							item.DictCode = reader.GetString(2);
+							item.IsSystem = reader.GetBoolean(3);
+							if(!reader.IsDBNull(4))
+						 {
+							item.ParentID = reader.GetInt32(4);
+						 }
+						 if(!reader.IsDBNull(5))
+						 {
+							item.Sequence = reader.GetInt32(5);
+						 }
+						 if(!reader.IsDBNull(6))
+						 {
+							item.Remark = reader.GetString(6);
+						 }
+						 						list.Add(item);
 					}
 				}
 				return list;

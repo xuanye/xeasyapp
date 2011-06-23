@@ -100,7 +100,7 @@ namespace xEasyApp.Core.Repositories
             A.[OrgCode],A.[OrgName],A.[IsManager],A.[IsSystem],
             A.[Sequence],A.[AccountState],A.[LastUpdateUserUID],
             A.[LastUpdateUserName],A.[LastUpdateTime],B.UnitCode,B.UnitName
-            FROM [UserInfos] A INNER JOIN Organizations B ON A.OrgCode=B.OrgCode
+            FROM [UserInfos] A LEFT JOIN Organizations B ON A.OrgCode=B.OrgCode
             WHERE A.[UserUID]=@UserUID";
             SqlParameter p = new SqlParameter("@UserUID", UserId);
             UserInfo item = null;

@@ -33,20 +33,20 @@
         <tbody>
             <tr>
                 <td style="width:170px;">
-                    <div class="toolbar"><span class="title" >角色管理</span></div>
+                    <div class="toolbar"><span class="title" >数据字典管理</span></div>
                     <div id="ptree" style="border-right:#99bbe8 1px solid;border-bottom:#99bbe8 1px solid;"></div>
                 </td>
                 <td style="width:2px;">
                 </td>
                 <td>          
-                 <div id="titleheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="title" class="title">角色列表</span></div>      
-                 <table id="RoleList" style="display:none;"></table>      
+                 <div id="titleheader" class="toolbar" style="border-left: #99bbe8 1px solid;"><span id="title" class="title">字典管理</span></div>      
+                 <table id="DictList" style="display:none;"></table>      
                 </td>
             </tr>
         </tbody>
        </table> 
-       <input type="hidden" value="" id="hdParentCode" />    
-       <input type="hidden" value="" id="hdParentName" />
+       <input type="hidden" value="0" id="hdParentCode" />    
+       <input type="hidden" value="数据字典" id="hdParentName" />
     </div>
    
     @Html.Js("jquery", "common",  "flexigrid","tree")   
@@ -60,16 +60,14 @@
             var option = {
                 height: gh,
                 width: mainWidth,
-                url: '@Url.Action("RoleInfoList")',
+                url: '@Url.Action("DictInfoList")',
                 colModel: [
-                    { display: '角色ID', name: 'RoleID', width: 60, sortable: false, align: 'left', hide: true, iskey: true },
-                    { display: '角色代码', name: 'RoleCode', width: 80, sortable: false, align: 'left', iskey: true },
-			        { display: '角色名称', name: 'RoleName', width: 100, sortable: false, hide: false, align: 'left' },
+                    { display: '字典ID', name: 'DictID', width: 60, sortable: false, align: 'left', hide: true, iskey: true },
+                    { display: '字典代码', name: 'DictCode', width: 80, sortable: false, align: 'left', iskey: true },
+			        { display: '字典名称', name: 'DictName', width: 100, sortable: false, hide: false, align: 'left' },
                     { display: '说明', name: 'Remark', width: 120, sortable: false, hide: false, align: 'left' },
-                    { display: '角色类型', name: 'IsSystem', width: 120, sortable: false, hide: false, align: 'left', process: formatType },
-                    { display: '最后一次更新人', name: 'LastUpdateUserName', width: 100, sortable: false, hide: true, align: 'left' },
-                    { display: '最后一次更新时间', name: 'LastUpdateTime', width: 120, sortable: false, hide: true, align: 'left' },
-                    { display: '操作', name: 'RoleID', width: 210, sortable: false, align: 'left', process: formatOp, toggle: false }
+                    { display: '是否内置', name: 'IsSystem', width: 120, sortable: false, hide: false, align: 'left', process: formatType },
+                    { display: '操作', name: 'DictID', width: 210, sortable: false, align: 'left', process: formatOp, toggle: false }
 				],
                 buttons: [
                             { name: 'Add', displayname: "新建", title: "新建权限", bclass: 'Add', onpress: toolbarItem_onclick },
@@ -84,7 +82,7 @@
             };
 
             $("#ptree").treeview({
-                url: '@Url.Action("RoleTreeList")',
+                url: '@Url.Action("DictTreeList")',
                 showcheck: false,
                 onnodeclick: TreeNode_Click,
                 theme: "bbit-tree-no-lines" //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
@@ -92,14 +90,14 @@
 
             function TreeNode_Click(data) {
                 var p = { extParam: [{ name: "ParentID", value: data.id}] };
-                $("#RoleList").flexOptions(p).flexReload();
+                $("#DictList").flexOptions(p).flexReload();
                 $("#hdParentCode").val(data.id);
                 $("#hdParentName").val(data.text);
                 $("#title").text(data.text);
                 //data.expand();
             } // end of TreeNode_Click
 
-            var grid = $("#RoleList").flexigrid(option);
+            var grid = $("#DictList").flexigrid(option);
 
             function formatType(value) {
                 if (value == '1' || value == "True") {
@@ -113,16 +111,14 @@
                 if (cell[4] == "False") {
                     a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:edit('", value, "')\"><span class='edit' title='编辑'>编辑</span></a>&nbsp;");
                     a.push("<a class='imgbtn2' href=\"javascript:void(0);\" onclick=\"javascript:del('", value, "','", cell[1], "')\"><span class='delete' title='删除'>删除</span></a>&nbsp;");
-                }
-                a.push("<a  class='imgbtn2' href=\"javascript:viewUsers('", value, "','", cell[2], "')\" title='查看角色下的成员' class='linkbtn'><span class='user'>成员</span></a>&nbsp;");
-                a.push("<a  class='imgbtn2' href=\"javascript:authorization('", value, "','", cell[2], "')\" title='授权' class='linkbtn'><span class='authorization'>授权</span></a>");
+                }             
                 return a.join("");
             }
             function toolbarItem_onclick(cmd, grid) {
                 if (cmd == "Add") {
                     var parentCode = $("#hdParentCode").val();
                     var parentName = encodeURIComponent($("#hdParentName").val());
-                    OpenModelWindow('@Url.Action("EditRole")?ParentID=' + parentCode + '&ParentName=' + parentName, { width: 470, height: 370, caption: "新增角色",
+                    OpenModelWindow('@Url.Action("EditDictInfo")?ParentID=' + parentCode + '&ParentName=' + parentName, { width: 470, height: 370, caption: "新增字典",
                         onclose: function () { showLoadingMsg("新增成功", { left: 300, top: 2 }, true, 3000); refresh(); }
                     });
                 }
@@ -130,10 +126,10 @@
 
 
         });
-        function del(roleId, roleName) {
-            if (confirm("你确定要删除[" + roleName + "]?")) {
+        function del(dictId, dictName) {
+            if (confirm("你确定要删除[" + dictName + "]?")) {
                 showLoadingMsg("正在删除...", { left: 300, top: 2 })
-                $.post('@Url.Action("DeleteRoleInfo","SysManage")', { id: roleId },
+                $.post('@Url.Action("DeleteDictInfo","SysManage")', { id: dictId },
                      function (data) {
                          if (data.IsSuccess) {
                              showLoadingMsg("删除成功", { left: 300, top: 2 }, true, 3000);
@@ -147,23 +143,13 @@
                 "json"
                 );
             }
-        }
-        function viewUsers(roleID, roleName) {
-            var url = "@Url.Action("RoleUserRelationList")?RoleID=" + encodeURIComponent(roleID);
-            OpenModelWindow(url, { caption: roleName + " 下的成员", width: 500, height: 400 });
-        }
-        function authorization(roleID, roleName) {
-            var url = "@Url.Action("SetRolePrivilege")?RoleID=" + encodeURIComponent(roleID);
-            OpenModelWindow(url, { caption: "对角色[" + roleName + "]授权", width: 300, height: 400, type: 2, onclose: function () {
-                showLoadingMsg("操作成功！", { left: 300, top: 1 }, true, 3000);
-            } 
-            });
-        }
-        function edit(roleId) {
-            OpenModelWindow('@Url.Action("EditRole")/' + roleId, { width: 470, height: 370, caption: "修改角色信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); refresh(); } });
+        }     
+       
+        function edit(dictid) {
+            OpenModelWindow('@Url.Action("EditDictInfo")/' + dictid, { width: 470, height: 370, caption: "修改字典信息", onclose: function () { showLoadingMsg("修改成功", { left: 300, top: 2 }, true, 3000); refresh(); } });
         }
         function refresh() {
-            $("#RoleList").flexReload(); //
+            $("#DictList").flexReload(); //
         }
     </script>
 </body>

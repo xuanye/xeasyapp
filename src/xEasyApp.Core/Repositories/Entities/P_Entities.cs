@@ -46,6 +46,15 @@ namespace xEasyApp.Core.Repositories
             set;
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class DictInfo
+    {
+        public bool HasChild { get; set; }
+        public string ParentName { get; set; }
+    }
     public partial class Privilege
     {
         public string ParentName

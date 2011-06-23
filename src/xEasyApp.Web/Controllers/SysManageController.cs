@@ -24,7 +24,7 @@ namespace xEasyApp.Web.Controllers
 
         private ISysManageService sysManageService;
 
-        #region 角色管理
+       #region 角色管理
         public ActionResult RoleInfoList()
         {
             return View();
@@ -318,7 +318,7 @@ namespace xEasyApp.Web.Controllers
 
         #endregion
 
-        #region 部门管理
+       #region 部门管理
         public ActionResult OrgInfoList()
         {
             return View();
@@ -593,7 +593,7 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-        #region 用户管理
+       #region 用户管理
         public ActionResult UserList()
         {
             return View();
@@ -772,7 +772,7 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-        #region 权限管理
+       #region 权限管理
         public ActionResult PrivilegeList()
         {
             return View();
@@ -1059,6 +1059,155 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-        
+       #region 数据字典管理
+
+        public ActionResult DictInfoList()
+        {
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DictInfoList(FormCollection form)
+        {
+            string colkey = form["colkey"];
+            string colsinfo = form["colsinfo"];
+            string strparentId = form["ParentID"];
+            int parentId = 0;
+            if (!string.IsNullOrEmpty(strparentId))
+            {
+                parentId = Convert.ToInt32(strparentId);
+            }
+            if (string.IsNullOrEmpty(colkey))
+            {
+                throw new ArgumentNullException("colkey", "主键表示没有传递，请在前台js中配置");
+            }
+            if (string.IsNullOrEmpty(colsinfo))
+            {
+                throw new ArgumentNullException("colsinfo", "列信息不能为空，请在前台js中配置");
+            }
+            List<DictInfo> list = sysManageService.QueryDictInfoList(parentId);
+            var data = JsonFlexiGridData.ConvertFromList(list, colkey, colsinfo.Split(','));
+            return Json(data);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DictTreeList(FormCollection form)
+        {
+            List<JsonTreeNode> nodes = new List<JsonTreeNode>();
+            string strparentId = form["id"];// ?? "0";
+            int parentId = 0;
+            if (!string.IsNullOrEmpty(strparentId))
+            {
+                parentId = Convert.ToInt32(strparentId);
+
+            }
+            List<DictInfo> list = sysManageService.GetDictInfoTree(parentId);
+            foreach (var item in list)
+            {
+                JsonTreeNode cnode = new JsonTreeNode();
+                cnode.id = item.DictID.ToString();
+                cnode.text = item.DictName;
+                cnode.value = item.DictCode;
+                cnode.hasChildren = item.HasChild;
+                cnode.classes = item.IsSystem ? "system" : "normal";
+                nodes.Add(cnode);
+            }
+            return Json(nodes);
+        }
+        public ActionResult EditDictInfo(int? id, int? ParentID, string ParentName)
+        {
+            DictInfo di;
+            if (id.HasValue)
+            {
+                di = sysManageService.GetDictInfo(id.Value);
+                if (di == null)
+                {
+                    throw new ArgumentException("参数错误，不存在对应的数据字典", "DictID");
+                }
+                else //处理
+                {
+                  
+                }
+            }
+            else
+            {
+                di = new DictInfo();
+                if (ParentID.HasValue)
+                {
+                    di.ParentID = ParentID.Value;
+                    di.ParentName = ParentName;
+                }
+                else
+                {
+
+                    di.ParentID = 0;
+                    di.ParentName = "数据字典";
+                }
+            }
+            return View(di);
+        }
+      
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SaveDictInfo(int? id, DictInfo di)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                if (id.HasValue && id.Value > 0)
+                {
+                    di.IsNew = false;
+                    di.DictID= id.Value;
+                }
+                else
+                {
+                    di.IsNew = true;
+                }
+                di.IsSystem = false;
+
+                sysManageService.SaveDictInfo(di);
+                msg.IsSuccess = true;
+                msg.Msg = "操作成功";
+            }
+            catch (BizException ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败：" + ex.Message;
+            }
+            return Json(msg);
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteDictInfo(int id)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+
+            try
+            {
+                int ret = sysManageService.DeleteDictInfo(id);
+                if (ret > 0)
+                {
+                    msg.IsSuccess = true;
+                    msg.Msg = "操作成功";
+                }
+                else
+                {
+                    msg.IsSuccess = false;
+                    msg.Msg = "操作失败:操作完成了,但是莫有效果";
+                }
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Msg = "操作失败:" + ex.Message;
+            }
+
+            return Json(msg);
+        }
+
+       #endregion
+
     }
 }
