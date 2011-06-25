@@ -1,11 +1,11 @@
 ﻿/// <reference path="../intellisense/jquery-1.2.6-vsdoc-cn.js" /> 
-(function($) {
+(function ($) {
     var userAgent = window.navigator.userAgent.toLowerCase();
     $.browser.msie8 = $.browser.msie && /msie 8\.0/i.test(userAgent);
     $.browser.msie7 = $.browser.msie && /msie 7\.0/i.test(userAgent);
     $.browser.msie6 = !$.browser.msie8 && !$.browser.msie7 && $.browser.msie && /msie 6\.0/i.test(userAgent);
 
-    Date.prototype.Format = function(format) {
+    Date.prototype.Format = function (format) {
         var o = {
             "M+": this.getMonth() + 1,
             "d+": this.getDate(),
@@ -51,7 +51,7 @@
         }
         return date;
     };
-    $.fn.datepicker = function(o) {
+    $.fn.datepicker = function (o) {
         var def = {
             weekStart: 0,
             weekName: ["日", "一", "二", "三", "四", "五", "六"], //星期的格式
@@ -67,6 +67,7 @@
             inputDate: null,
             onReturn: false,
             version: "1.1",
+            showtime: false,
             applyrule: false, //function(){};return rule={startdate,endate};
             showtarget: null,
             picker: ""
@@ -96,7 +97,7 @@
             cpHA.push("<tbody></tbody></table>");
             //生成tBody结束
             cpHA.push("</td></tr>");
-            cpHA.push("<tr><td class='bbit-dp-bottom' align='center'><button id='BBIT-DP-TODAY'>", def.btnToday, "</button></td></tr>");
+            cpHA.push("<tr><td class='bbit-dp-bottom' align='center'>", def.showtime ? "<input type='text' value='00:00:00' maxlength='8' id='BBIT-DP-TIME' class='bbit-dp-time'/>" : "", "<button id='BBIT-DP-TODAY'>", def.btnToday, "</button></td></tr>");
             cpHA.push("</tbody></table>");
             //输出下来框
             cpHA.push("<div id='BBIT-DP-MP' class='bbit-dp-mp'  style='z-index:auto;'><table id='BBIT-DP-T' style='width: 175px; height: 193px' border='0' cellspacing='0'><tbody>");
@@ -149,17 +150,18 @@
             $("#BBIT-DP-MP-NEXT").click(mpnexty);
             $("#BBIT-DP-MP-OKBTN").click(mpok);
             $("#BBIT-DP-MP-CANCELBTN").click(mpcancel);
-
+            $("#BBIT-DP-TIME").keypress(timeenter);
         }
         function mpcancel() {
-            $("#BBIT-DP-MP").animate({ top: -193 }, { duration: 200, complete: function() { $("#BBIT-DP-MP").hide(); } });
+            $("#BBIT-DP-MP").animate({ top: -193 }, { duration: 200, complete: function () { $("#BBIT-DP-MP").hide(); } });
             return false;
         }
+
         function mpok() {
             def.Year = def.cy;
             def.Month = def.cm + 1;
             def.Day = 1;
-            $("#BBIT-DP-MP").animate({ top: -193 }, { duration: 200, complete: function() { $("#BBIT-DP-MP").hide(); } });
+            $("#BBIT-DP-MP").animate({ top: -193 }, { duration: 200, complete: function () { $("#BBIT-DP-MP").hide(); } });
             writecb();
             return false;
         }
@@ -182,7 +184,7 @@
                 ar.push(s + i);
                 ar.push(s + i + 5);
             }
-            $("#BBIT-DP-MP td.bbit-dp-mp-year").each(function(i) {
+            $("#BBIT-DP-MP td.bbit-dp-mp-year").each(function (i) {
                 if (def.Year == ar[i]) {
                     $(this).addClass("bbit-dp-mp-sel");
                 }
@@ -281,7 +283,18 @@
             if (!$(td).hasClass("bbit-dp-disabled")) {
                 var s = $td.attr("xdate");
                 var arrs = s.split("-");
-                cp.data("indata", new Date(arrs[0], parseInt(arrs[1], 10) - 1, arrs[2]));
+                var d = new Date(arrs[0], parseInt(arrs[1], 10) - 1, arrs[2]);
+                if (def.showtime) {
+                    var timevalue = $("#BBIT-DP-TIME").val();
+                    if (!/\d{2}:\d{2}:\d{2}/.test(timevalue)) {
+                        timevalue = "00:00:00";
+                    }
+                    var arrtime = timevalue.split(":");
+                    if (arrtime.length == 3) {
+                        d.setHours(arrtime[0], arrtime[1], arrtime[2]);
+                    }
+                }
+                cp.data("indata", d);
                 returndate();
             }
             return false;
@@ -326,8 +339,37 @@
             writecb();
             return false;
         }
+        function timeenter(e) {
+            if (e.keyCode == 13) { //ENTER
+                var timevalue = $(this).val();
+                if (!/\d{2}:\d{2}:\d{2}/.test(timevalue)) {
+                    timevalue = "00:00:00";
+                }
+                var arrtime = timevalue.split(":");
+                if (arrtime.length == 3) {
+                    var d = cp.data("indata");
+                    if (d == null) {
+                        d = new Date();
+                    }
+                    d.setHours(arrtime[0], arrtime[1], arrtime[2]);
+                    cp.data("indata", d);
+                    returndate();
+                }
+            }
+        }
         function returntoday() {
-            cp.data("indata", new Date());
+            var d = new Date();
+            if (def.showtime) {
+                var timeshow = $("#BBIT-DP-TIME").val();
+                if (!/\d{2}:\d{2}:\d{2}/.test(timeshow)) {
+                    timeshow = "00:00:00";
+                }
+                var arrtime = timeshow.split(":");
+                if (arrtime.length == 3) {
+                    d.setHours(arrtime[0], arrtime[1], arrtime[2]);
+                }
+            }
+            cp.data("indata", d);
             returndate();
         }
         function returndate() {
@@ -351,7 +393,8 @@
                 re.call(ct[0], cp.data("indata"));
             }
             else {
-                ct.val(cp.data("indata").Format("yyyy-MM-dd"));
+                var formart = def.showtime ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd";
+                ct.val(cp.data("indata").Format(formart));
             }
             ck.attr("isshow", "0");
             cp.removeData("ctarget").removeData("cpk").removeData("indata").removeData("onReturn")
@@ -419,14 +462,14 @@
             }
             tb.html(bhm.join(""));
         }
-        var dateReg = /^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/;
 
-        return $(this).each(function() {
+
+        return $(this).each(function () {
 
             var obj = $(this).addClass("bbit-dp-input");
             var picker = $(def.picker);
             def.showtarget == null && obj.after(picker);
-            picker.click(function(e) {
+            picker.click(function (e) {
                 var isshow = $(this).attr("isshow");
                 //先隐藏
                 var me = $(this);
@@ -440,20 +483,39 @@
                     return false;
                 }
                 var v = obj.val();
+                var dateReg = def.showtime ? /^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})\040+(\d{1,2}):(\d{1,2}):(\d{1,2})$/ : /^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/;
+
                 if (v != "") {
                     v = v.match(dateReg);
                 }
                 if (v == null || v == "") {
-                    def.Year = new Date().getFullYear();
-                    def.Month = new Date().getMonth() + 1;
-                    def.Day = new Date().getDate();
-                    def.inputDate = null
+                    var now = new Date();
+                    def.Year = now.getFullYear();
+                    def.Month = now.getMonth() + 1;
+                    def.Day = now.getDate();
+                    def.Hour = now.getHours();
+                    def.Minute = now.getMinutes();
+                    def.Second = now.getSeconds();
+                    def.inputDate = null;
+                    if (def.showtime) {
+                        $("#BBIT-DP-TIME").val("00:00:00");
+                    }
                 }
                 else {
                     def.Year = parseInt(v[1], 10);
                     def.Month = parseInt(v[3], 10);
                     def.Day = parseInt(v[4], 10);
-                    def.inputDate = new Date(def.Year, def.Month - 1, def.Day);
+                    if (def.showtime) {
+                        def.Hour = parseInt(v[5], 10);
+                        def.Minute = parseInt(v[6], 10);
+                        def.Second = parseInt(v[7], 10);
+                        def.inputDate = new Date(def.Year, def.Month - 1, def.Day, def.Hour, def.Minute, def.Second);
+                        $("#BBIT-DP-TIME").val(def.inputDate.Format("HH:mm:ss"));
+                    }
+                    else {
+                        def.inputDate = new Date(def.Year, def.Month - 1, def.Day);
+                    }
+
                 }
                 cp.data("ctarget", obj).data("cpk", me).data("indata", def.inputDate).data("onReturn", def.onReturn);
                 cp.trigger("resetdefdate");
@@ -512,7 +574,7 @@
                 //cp.show();
                 $(this).attr("isshow", "1");
 
-                $(document).one("click", function(e) {
+                $(document).one("click", function (e) {
                     me.attr("isshow", "0");
                     cp.removeData("ctarget").removeData("cpk").removeData("indata");
                     cp.css("visibility", "hidden");

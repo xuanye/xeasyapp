@@ -62,5 +62,21 @@ namespace xEasyApp.Core.Configurations
                 return "admin";
             }
         }
+
+        /// <summary>
+        /// 判断是否允许记录操作日志，默认为真
+        /// </summary>
+        /// <value><c>true</c> if [enable op log]; otherwise, <c>false</c>.</value>
+        public static bool EnableOpLog
+        {
+            get {
+                string enable = Get("EnableOpLog");
+                if (!string.IsNullOrEmpty(enable))
+                {
+                    return enable.ToLower() == "true";
+                }
+                return true;
+            }
+        }
     }
 }

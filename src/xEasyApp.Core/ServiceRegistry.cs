@@ -15,6 +15,7 @@ namespace xEasyApp.Core
         {
             For<ISysManageService>().Use<SysManageService>();
             For<IUserService>().Use<UserService>();
+            For<ILogService>().Use<LogService>();
         }
        
     }

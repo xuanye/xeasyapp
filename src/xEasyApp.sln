@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "refdll", "refdll", "{1ABB02
 	ProjectSection(SolutionItems) = preProject
 		refdll\StructureMap.dll = refdll\StructureMap.dll
 		refdll\StructureMap.xml = refdll\StructureMap.xml
-		refdll\SubSonic.Core.dll = refdll\SubSonic.Core.dll
 	EndProjectSection
 EndProject
 Global
