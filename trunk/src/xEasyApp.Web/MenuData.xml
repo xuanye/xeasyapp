@@ -8,5 +8,6 @@
     <Menu id="4.4" text="权限管理" url="/SysManage/PrivilegeList" desc="权限管理" isexpand="false"></Menu>
     <Menu id="4.5" text="授权管理" url="/SysManage/QueryAuthorization" desc="授权管理" isexpand="false"></Menu>
     <Menu id="4.6" text="字典管理" url="/SysManage/DictinfoList" desc="字典管理" isexpand="false"></Menu>
+    <Menu id="4.7" text="操作日志" url="/SysManage/LogList" desc="操作日志" isexpand="false"></Menu>
   </Menu>
 </MenuData>

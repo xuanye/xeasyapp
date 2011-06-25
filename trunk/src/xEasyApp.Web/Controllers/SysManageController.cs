@@ -11,6 +11,8 @@ using xEasyApp.Core.Entities;
 using xEasyApp.Core.Exceptions;
 using xEasyApp.Core.Configurations;
 using xEasyApp.Web.Models;
+using xEasyApp.Core;
+using StructureMap;
 
 namespace xEasyApp.Web.Controllers
 {
@@ -24,7 +26,7 @@ namespace xEasyApp.Web.Controllers
 
         private ISysManageService sysManageService;
 
-       #region 角色管理
+        #region 角色管理
         public ActionResult RoleInfoList()
         {
             return View();
@@ -270,8 +272,8 @@ namespace xEasyApp.Web.Controllers
             return View();
         }
         public ActionResult SetRolePrivilege(int RoleID)
-        {         
-            bool ishasright =sysManageService.CheckUserAuthorizationRight(RoleID, base.UserId);
+        {
+            bool ishasright = sysManageService.CheckUserAuthorizationRight(RoleID, base.UserId);
             if (!ishasright)
             {
                 throw new NoPermissionExecption("您无权对该角色授权");
@@ -283,7 +285,7 @@ namespace xEasyApp.Web.Controllers
         public JsonResult SetRolePrivilege(FormCollection form)
         {
             JsonReturnMessages msg = new JsonReturnMessages();
-          
+
             try
             {
 
@@ -297,11 +299,11 @@ namespace xEasyApp.Web.Controllers
                 }
                 else
                 {
-                    sysManageService.SetRolePrivilege(roleid, addids, minusids,base.UserId,base.CurrentUser.FullName);
+                    sysManageService.SetRolePrivilege(roleid, addids, minusids, base.UserId, base.CurrentUser.FullName);
                     msg.IsSuccess = true;
                     msg.Msg = "操作成功";
                 }
-             
+
             }
             catch (BizException bizex)
             {
@@ -318,7 +320,7 @@ namespace xEasyApp.Web.Controllers
 
         #endregion
 
-       #region 部门管理
+        #region 部门管理
         public ActionResult OrgInfoList()
         {
             return View();
@@ -391,7 +393,7 @@ namespace xEasyApp.Web.Controllers
                 node.id = root.OrgCode;
                 node.text = root.OrgName;
                 node.value = root.OrgCode;
-            
+
                 node.isexpand = true;
                 node.complete = true;
 
@@ -593,7 +595,7 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-       #region 用户管理
+        #region 用户管理
         public ActionResult UserList()
         {
             return View();
@@ -772,7 +774,7 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-       #region 权限管理
+        #region 权限管理
         public ActionResult PrivilegeList()
         {
             return View();
@@ -1012,7 +1014,7 @@ namespace xEasyApp.Web.Controllers
         {
             List<JsonTreeNode> treelist = new List<JsonTreeNode>();
             string usercode = form["UserCode"];
-            string parentId =  form["id"]??"";
+            string parentId = form["id"] ?? "";
 
 
             List<Privilege> list = sysManageService.GetUserPrivilegesByParentID(usercode, parentId);
@@ -1059,7 +1061,7 @@ namespace xEasyApp.Web.Controllers
         }
         #endregion
 
-       #region 数据字典管理
+        #region 数据字典管理
 
         public ActionResult DictInfoList()
         {
@@ -1125,7 +1127,7 @@ namespace xEasyApp.Web.Controllers
                 }
                 else //处理
                 {
-                  
+
                 }
             }
             else
@@ -1145,7 +1147,7 @@ namespace xEasyApp.Web.Controllers
             }
             return View(di);
         }
-      
+
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult SaveDictInfo(int? id, DictInfo di)
         {
@@ -1155,7 +1157,7 @@ namespace xEasyApp.Web.Controllers
                 if (id.HasValue && id.Value > 0)
                 {
                     di.IsNew = false;
-                    di.DictID= id.Value;
+                    di.DictID = id.Value;
                 }
                 else
                 {
@@ -1207,7 +1209,45 @@ namespace xEasyApp.Web.Controllers
             return Json(msg);
         }
 
-       #endregion
+        #endregion
 
+        #region 操作日志
+
+        public ActionResult LogList()
+        {
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult LogList(FormCollection form)
+        {
+            int pageIndex = Convert.ToInt32(form["page"]);
+            int pageSize = Convert.ToInt32(form["rp"]);
+            PageView view = new PageView();
+            view.PageIndex = pageIndex - 1;
+            view.PageSize = pageSize;
+            string colkey = form["colkey"];
+            string colsinfo = form["colsinfo"];
+            string qtext = form["QText"];
+            string optype = form["OperateCode"];
+            LogType logtype = LogType.None;
+            switch (form["LogType"])
+            {
+                case "0":
+                    logtype = LogType.Debug;
+                    break;
+                case "1":
+                    logtype = LogType.Trace;
+                    break;
+                case "2":
+                    logtype = LogType.Error;
+                    break;
+
+            }
+            ILogService service = ObjectFactory.GetInstance<ILogService>();
+            PagedList<Log> plist = service.QueryOperLog(view, qtext, optype, logtype);
+            JsonFlexiGridData fdata = JsonFlexiGridData.ConvertFromPagedList<Log>(plist, colkey, colsinfo.Split(','));
+            return Json(fdata);
+        }
+        #endregion
     }
 }

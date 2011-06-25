@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-19 14:10:12
+// 生成时间: 2011-06-25 12:39:11
 // =============================================
 using System;
 using System.Collections.Generic;
@@ -137,20 +137,6 @@ namespace xEasyApp.Core.Repositories {
 				{
 					_Id= value;
 					OnPropertyChanged("Id");
-				}
-            }
-			private string _Topic;
-			/// <summary>
-			///  标题
-			/// </summary>
-            public string Topic{
-                get{
-					return _Topic;
-				}
-				set
-				{
-					_Topic= value;
-					OnPropertyChanged("Topic");
 				}
             }
 			private string _Content;

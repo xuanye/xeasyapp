@@ -3,7 +3,7 @@
 
 //=============================================
 // 该代码文件有程序自动生成，
-// 生成时间: 2011-06-19 14:10:11
+// 生成时间: 2011-06-25 12:39:09
 // =============================================
 using System;
 using System.Data;
@@ -209,7 +209,7 @@ namespace xEasyApp.Core.Repositories {
 			}	
 		    public Log Get(int key)
 			{
-				string sql = "SELECT [Id],[Topic],[Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime] FROM [Logs] WHERE [Id]=@Id";
+				string sql = "SELECT [Id],[Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime] FROM [Logs] WHERE [Id]=@Id";
 				SqlParameter p =new SqlParameter("@Id",key);
 				Log item =null;
 				using(IDataReader reader = base.ExcuteDataReader(sql,p))
@@ -218,14 +218,13 @@ namespace xEasyApp.Core.Repositories {
 					{
 						item =new Log();
 						item.Id = reader.GetInt32(0);
-							item.Topic = reader.GetString(1);
-							item.Content = reader.GetString(2);
-							item.OperateCode = reader.GetString(3);
-							item.LogType = reader.GetByte(4);
-							item.OperateUID = reader.GetString(5);
-							item.OperateName = reader.GetString(6);
-							item.IPAddress = reader.GetString(7);
-							item.OperateTime = reader.GetDateTime(8);
+							item.Content = reader.GetString(1);
+							item.OperateCode = reader.GetString(2);
+							item.LogType = reader.GetByte(3);
+							item.OperateUID = reader.GetString(4);
+							item.OperateName = reader.GetString(5);
+							item.IPAddress = reader.GetString(6);
+							item.OperateTime = reader.GetDateTime(7);
 							
 					}
 				}
@@ -239,9 +238,8 @@ namespace xEasyApp.Core.Repositories {
 			}
 			public void Insert(Log item)
 			{
-				string sql="INSERT INTO [Logs] ([Topic],[Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime]) VALUES (@Topic,@Content,@OperateCode,@LogType,@OperateUID,@OperateName,@IPAddress,@OperateTime)";
+				string sql="INSERT INTO [Logs] ([Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime]) VALUES (@Content,@OperateCode,@LogType,@OperateUID,@OperateName,@IPAddress,@OperateTime)";
 				List<SqlParameter> SPParams = new List<SqlParameter>();
-				SPParams.Add(new SqlParameter("@Topic",item.Topic));	
 				SPParams.Add(new SqlParameter("@Content",item.Content));	
 				SPParams.Add(new SqlParameter("@OperateCode",item.OperateCode));	
 				SPParams.Add(new SqlParameter("@LogType",item.LogType));	
@@ -262,7 +260,6 @@ namespace xEasyApp.Core.Repositories {
 					StringBuilder sqlbuilder = new StringBuilder();
 					sqlbuilder.Append("UPDATE [Logs] SET ");
 					Dictionary<string,string> cols =new Dictionary<string,string>();
-					cols.Add("Topic","[Topic]");
 					cols.Add("Content","[Content]");
 					cols.Add("OperateCode","[OperateCode]");
 					cols.Add("LogType","[LogType]");
@@ -291,10 +288,6 @@ namespace xEasyApp.Core.Repositories {
 					List<SqlParameter> SPParams = new List<SqlParameter>();
 					 SPParams.Add(new SqlParameter("@Id",item.Id));	
  	
-					if(item.IsChanged("Topic"))
-					{
-						SPParams.Add(new SqlParameter("@Topic",item.Topic));	
-					} 	
 					if(item.IsChanged("Content"))
 					{
 						SPParams.Add(new SqlParameter("@Content",item.Content));	
@@ -328,7 +321,7 @@ namespace xEasyApp.Core.Repositories {
 			}
 			public List<Log> QueryAll()
 			{
-				string sql ="SELECT [Id],[Topic],[Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime] FROM [Logs]";
+				string sql ="SELECT [Id],[Content],[OperateCode],[LogType],[OperateUID],[OperateName],[IPAddress],[OperateTime] FROM [Logs]";
 				List<Log>  list =new List<Log>();
 				using(IDataReader reader = base.ExcuteDataReader(sql))
 				{
@@ -336,14 +329,13 @@ namespace xEasyApp.Core.Repositories {
 					{
 						Log item =new Log();
 						item.Id = reader.GetInt32(0);
-							item.Topic = reader.GetString(1);
-							item.Content = reader.GetString(2);
-							item.OperateCode = reader.GetString(3);
-							item.LogType = reader.GetByte(4);
-							item.OperateUID = reader.GetString(5);
-							item.OperateName = reader.GetString(6);
-							item.IPAddress = reader.GetString(7);
-							item.OperateTime = reader.GetDateTime(8);
+							item.Content = reader.GetString(1);
+							item.OperateCode = reader.GetString(2);
+							item.LogType = reader.GetByte(3);
+							item.OperateUID = reader.GetString(4);
+							item.OperateName = reader.GetString(5);
+							item.IPAddress = reader.GetString(6);
+							item.OperateTime = reader.GetDateTime(7);
 													list.Add(item);
 					}
 				}

@@ -1,0 +1,115 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>操作日志查询</title>
+    @Html.Css("main", "flexigrid", "form")
+
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <div class="toolbar" style="margin:0px 1px 0px 1px;border-left:#99bbe8 1px solid;">
+        <span class="apquery" style="margin-left:5px;">
+            查询日志
+        </span>
+        </div>
+        <div class="querypanel" style="margin:0px 1px 0px 1px;">
+        <table cellpadding="3" cellspacing="0">
+            <tr>
+                <td style="width:60px;text-align:right;padding-right:5px;">操作类型:</td>
+                <td>
+                    @Html.DictDropdownList("OperateCode", xEasyApp.Core.Common.Constants.OperateCode, xEasyApp.Core.DictValueType.DictCode, null, new {style="width:120px"})
+                   
+                </td>
+                <td style="width:80px;text-align:right;padding-right:5px;">日志类型:</td>
+                <td>
+                   @Html.DictDropdownList("LogType", xEasyApp.Core.Common.Constants.LogType, xEasyApp.Core.DictValueType.DictCode, null, new { style = "width:120px" })
+                </td>
+                <td style="width:80px;text-align:right;padding-right:5px;">日志内容:</td>
+                <td>
+                    <input type="text" value="" style="width:180px;" id="tbQuerytext" />
+                </td>
+                <td>  
+                    <a id="btnQuery" class="button" href="javascript:void(0);"><span> 查  询</span></a>      
+                </td>
+            </tr>
+        </table>
+      </div>
+    </div>
+    <div id="GridViewPanel" style="margin:2px 1px 0px 1px;border-top:#99bbe8 1px solid;">
+        <table id="LogList" style="display:none;"></table> 
+    </div>
+     @Html.Js("jquery", "common", "flexigrid")
+ 
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            var maiheight = document.documentElement.clientHeight;
+            var mainWidth = document.documentElement.clientWidth - 2; // 减去边框和左边的宽度
+            var otherpm = 152;
+            var gh = maiheight - otherpm;
+            var option = {
+                height: gh,
+                width: mainWidth,
+                url: '@Url.Action("LogList")',
+                colModel: [
+                    { display: '日志标识', name: 'Id', width: 100, sortable: false, hide: true, align: 'left', iskey: true },
+                    { display: '操作类型', name: 'OperateCode', width: 60, sortable: false, align: 'left' },
+                    { display: '日志类型', name: 'LogType', width: 50, sortable: false, align: 'left', process: formatLogtype },
+                    { display: '操作用户账号', name: 'OperateUID', width: 100, sortable: false, hide: true, align: 'left' },
+			        { display: '操作用户', name: 'OperateName', width: 100, sortable: false, hide: false, align: 'left' },
+			        { display: '操作时间', name: 'OperateTime', width: 120, sortable: false, align: 'left' },
+			        { display: '客户端IP', name: 'IPAddress', width: 60, sortable: false, align: 'left' },
+			        { display: '内容', name: 'Content', width: 230, sortable: false, align: 'left' },
+			        { display: '操作', name: 'Id', width: 60, sortable: false, align: 'left', process: formatOp, toggle: false }
+				],
+                sortname: "Id",
+                sortorder: "DESC",
+                title: "日志列表",
+                rp: 20,
+                usepager: true,
+                showcheckbox: false
+            };
+            function formatLogtype(v) {
+                if (v == "0") {
+                    return "调试";
+                }
+                else if (v == "1") {
+                    return "跟踪";
+                }
+                else if (v == "2") {
+                    return "错误";
+                }
+                else {
+                    return "";
+                }
+            }
+            function formatOp(v) {
+                return "<a href=\"javascript:view('" + v + "')\" title='查看日志详细信息' class='linkbtn'><span class='view'>查看</span></a>";
+            }
+            $("#LogList").flexigrid(option);
+            $("#btnQuery").click(function (e) {
+                var optype = $("#OperateCode").val();
+                var logtype = $("#LogType").val();
+                var qtext = $("#tbQuerytext").val();
+                var p = { extParam: [{ name: "OperateCode", value: optype },
+                                { name: "LogType", value: logtype },
+                                { name: "QText", value: qtext }
+                     ]
+                };
+
+                $("#LogList").flexOptions(p).flexReload();
+            });
+        });
+        function view(id) {
+            var url = "../systemmanage/viewLog.aspx?LogID=" + id;
+            OpenModelWindow(url, { caption: "查看日志信息", width: 380, height: 280 });
+        }
+    </script>
+    </form>
+</body>
+</html>

@@ -14,6 +14,12 @@ namespace xEasyApp.Core.Biz
 {
     public class SysManageService : ISysManageService
     {
+        public SysManageService(ILogService logservice)
+        {
+            _LogService = logservice;
+        }
+
+        private ILogService _LogService;
 
         #region 属性
         private RoleInfoRepository _roleRepository;
@@ -196,6 +202,9 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException(ex.Message, ex);
             }
+            string op = ri.IsNew ? "新增" : "修改";
+            //记录操作日志
+            _LogService.Trace(Constants.OpType_SysManage_RoleManage, string.Format("{0}角色 ，权限标识[{1}],权限名称[{2}]", op, ri.RoleCode, ri.RoleName));
         }
         public RoleInfo GetRoleInfo(int roleId)
         {
@@ -224,7 +233,11 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException("系统角色不允许被删除");
             }
-            return roleRepository.Delete(roleId);
+            int ret = roleRepository.Delete(roleId);
+
+            //记录操作日志
+            _LogService.Trace(Constants.OpType_SysManage_RoleManage, string.Format("删除角色，角色代码[{0}],角色名称[{1}]", ri.RoleCode, ri.RoleName));
+            return ret;
         }
 
 
@@ -252,7 +265,7 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException(ex.Message, ex);
             }
-
+            _LogService.Trace(Constants.OpType_SysManage_RoleManage, string.Format("添加角色用户 ，角色ID[{0}],用户ID列表[{1}]", roleid, userids));
           
         }
 
@@ -270,7 +283,7 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException(ex.Message, ex);
             }
-
+            _LogService.Trace(Constants.OpType_SysManage_RoleManage, string.Format("删除角色用户 ，角色ID[{0}],用户ID列表[{1}]", roleid, userids));
            
         }
 
@@ -344,6 +357,9 @@ namespace xEasyApp.Core.Biz
         public void SaveOrgInfo(Organization Organization)
         {
             orgRepository.SaveOrgInfo(Organization);
+
+            string op = Organization.IsNew ? "新增" : "修改";
+            _LogService.Trace(Constants.OpType_SysManage_GroupManage, string.Format("{0}组织，组织代码[{1}],组织名称[{2}]", op,Organization.OrgCode, Organization.OrgName));
         }
 
         public bool ValidOrgCode(string orgCode)
@@ -356,18 +372,27 @@ namespace xEasyApp.Core.Biz
         }
         public int DeleteOrgInfo(string id)
         {
-            int ret = -1;
-            try
+            Organization org = orgRepository.GetOrganization(id);
+            if (org != null)
             {
-                ret = orgRepository.DeleteOrgInfo(id);
+                int ret = -1;
+                try
+                {
+                    ret = orgRepository.DeleteOrgInfo(id);
 
+                }
+                catch (Exception ex)
+                {
+                    throw new BizException(ex.Message, ex);
+                }
+
+                _LogService.Trace(Constants.OpType_SysManage_GroupManage, string.Format("删除组织，组织代码[{1}],组织名称[{2}]", org.OrgCode, org.OrgName));
+                return ret;
             }
-            catch (Exception ex)
+            else
             {
-                throw new BizException(ex.Message, ex);
+                throw new BizException("删除失败,该组标识不存在");
             }
-            return ret;
-
         }
 
         #endregion
@@ -399,12 +424,15 @@ namespace xEasyApp.Core.Biz
             {
                 throw new BizException(ex.Message, ex);
             }
+            _LogService.Trace(Constants.OpType_SysManage_UserManage, string.Format("删除用户，用户编码[{0}]", id));
             return ret;
         }
 
         public void SaveUserInfo(UserInfo user)
         {
             userRepository.Save(user);
+            string op = user.IsNew ? "新增" : "修改";
+            _LogService.Trace(Constants.OpType_SysManage_UserManage, string.Format("{0}用户，用户编码[{1}],用户名称[{2}]", op, user.UserUID, user.FullName));
         }
 
         public List<UserInfo> GetUserListByOrgCode(string orgCode)
@@ -500,6 +528,8 @@ namespace xEasyApp.Core.Biz
         public void SavePrivilege(Privilege p)
         {
             privilegeRepository.Save(p);
+            string op = p.IsNew ? "新增" : "修改";
+            _LogService.Trace(Constants.OpType_SysManage_PerimissionManage, string.Format("{0} 权限 ，权限标识[{1}],权限名称[{2}]", op, p.PrivilegeCode,p.PrivilegeName));
         }
 
         /// <summary>
@@ -509,20 +539,30 @@ namespace xEasyApp.Core.Biz
         /// <returns></returns>
         public int DeletePrivilege(string privilegeCode)
         {
-            int ret = -1;
-            try
+            Privilege p = privilegeRepository.GetPrivilege(privilegeCode);
+            if (p != null)
             {
-                using (TransactionScope scope = new TransactionScope())
+                int ret = -1;
+                try
                 {
-                    ret = privilegeRepository.DeletePrivilege(privilegeCode);
-                    scope.Complete();
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        ret = privilegeRepository.DeletePrivilege(privilegeCode);
+                        scope.Complete();
+                    }
                 }
+                catch (Exception ex)
+                {
+                    throw new BizException(ex.Message, ex);
+                }
+                //记录操作日志
+                _LogService.Trace(Constants.OpType_SysManage_PerimissionManage, string.Format("删除权限 ，权限标识[{0}],权限名称[{1}]", privilegeCode, p.PrivilegeName));
+                return ret;
             }
-            catch (Exception ex)
+            else
             {
-                throw new BizException(ex.Message, ex);
+                throw new BizException("删除权限失败，权限标识不存在");
             }
-            return ret;
         }
         public Privilege GetPrivilege(string privilegeCode)
         {
@@ -546,21 +586,32 @@ namespace xEasyApp.Core.Biz
         public void SetRolePrivilege(int roleid, string addids, string minusids,string userid,string username)
         { 
             bool hasright = CheckUserAuthorizationRight(roleid,userid);
+           
+            
             if (!hasright)
             {
                 throw new BizException("你没有对角色授权的权利");
             }
             else
             {
-                try
+                RoleInfo role = roleRepository.GetRoleInfo(roleid);
+                if (role != null)
                 {
-                    roleRepository.SetRolePrivilege(roleid, addids, minusids,userid,username);
+                    try
+                    {
+                        roleRepository.SetRolePrivilege(roleid, addids, minusids, userid, username);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new BizException(ex.Message, ex);
+                    }
+                    _LogService.Trace(Constants.OpType_SysManage_Authorization, string.Format("角色授权,角色[{0},{1}],新增的权限列表[{2}],删除的权限列表[{3}]", role.RoleCode, role.RoleName, addids, minusids));
                 }
-                catch (Exception ex)
+                else
                 {
-                    throw new BizException(ex.Message, ex);
+                    throw new BizException("角色不存在");
                 }
-            }
+             }
         }
 
         /// <summary>
@@ -613,8 +664,49 @@ namespace xEasyApp.Core.Biz
                     return GetPrivilegeTypeDictList();
                 case Constants.OrgTypeCode:
                     return GetOrgTypeDictList();
+                case Constants.OperateCode:
+                    return GetOperateCode();
+                case Constants.LogType:
+                    return GetLogType();
             }
             return dictRepository.GetChildDictInfos(dictCode);
+        }
+
+        private List<DictInfo> GetLogType()
+        {
+            List<DictInfo> list = new List<DictInfo>();
+            DictInfo dict1 = new DictInfo();
+            dict1.DictCode = "";
+            dict1.DictName = "全部";
+
+            DictInfo dict2 = new DictInfo();
+            dict2.DictCode = "0";
+            dict2.DictName = "调试";
+            DictInfo dict3 = new DictInfo();
+            dict3.DictCode = "1";
+            dict3.DictName = "跟踪";
+
+            DictInfo dict4 = new DictInfo();
+            dict4.DictCode = "2";
+            dict4.DictName = "错误";
+
+            list.Add(dict1);
+            list.Add(dict2);
+            list.Add(dict3);
+            list.Add(dict4);
+            return list;
+        }
+
+        private List<DictInfo> GetOperateCode()
+        {
+            List<DictInfo> list = new List<DictInfo>();
+            string[] ops = new[] { Constants.OpType_SysManage_Authorization, Constants.OpType_SysManage_GroupManage, Constants.OpType_SysManage_PerimissionManage, Constants.OpType_SysManage_RoleManage, Constants.OpType_SysManage_UserManage };
+            list.Add(new DictInfo { DictCode = "", DictName = "全部" });
+            foreach (string c in ops)
+            {
+                list.Add(new DictInfo { DictCode = c, DictName = c });
+            }
+            return list;
         }
         private List<DictInfo> GetOrgTypeDictList()
         {

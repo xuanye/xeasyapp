@@ -233,3 +233,9 @@ table.tree_grid_panel_table td
 {
    vertical-align:top;    
 }
+div.querypanel
+{
+	border: #99bbe8 1px solid;   
+	border-top:none;
+	background-color:#DFE8F6;
+}

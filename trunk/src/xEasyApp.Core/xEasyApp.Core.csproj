@@ -34,9 +34,6 @@
     <Reference Include="StructureMap">
       <HintPath>..\refdll\StructureMap.dll</HintPath>
     </Reference>
-    <Reference Include="SubSonic.Core">
-      <HintPath>..\refdll\SubSonic.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -52,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseClass\MyControllerBase.cs" />
+    <Compile Include="Biz\LogService.cs" />
     <Compile Include="Biz\SysManageService.cs" />
     <Compile Include="Biz\UserService.cs" />
     <Compile Include="Common\Constants.cs" />
@@ -72,6 +70,7 @@
     <Compile Include="Exceptions\NoPermissionExecption.cs" />
     <Compile Include="Extensions\ControllerExtension.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
+    <Compile Include="Interfaces\ILogService.cs" />
     <Compile Include="Interfaces\ISysManageService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="JsonEntities\JsonError.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="Repositories\BaseEntity.cs" />
     <Compile Include="Repositories\Entities\P_Entities.cs" />
     <Compile Include="Repositories\Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\Repositories\LogRepository.cs" />
     <Compile Include="Repositories\Repositories\OrganizationRepository.cs" />
     <Compile Include="Repositories\Repositories\DictInfoRepository.cs" />
     <Compile Include="Repositories\Repositories\PrivilegeRepository.cs" />
