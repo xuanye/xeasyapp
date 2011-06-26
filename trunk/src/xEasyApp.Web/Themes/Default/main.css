@@ -38,7 +38,15 @@ a:link, a:visited
 	text-decoration: none;
 	color: #333;
 }
-
+a.normal:link,a.normal:visited
+{
+	text-decoration: none;
+	color:#FEFEFE;
+}
+a.normal:hover
+{
+	text-decoration:underline;
+}
 
 a.imgbtn
 {
@@ -238,4 +246,27 @@ div.querypanel
 	border: #99bbe8 1px solid;   
 	border-top:none;
 	background-color:#DFE8F6;
+}
+
+.welcome
+{
+	float:right;
+	margin-right:20px;
+	padding-left:20px;
+	background:url("../../images/icons/suser.png") no-repeat left top;
+}
+.menupanel
+{
+		padding-left:20px;
+	background:url("../../images/icons/book.png") no-repeat left top;
+}
+span.logout
+{
+	padding-left:20px;
+	background:url("../../images/icons/door_out.png") no-repeat left top;
+
+}
+span.logotitle
+{
+	float:left;
 }

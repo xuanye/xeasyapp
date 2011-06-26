@@ -1,0 +1,257 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <head>
+        <title>欢迎-登录</title>
+        <style type="text/css">
+            html
+            {
+	            margin: 0px;
+	            padding: 0px;
+	            height: 100%;
+	            width: 100%;
+            }          
+            body
+            {
+	            margin: 0;	
+	            font-size: 12px;
+	            /**/font-family: "微软雅黑" , "宋体" ,Consolas,Verdana;
+	            padding: 0;
+	            height: 100%;
+	            width: 100%;
+            }
+            div, span
+            {
+                padding:0;
+	            margin:0;
+            }
+            form
+            {
+              margin:0;
+            }
+            div, span, td
+            {
+	            /**/font-family: "微软雅黑" , "宋体" ,Consolas,Verdana;	
+            }
+            .mainpanel
+            {
+                width:680px;
+                position:absolute;
+                left:50%;
+                top:40%;
+                margin:-170px 0px 0px -340px;
+            }
+            .loginpanel
+            {
+                background-color:#000;
+                color:#1A8DED;
+            }
+            ul
+            {
+                margin:0;
+                padding:2px 2px 2px 10px;
+            }
+            li
+            {
+                list-style:none;
+            }
+            .attribute
+            {
+                 color:#E5C138;
+            }
+            .oper
+            {
+                color:#f0f0f0;
+            }
+            .attrvalue
+            {
+                color:#52FF39;
+            }
+            .ate
+            {
+                color:#6897BB;
+            }
+            input.text
+            {
+                border:1px solid #CCC;
+                height:18px;
+                width:120px;
+                background:#fff url("../../images/bgs/text-bg.gif") repeat-x left top;
+            }
+            input.submit
+            {
+                
+            }
+            .top
+            {
+                padding:20px 0px 10px 0px;
+                border:1px solid #999;
+                border-bottom:none;
+                text-align:center;
+            }
+            .title
+            {
+               text-align:center;
+            }
+            .title span.msg
+            {
+                	border:solid 1px #ccc;              
+	                display:block;
+	                width:auto;
+	                background:#Fffdbb url("../../images/icons/ico_error.gif") no-repeat 5px center;
+	                padding:1px 10px 1px 30px;	
+	                color:#333;	               
+	                vertical-align:middle;
+	                line-height:28px;
+	                visibility:hidden;
+	                text-align:left;
+	                margin-bottom:2px;
+            }
+            
+            
+        </style>
+    </head>
+    <body>
+        <div class="mainpanel">
+         <div class="title">
+            <span id="msg" class="msg">请输入用户名密码;</span>
+        </div>
+       <div class="top">
+              <img src="@Url.Content("~/Images/bgs/logintitle.png")" alt="xEasyApp" />
+       </div>
+        <div class="loginpanel">     
+            
+            <form action="@Url.Action("Login")">
+            <ul>
+              <li>
+              &lt;div <span class="attribute">class</span><span class="oper">=</span><span class="attrvalue">"loginpanel"</span>&gt;
+              </li>
+              <li>
+                <div style="padding-left:30px;">&lt;form <span class="attribute">action</span><span class="oper">=</span><span class="attrvalue">"<span class="ate">@@</span>Url.Action("Login")"</span>&gt;</div>
+              </li>
+              <li>
+                <div style="padding-left:60px;">&lt;div&gt;</div>
+              </li>
+              <li>
+                <div style="padding-left:90px;">&lt;ul&gt;</div>
+              </li>
+              <li>
+                <div style="padding-left:110px;">&lt;li&gt;</div>
+              </li>
+              <li>
+                <div style="padding-left:130px;">&lt;label <span class="attribute">for</span><span class="oper">=</span><span class="attrvalue">"tbUserID"</span>&gt;<span class="oper">用户名：</span>&lt;/label&gt;</div>
+              </li>
+              <li>
+                 <div style="padding-left:130px;">&lt;input <span class="attribute">type</span><span class="oper">=</span><span class="attrvalue">"text"</span>
+                  <span class="attribute">id</span><span class="oper">=</span><span class="attrvalue">"tbUserID"</span> 
+                 <span class="attribute">value</span>
+                 <span class="oper">=</span><span class="attrvalue">"
+                 <input id="tbUserID" type="text" class="text"/>
+                 "</span>/&gt;</div>
+              </li>
+                <li>
+                <div style="padding-left:110px;">&lt;li&gt;</div>
+              </li>
+                <li>
+                <div style="padding-left:110px;">&lt;/li&gt;</div>
+              </li>
+              <li>
+                    <div style="padding-left:130px;">&lt;label <span class="attribute">for</span><span class="oper">=</span><span class="attrvalue">"tbPassWord"</span>&gt;<span class="oper">密 码：</span>&lt;/label&gt;</div>
+              </li>
+              <li>
+                 <div style="padding-left:130px;">&lt;input <span class="attribute">type</span><span class="oper">=</span><span class="attrvalue">"password"</span> 
+                 <span class="attribute">id</span><span class="oper">=</span><span class="attrvalue">"tbPassWord"</span> 
+                 <span class="attribute">value</span>
+                 <span class="oper">=</span><span class="attrvalue">"
+                 <input id="tbPassWord" type="password" class="text"/>
+                 "</span>/&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:110px;">&lt;/li&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:90px;">&lt;/ul&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:60px;">&lt;/div&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:60px;">&lt;div&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:90px;">&lt;input <span class="attribute">type</span><span class="oper">=</span><span class="attrvalue">"submit"</span> 
+                <span class="attribute">id</span><span class="oper">=</span><span class="attrvalue">"btnSubmit"</span> 
+                 <span class="attribute">value</span>
+                 <span class="oper">=</span><span class="attrvalue">"
+                 <input id="btnSubmit" type="submit" class="submit" value="登 录"/>
+                 "</span>/&gt;</div>
+              </li>
+              <li>
+                <div style="padding-left:60px;">&lt;/div&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:30px;">&lt;/form&gt;</div>
+              </li>
+               <li>
+                <div style="padding-left:0px;">&lt;/div&gt;</div>
+              </li>
+            </ul>
+            </form>
+            
+        </div>
+       
+        </div>
+          @Html.Js("jquery")
+            <script type="text/javascript">
+                $(document).ready(function (e) {
+                    $("#btnSubmit").click(function (e) {
+                        // 1:校验
+                        var userid = $("#tbUserID").val();
+                        var pwd = $("#tbPassWord").val();                    
+                        if (userid == "") {
+                            showmsg("用户名不能为空");
+                            $("#tbUserID").focus();
+                            return false;
+                        }
+                        if (pwd == "") {
+                            showmsg("密码不能为空");
+                            $("#tbPassWord").focus();
+                            return false;
+                        }
+                        // 2:提交登陆
+                        //正在登录  msg
+                        showmsg("正在验证...");
+                        $.ajax({
+                            type: "POST",
+                            url:'@Url.Action("Authentication")',
+                            data: { UserID: userid, Password: pwd },
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.IsSuccess) {
+                                    //登录成功，正在跳转..
+                                    showmsg("登录成功，正在跳转...");
+                                    location.href = "@ViewData["RedirectUrl"]";
+                                }
+                                else {
+                                    //登录失败
+                                    showmsg(data.Msg);
+                                }
+                            }
+                        });  //end if $.ajax
+                        return false;
+
+                    });
+                    function showmsg(msg) {
+                        $("#msg").css("visibility", "visible").text(msg);
+                    }
+                    function hidemsg() {
+                        $("#msg").css("visibility", "hidden");
+                    }
+                });
+            </script>
+    </body>
+</html>

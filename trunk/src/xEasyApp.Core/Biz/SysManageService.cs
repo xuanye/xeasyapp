@@ -9,6 +9,7 @@ using xEasyApp.Core.Configurations;
 using xEasyApp.Core.Entities;
 using System.Transactions;
 using xEasyApp.Core.Common;
+using xEasyApp.Core.Cryptography;
 
 namespace xEasyApp.Core.Biz
 {
@@ -430,6 +431,14 @@ namespace xEasyApp.Core.Biz
 
         public void SaveUserInfo(UserInfo user)
         {
+            if (user.IsNew || !string.IsNullOrEmpty(user.Password))
+            {
+                user.Password = CryptographyManager.Encrypt(user.Password, AppConfig.PasswordFormat);
+            }
+            else
+            {
+                user.ChangedPropertyList.Remove("Password"); //不更新密码字段
+            }
             userRepository.Save(user);
             string op = user.IsNew ? "新增" : "修改";
             _LogService.Trace(Constants.OpType_SysManage_UserManage, string.Format("{0}用户，用户编码[{1}],用户名称[{2}]", op, user.UserUID, user.FullName));
@@ -443,6 +452,25 @@ namespace xEasyApp.Core.Biz
         {
             userCode = Utility.ClearSafeStringParma(userCode);
             return userRepository.QueryTopUserList(userCode);
+        }
+
+        /// <summary>
+        /// 登录认证
+        /// </summary>
+        /// <param name="userid">The userid.</param>
+        /// <param name="pwd">The PWD.</param>
+        /// <returns></returns>
+        public bool Authentication(string userid, string pwd)
+        {
+            UserInfo user = userRepository.Get(userid);
+            if (user == null)
+            {
+                throw new BizException("用户不存在");
+            }
+            else 
+            {
+                return user.Password == CryptographyManager.Encrypt(pwd, AppConfig.PasswordFormat);
+            }
         }
         #endregion
 
@@ -651,6 +679,23 @@ namespace xEasyApp.Core.Biz
                 }
             }
             return rlist;
+            
+        }      
+        /// <summary>
+        ///获取所有菜单
+        /// </summary>
+        /// <returns></returns>
+        public List<Privilege> GetAllMenu()
+        {
+            return privilegeRepository.GetAllMenu();
+        }
+        /// <summary>
+        /// 获取用户的菜单IDs
+        /// </summary>
+        /// <returns></returns>
+        public  List<string> GetUserMenuIds(string userid)
+        {
+            return privilegeRepository.GetUserMenuIds(userid);
             
         }
         #endregion

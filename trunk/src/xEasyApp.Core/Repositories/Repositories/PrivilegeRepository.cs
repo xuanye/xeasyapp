@@ -173,6 +173,42 @@ namespace xEasyApp.Core.Repositories
             return p;
         }
 
-     
+
+
+        public List<Privilege> GetAllMenu()
+        {
+            string sql = "SELECT [PrivilegeCode],[PrivilegeName],[ParentID],[Uri]  FROM [Privileges]   where  [PrivilegeType]=2   Order By Sequence ";
+            List<Privilege> list = new List<Privilege>();
+            using (IDataReader reader = base.ExcuteDataReader(sql))
+            {
+                while (reader.Read())
+                {
+                    Privilege p = new Privilege();
+                    p.PrivilegeCode = reader.GetString(0);
+                    p.PrivilegeName = reader.GetString(1);                 
+                    p.ParentID = reader.IsDBNull(2) ? null : reader.GetString(2);
+                    p.Uri = reader.IsDBNull(3) ? null : reader.GetString(3);                 
+                    list.Add(p);
+                }
+            }
+            return list;
+        }
+
+        public List<string> GetUserMenuIds(string userid)
+        {
+            string sql = @"select distinct B.PrivilegeCode from RoleUserRelation A
+                        INNER JOIN RolePrivilegeRelation B on A.RoleID=B.RoleID
+                        INNER JOIN Privileges C on B.PrivilegeCode = C.PrivilegeCode 
+                        Where C.PrivilegeType =2";
+            List<string> list = new List<string>();
+            using (IDataReader reader = base.ExcuteDataReader(sql))
+            {
+                while (reader.Read())
+                {                  
+                    list.Add(reader.GetString(0));
+                }
+            }
+            return list;
+        }
     }
 }

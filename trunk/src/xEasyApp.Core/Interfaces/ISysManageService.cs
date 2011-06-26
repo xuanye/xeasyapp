@@ -61,6 +61,14 @@ namespace xEasyApp.Core.Interfaces
         List<UserInfo> GetUserListByOrgCode(string OrgCode);
 
         List<UserInfo> QueryUserList(string userCode);
+
+        /// <summary>
+        /// 登录认证
+        /// </summary>
+        /// <param name="userid">The userid.</param>
+        /// <param name="pwd">The PWD.</param>
+        /// <returns></returns>
+        bool Authentication(string userid, string pwd);
         #endregion
 
         #region 权限相关
@@ -148,6 +156,18 @@ namespace xEasyApp.Core.Interfaces
         /// <param name="pcode">The pcode.</param>
         /// <returns></returns>
         List<RoleInfo> QueryUserPrivilegeRoles(string usercode, string pcode);
+
+        /// <summary>
+        ///获取所有菜单
+        /// </summary>
+        /// <returns></returns>
+        List<Privilege> GetAllMenu();
+
+        /// <summary>
+        /// 获取用户的菜单IDs
+        /// </summary>
+        /// <returns></returns>
+        List<string> GetUserMenuIds(string userid);
        #endregion
 
         #region 数据字典相关
@@ -191,11 +211,6 @@ namespace xEasyApp.Core.Interfaces
         /// <param name="di">The di.</param>
         void SaveDictInfo(DictInfo di);
        #endregion
-
-
-
-
-
 
       
     }

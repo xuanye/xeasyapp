@@ -10,7 +10,7 @@ namespace xEasyApp.Core.Extensions
 {
     public static class ControllerExtension
     {
-        public static List<JsonTreeNode> GetMenu(this Controller controller)
+        public static List<JsonTreeNode> GetXmlMenu(this Controller controller)
         {
             string menuxml = controller.Server.MapPath("~/MenuData.xml");
             XmlDocument doc = new XmlDocument();

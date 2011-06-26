@@ -56,7 +56,8 @@
                   </td>
                   <td>
                         @Html.TextBox("FullName", Model.FullName, new { style = "width:90%;" })
-                        <span class="xeasy-formItemMust">*</span>
+                          <span class="xeasy-formItemMust">*</span>
+                       
                   </td>
                 
                 </tr>
@@ -66,7 +67,10 @@
                   </td>
                   <td>
                         @Html.Password("Password", Model.Password, new { style = "width:90%;" })
+                         @if (string.IsNullOrEmpty(Model.UserUID))
+                         {  
                         <span class="xeasy-formItemMust">*</span>
+                               }
                   </td>
                 
                 </tr>
@@ -75,7 +79,7 @@
                         <label>排序：</label>
                   </td>
                   <td>
-                        @Html.TextBox("Sequence", Model.Sequence, new { style = "width:80px;"})
+                        @Html.TextBox("Sequence", Model.Sequence, new { style = "width:80px;" })
                         <span class="xeasy-formItemMust">*</span>
                   </td>
                 
@@ -85,7 +89,7 @@
                         <label>是否启用：</label>
                   </td>
                   <td>
-                       @Html.CheckBox("AccountState", Model.AccountState == 1, new { value="1"})
+                       @Html.CheckBox("AccountState", Model.AccountState == 1, new { value = "1" })
                   </td>
                 
                 </tr>
@@ -111,7 +115,7 @@
               </div>
               
     </div>
-    @Html.Js("jquery", "common", "form","validate","dailog")
+    @Html.Js("jquery", "common", "form", "validate", "dailog")
     <script type="text/javascript">
         $(document).ready(function (e) {
             $("#btnSave").click(function (e) {
@@ -141,12 +145,15 @@
                  },
                  rules:
                  {
-                     UserUID: { required: true, safe: true @if(string.IsNullOrEmpty(Model.UserUID))
-                      {                        
+                     UserUID: { required: true, safe: true @if (string.IsNullOrEmpty(Model.UserUID))
+                                                           {                        
                         @:,remote:"@Url.Action("ValidUserUID")"
                       } 
                       },FullName: { required: true, safe: true },
-                      Password: { required: true },
+                      @if (string.IsNullOrEmpty(Model.UserUID))
+                      {   
+                       @: Password: { required: true },
+                      }
                       Sequence:{required:true,number:true}
                  },
                  messages: {
@@ -166,8 +173,7 @@
                  OpenModalDialog("@Url.Action("setOrg")?mode=2", { caption: "选择用户组", width: 240, height: 300, onclose: selectgroup_callback });
             });
             
-            function selectgroup_callback(group) {
-                //debugger;
+            function selectgroup_callback(group) {              
                 if (group && group.length > 0) {                   
                     $("#OrgCode").val(group[0].value);
                     $("#OrgName").val(group[0].text);
