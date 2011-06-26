@@ -60,6 +60,7 @@
     <Compile Include="Configurations\AppConfig.cs" />
     <Compile Include="Configurations\xEasyAppConfig.cs" />
     <Compile Include="Configurations\JsConfig.cs" />
+    <Compile Include="Cryptography\CryptographyManager.cs" />
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\PageList.cs" />
     <Compile Include="Entities\PageView.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Exceptions\NoPermissionExecption.cs" />
     <Compile Include="Extensions\ControllerExtension.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
+    <Compile Include="Extensions\xEasyAppAuthorizeAttribute.cs" />
     <Compile Include="Interfaces\ILogService.cs" />
     <Compile Include="Interfaces\ISysManageService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />

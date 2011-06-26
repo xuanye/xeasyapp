@@ -21,5 +21,15 @@ namespace xEasyApp.Core.Common
         public static readonly string OpType_SysManage_PerimissionManage = "权限管理";
         public static readonly string OpType_SysManage_RoleManage = "角色管理";
         public static readonly string OpType_SysManage_Authorization = "授权管理";
+
+
+        public const string SystemManage_User_PagePrivilegeCode = "10010";
+        public const string SystemManage_Role_PagePrivilegeCode = "10030";
+        public const string SystemManage_Privilege_PagePrivilegeCode = "10040";
+        public const string SystemManage_Authorization_PagePrivilegeCode = "10050";
+        public const string SystemManage_Org_PagePrivilegeCode = "10020";
+        public const string SystemManage_Dict_PagePrivilegeCode = "10060";
+        public const string SystemManage_LogManage_PagePrivilegeCode = "10070";
+
     }
 }

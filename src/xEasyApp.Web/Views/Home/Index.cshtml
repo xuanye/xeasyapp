@@ -1,6 +1,7 @@
 ﻿@{
     Layout = null;
 }
+@model xEasyApp.Web.Models.IndexModel
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
@@ -16,12 +17,13 @@
 <body>
     <div class="main-panel">
         <div id="top" class="top">
-            xjPlugin Demo
+           <span class="logotitle">@Model.LogoTitle</span>
+           <span class="welcome">欢迎您，@Model.UserFullName&nbsp;&nbsp;&nbsp;<a href="@Url.Action("Logout")" class='normal'><span class='logout'>注销</span></a></span>
         </div>
         <div id="left" class="left" style="width:175px;top:38px;left:0px;">
             <div id="panel-header" class="x-panel-header" >
-                <div class="x-tool x-tool-toggle x-tool-collapse-west"></div>
-                 <span>
+              
+                 <span class="menupanel">
                     菜单
                  </span>
             </div>

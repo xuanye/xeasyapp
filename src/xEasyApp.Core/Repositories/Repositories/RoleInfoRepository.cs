@@ -229,7 +229,7 @@ namespace xEasyApp.Core.Repositories
                     item.RoleCode = reader.GetString(1);
                     item.RoleName = reader.GetString(2);
 
-                    if (!reader.IsDBNull(4))
+                    if (!reader.IsDBNull(3))
                     {
                         item.ParentID = reader.GetInt32(3);
                     }
@@ -473,5 +473,7 @@ namespace xEasyApp.Core.Repositories
             }
             return list;
         }
+
+      
     }
 }

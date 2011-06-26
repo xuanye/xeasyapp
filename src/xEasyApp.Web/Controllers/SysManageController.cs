@@ -13,10 +13,12 @@ using xEasyApp.Core.Configurations;
 using xEasyApp.Web.Models;
 using xEasyApp.Core;
 using StructureMap;
+using xEasyApp.Core.Extensions;
+using xEasyApp.Core.Common;
 
 namespace xEasyApp.Web.Controllers
 {
-    // [Authorize()]
+    [xEasyAppAuthorize()]
     public class SysManageController : MyControllerBase
     {
         public SysManageController(ISysManageService sysservice)
@@ -27,6 +29,7 @@ namespace xEasyApp.Web.Controllers
         private ISysManageService sysManageService;
 
         #region 角色管理
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_Role_PagePrivilegeCode)]
         public ActionResult RoleInfoList()
         {
             return View();
@@ -321,6 +324,7 @@ namespace xEasyApp.Web.Controllers
         #endregion
 
         #region 部门管理
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_Org_PagePrivilegeCode)]
         public ActionResult OrgInfoList()
         {
             return View();
@@ -511,8 +515,7 @@ namespace xEasyApp.Web.Controllers
             bool isValid = sysManageService.ValidOrgCode(OrgCode);
             return Content(isValid ? "true" : "false", "application/json");
         }
-
-
+    
         public ActionResult OrgUserList(string OrgCode, string OrgName)
         {
             ViewData["OrgCode"] = OrgCode;
@@ -570,6 +573,7 @@ namespace xEasyApp.Web.Controllers
                         cnode.id = item.OrgCode;
                         cnode.text = item.OrgName;
                         cnode.value = item.OrgCode;
+                        cnode.hasChildren = item.HasChild;
                         node.ChildNodes.Add(cnode);
                     }
                 }
@@ -588,6 +592,7 @@ namespace xEasyApp.Web.Controllers
                     cnode.id = item.OrgCode;
                     cnode.text = item.OrgName;
                     cnode.value = item.OrgCode;
+                    cnode.hasChildren = item.HasChild;
                     nodes.Add(cnode);
                 }
             }
@@ -596,6 +601,7 @@ namespace xEasyApp.Web.Controllers
         #endregion
 
         #region 用户管理
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_User_PagePrivilegeCode)]
         public ActionResult UserList()
         {
             return View();
@@ -610,6 +616,10 @@ namespace xEasyApp.Web.Controllers
                 if (u == null)
                 {
                     throw new ArgumentException("参数错误", "id");
+                }
+                else
+                {
+                    u.Password = "";
                 }
             }
             else
@@ -677,6 +687,10 @@ namespace xEasyApp.Web.Controllers
             {
                 user.IsNew = string.IsNullOrEmpty(id);
 
+                if (user.IsNew && string.IsNullOrEmpty(user.Password))
+                {
+                    throw new BizException("新用户密码不能为空");
+                }
                 user.LastUpdateUserUID = base.UserId;
                 user.LastUpdateUserName = base.CurrentUser.FullName;
                 user.LastUpdateTime = DateTime.Now;
@@ -775,6 +789,7 @@ namespace xEasyApp.Web.Controllers
         #endregion
 
         #region 权限管理
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_Privilege_PagePrivilegeCode)]
         public ActionResult PrivilegeList()
         {
             return View();
@@ -1003,7 +1018,7 @@ namespace xEasyApp.Web.Controllers
             return Json(treelist);
 
         }
-
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_Authorization_PagePrivilegeCode)]
         public ActionResult QueryAuthorization()
         {
             return View();
@@ -1062,7 +1077,7 @@ namespace xEasyApp.Web.Controllers
         #endregion
 
         #region 数据字典管理
-
+        [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_Dict_PagePrivilegeCode)]
         public ActionResult DictInfoList()
         {
             return View();
@@ -1212,7 +1227,7 @@ namespace xEasyApp.Web.Controllers
         #endregion
 
         #region 操作日志
-
+       [xEasyAppAuthorize(PagePrivilegeCode = Constants.SystemManage_LogManage_PagePrivilegeCode)]
         public ActionResult LogList()
         {
             return View();

@@ -29,7 +29,12 @@ namespace xEasyApp.Core.Common
                 //如果是调试模式则获取配置的测试账号
                 if (config.RuntimeInfo.Mode == RunMode.Debug)
                 {
-                    return config.RuntimeInfo.UserId;
+                    string userid = config.RuntimeInfo.UserId;
+                    if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        FormsAuthentication.SetAuthCookie(userid, false);
+                    }
+                    return userid;
                 }
                 if (HttpContext.Current.User.Identity.IsAuthenticated)
                 {
@@ -43,6 +48,32 @@ namespace xEasyApp.Core.Common
                     return ssoUid;
                 }
                 throw new UnauthorizedAccessException("登录超时!");
+            }
+        }
+
+        /// <summary>
+        /// 判断是否经过认证
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is is authenticated; otherwise, <c>false</c>.
+        /// </value>
+        public static bool IsIsAuthenticated
+        {
+            get {
+                xEasyAppConfig config = xEasyAppConfig.Instance();
+                if (config.RuntimeInfo.Mode == RunMode.Debug)
+                {
+                    string userid = config.RuntimeInfo.UserId;
+                    if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        FormsAuthentication.SetAuthCookie(userid, false);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return HttpContext.Current.User.Identity.IsAuthenticated;
+                }
             }
         }
 

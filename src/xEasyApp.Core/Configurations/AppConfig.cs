@@ -43,7 +43,18 @@ namespace xEasyApp.Core.Configurations
                 return name;
             }
         }
-
+        public static string PasswordFormat
+        {
+            get
+            {
+                string format = Get("PasswordFormat");
+                if (string.IsNullOrEmpty(format))
+                {
+                    return "md5";
+                }
+                return format;
+            }
+        }
         public static int SuperAdminRoleID
         {
             get {
@@ -76,6 +87,19 @@ namespace xEasyApp.Core.Configurations
                     return enable.ToLower() == "true";
                 }
                 return true;
+            }
+        }
+
+        public static string LogoTitle {
+
+            get
+            {
+                string title = Get("LogoTitle");
+                if (string.IsNullOrEmpty(title))
+                {
+                    return "xEasyApp Demo";
+                }
+                return title;
             }
         }
     }

@@ -69,6 +69,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Models\SetDeptViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,6 +80,7 @@
     <Content Include="Images\bgs\btnok.gif" />
     <Content Include="Images\bgs\button1.gif" />
     <Content Include="Images\bgs\invalid_line.gif" />
+    <Content Include="Images\bgs\logintitle.png" />
     <Content Include="Images\bgs\text-bg.gif" />
     <Content Include="Images\icons\accept.png" />
     <Content Include="Images\icons\add.png" />
@@ -97,6 +99,7 @@
     <Content Include="Images\icons\expandh.gif" />
     <Content Include="Images\icons\folder_user.gif" />
     <Content Include="Images\icons\group.gif" />
+    <Content Include="Images\icons\ico_error.gif" />
     <Content Include="Images\icons\key_go.png" />
     <Content Include="Images\icons\laught.png" />
     <Content Include="Images\icons\library.png" />
@@ -352,6 +355,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SysManage\LogList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SysManage\SetOrg.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
