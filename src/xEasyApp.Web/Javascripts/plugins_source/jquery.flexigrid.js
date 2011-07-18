@@ -330,7 +330,7 @@
                 this.loading = false;
             }
             ,
-            addData: function(data) { //parse data                
+            addData: function(data) { //parse data                            
                 if (p.preProcess)
                 { data = p.preProcess(data); }
                 $('.pReload', this.pDiv).removeClass('loading');
@@ -538,7 +538,9 @@
                 if (p.onChangeSort)
                     p.onChangeSort(p.sortname, p.sortorder);
                 else
+                {                
                     this.populate();
+                }
 
             },
             buildpager: function() { //rebuild pager based on new properties
@@ -560,6 +562,7 @@
             },
             populate: function() { //get latest data 
                 //log.trace("开始访问数据源");
+               
                 if (this.loading) return true;
                 if (p.onSubmit) {
                     var gh = p.onSubmit();
@@ -642,7 +645,7 @@
                         }
                     }
                 }
-                p.newp = 1;
+                p.newp = 1;             
                 this.populate();
             },
             changePage: function(ctype) { //change page
@@ -655,6 +658,7 @@
                     case 'next': if (p.page < p.pages) p.newp = parseInt(p.page) + 1; break;
                     case 'last': p.newp = p.pages; break;
                     case 'input':
+                       
                         var nv = parseInt($('.pcontrol input', this.pDiv).val());
                         if (isNaN(nv)) nv = 1;
                         if (nv < 1) nv = 1;
@@ -669,7 +673,9 @@
                 if (p.onChangePage)
                     p.onChangePage(p.newp);
                 else
+                {                  
                     this.populate();
+                }
 
             },
             cellProp: function(n, ptr, pth) {
@@ -834,22 +840,25 @@
             thead = document.createElement('thead');
             tr = document.createElement('tr');
             //p.showcheckbox ==true;
-            var cth = jQuery('<th/>');
-            cth.addClass("cth").attr({ width: "15", "isch": true })
-            if (p.showcheckbox) {
+           if(p.showcheckbox || p.showrownum || p.showleftbar)
+            {
+                var cth = jQuery('<th/>');
+                cth.addClass("cth").attr({ width: "15", "isch": true })
+                if (p.showcheckbox) {
 
-                var cthch = jQuery('<input type="checkbox"/>');
-                cthch.addClass("noborder");
-                if (p.singleselected) {
-                    cthch.attr("disabled", true).css("visibility", "hidden");
+                    var cthch = jQuery('<input type="checkbox"/>');
+                    cthch.addClass("noborder");
+                    if (p.singleselected) {
+                        cthch.attr("disabled", true).css("visibility", "hidden");
+                    }
+                    cth.attr('axis', "col-1");
+                    cth.append(cthch);
                 }
-                cth.attr('axis', "col-1");
-                cth.append(cthch);
+                else {
+                    cth.attr('axis', "col-2");
+                }           
+                $(tr).append(cth);
             }
-            else {
-                cth.attr('axis', "col-2");
-            }
-            $(tr).append(cth);
             for (i = 0; i < p.colModel.length; i++) {
                 var cm = p.colModel[i];
                 var th = document.createElement('th');
@@ -1208,7 +1217,7 @@
             $('.pPrev', g.pDiv).click(function() { g.changePage('prev'); });
             $('.pNext', g.pDiv).click(function() { g.changePage('next'); });
             $('.pLast', g.pDiv).click(function() { g.changePage('last'); });
-            $('.pcontrol input', g.pDiv).keydown(function(e) { if (e.keyCode == 13) g.changePage('input'); });
+            $('.pcontrol input', g.pDiv).keydown(function(e) { if (e.keyCode == 13){g.changePage('input');return false;} });
             if ($.browser.msie && $.browser.version < 7) $('.pButton', g.pDiv).hover(function() { $(this).addClass('pBtnOver'); }, function() { $(this).removeClass('pBtnOver'); });
 
             if (p.useRp) {
@@ -1224,7 +1233,7 @@
 					        p.onRpChange(+this.value);
 					    else {
 					        p.newp = 1;
-					        p.rp = +this.value;
+					        p.rp = +this.value;					      
 					        g.populate();
 					    }
 					}
@@ -1435,7 +1444,7 @@
         t.grid = g;
 
         // load data
-        if (p.url && p.autoload) {
+        if (p.url && p.autoload) {          
             g.populate();
         }
 
@@ -1469,7 +1478,10 @@
     $.fn.flexReload = function(p) { // function to reload grid
 
         return this.each(function() {
-            if (this.grid && this.p.url) this.grid.populate();
+            if (this.grid && this.p.url) 
+            {
+                        this.grid.populate();
+            }
         });
 
     }; //end flexReload
