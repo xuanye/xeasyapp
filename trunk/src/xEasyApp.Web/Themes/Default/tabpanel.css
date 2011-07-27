@@ -302,8 +302,21 @@ ul.x-tab-strip li.x-tab-edge {
     opacity:1;
     -moz-opacity:1;
 }
-
-
+.x-tab-strip li.x-tab-closeall
+{
+    margin-left:0px;
+}
+.x-tab-strip .x-tab-closeall a
+{
+    display:block;
+    width:24px;
+    background:url("images/tabpanel/closeallbg.gif")  no-repeat left top;
+    padding:5px 0px 0px 0px;
+}
+.x-tab-strip .x-tab-closeall a:hover
+{
+    background-position: 0px -50px;
+}
 .x-tab-scroller-left {
     background: transparent no-repeat -18px 0;
     border-bottom: 1px solid;

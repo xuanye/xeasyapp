@@ -90,6 +90,9 @@ namespace xEasyApp.Core.JsonEntities
             return data;
         }
     }
+    /// <summary>
+    /// flexigrid的数据行
+    /// </summary>
     public class FlexiGridRow
     {
         public string id { get; set; }

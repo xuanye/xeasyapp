@@ -135,9 +135,7 @@
     <Content Include="Javascripts\lib\blackbird.js" />
     <Content Include="Javascripts\lib\hashtable.js" />
     <Content Include="Javascripts\lib\jquery.easydrag.js" />
-    <Content Include="Javascripts\plugins_source\jquery.alert.js" />
     <Content Include="Javascripts\plugins_source\jquery.autocomplete.js" />
-    <Content Include="Javascripts\plugins_source\jquery.contextmenu.js" />
     <Content Include="Javascripts\plugins_source\jquery.datepicker.js" />
     <Content Include="Javascripts\plugins_source\jquery.flexigrid.js" />
     <Content Include="Javascripts\plugins_source\jquery.form.js" />
@@ -146,7 +144,9 @@
     <Content Include="Javascripts\plugins_source\jquery.tabpanel.js" />
     <Content Include="Javascripts\plugins_source\jquery.tree.js" />
     <Content Include="Javascripts\plugins_source\jquery.validate.js" />
-    <Content Include="Js.xml" />
+    <Content Include="Js.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="MenuData.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -235,6 +235,7 @@
     <Content Include="Themes\Default\images\share\table_c.gif" />
     <Content Include="Themes\Default\images\share\tool-sprites.gif" />
     <Content Include="Themes\Default\images\share\vcard.gif" />
+    <Content Include="Themes\Default\images\tabpanel\closeallbg.gif" />
     <Content Include="Themes\Default\images\tabpanel\loading.gif" />
     <Content Include="Themes\Default\images\tabpanel\scroll-left.gif" />
     <Content Include="Themes\Default\images\tabpanel\scroll-right.gif" />

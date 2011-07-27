@@ -5,6 +5,7 @@
                items:[], //选项卡数据项 {id,text,classes,disabled,closeable,content,url,cuscall,onactive}
                width:500,
                height:400,
+               showcloseall:5, //当item数量大于5个时，显示关闭所有的按钮
                scrollwidth:100,//如果存在滚动条，点击按钮次每次滚动的距离
                autoscroll:true //当选项卡宽度大于容器时自动添加滚动按钮
        };
@@ -26,6 +27,10 @@
            var item =dfop.items[i];
            builditemlihtml(item,litemp);
        }
+       if(dfop.items.length>=dfop.showcloseall)
+       {
+          buildcloseallbtnhtml(litemp);   
+       }
        litemp.push("<li class='x-tab-edge'/><div class='x-clear'></div>");
        
        ulwrap.html(litemp.join(""));
@@ -44,6 +49,8 @@
           var item =dfop.items[i];
           builditembodyhtml(item,bodytemp);       
        }
+      
+     
        body.html(bodytemp.join("")).appendTo(bodywrap);
        me.append(header).append(bodywrap);
        initevents();
@@ -51,9 +58,15 @@
        {           
            parray.push("<li id='tab_li_",item.id,"' class='",item.isactive?"x-tab-strip-active":"",item.disabled?"x-tab-strip-disabled":"",item.closeable?" x-tab-strip-closable":"",item.classes?" x-tab-with-icon":"","'>");
            parray.push("<a class='x-tab-strip-close' onclick='return false;'/>");
-           parray.push("<a class='x-tab-right' onclick='return false;' href='#'>");
+           parray.push("<a class='x-tab-right' onclick='return false;' href='javascript:void(0)'>");
            parray.push("<em class='x-tab-left'><span class='x-tab-strip-inner'><span class='x-tab-strip-text ",item.classes||"","'>",item.text,"</span></span></em>");
            parray.push("</a></li>");    
+       }
+       function buildcloseallbtnhtml(parray)
+       {    
+           parray.push("<li id='tab_li_closeall' class='x-tab-closeall'>");
+           parray.push("<a hideFocus='hideFocus' title='关闭所有' href='javascript:void(0)'>&nbsp;</a>");       
+           parray.push("</li>");    
        }
        function builditembodyhtml(item,parray)
        {  
@@ -81,9 +94,14 @@
             ulwrap.find("li:not(.x-tab-edge)").each(function(e){
               inititemevents(this); //给每个选项卡 添加事件
             });
+            
        }
        function inititemevents(liitem)
        {
+            if(liitem.id=="tab_li_closeall")
+            {
+                return;
+            }
             liswaphover.call(liitem); //选项卡的鼠标hover效果
             liclick.call(liitem); //选项卡的点击事件
             closeitemclick.call(liitem); // 点击关闭按钮的事件
@@ -259,6 +277,31 @@
             });
          }
        }
+       function closeallitem()
+       {          
+            ulwrap.find("li").remove(".x-tab-strip-closable"); //移除所有可以关闭的tab项
+            var t=[];
+            var nid ="";
+            for(var i=0,j=dfop.items.length;i<j ;i++)
+            {
+                if(!dfop.items[i].closeable)
+                {
+                    t.push(dfop.items[i]);
+                    if(!dfop.items[i].disabled)
+                    {
+                        nid=dfop.items[i].id;
+                    }
+                }
+            }
+            dfop.items =t;
+            if(nid!="" )
+            {
+                $("#tab_li_"+nid).click();
+            }
+            $("#tab_li_closeall").remove();
+            resetscoller();           
+            scolling("right",true);
+       }
        function liclick()
        {
           $(this).click(function(e){
@@ -397,6 +440,19 @@
             {                
                li.click();
             }    
+            //debugger;
+           
+            if(dfop.items.length>=dfop.showcloseall)
+            {   
+                 var cabtn = $("#tab_li_closeall");
+                if(cabtn.length==0)
+                {
+                     var cabtntmp =[];
+                     buildcloseallbtnhtml(cabtntmp);
+                     li.after(cabtntmp.join(""));                
+                     $("#tab_li_closeall").click(closeallitem);
+                 }
+            }
             resetscoller(); 
             scolling("right",true);
           }
@@ -438,6 +494,14 @@
                  $("#tab_li_"+nextcur.id).click();
             }
             dfop.items.splice(index,1);
+            if(dfop.items.length<dfop.showcloseall)
+            {
+                 var clbtn =$("#tab_li_closeall");
+                 if(clbtn.length>0)
+                 {
+                    clbtn.remove();
+                 }
+            }
             resetscoller();           
             scolling("right",true);
           }
