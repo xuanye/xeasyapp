@@ -75,6 +75,10 @@ namespace xEasyApp.Core.JsonEntities
             {
                 data.total = pagelist.Total;
             }
+			else
+            {
+                data.total = -1;
+            }
             data.rows = new List<FlexiGridRow>();
             foreach (T t in pagelist.DataList)
             {
